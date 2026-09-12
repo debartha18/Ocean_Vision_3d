@@ -30,9 +30,16 @@ export default function StormNewsModal({
   const lat = activeRegion?.lat || 15.297;
   const lon = activeRegion?.lon || 87.860;
 
+  const rainProb = activeRegion?.rainProbability || 65;
+
   // Retrieve nearest beaches to this exact coordinate
   const nearestBeaches = getNearestBeaches(lat, lon, 6);
-  const beachForecasts = nearestBeaches.map((b) => calculateBeachRainForecast(b, stormProb, storm));
+  const beachForecasts = nearestBeaches.map((b) => calculateBeachRainForecast(b, {
+    regionalRainProb: rainProb,
+    regionalStormProb: stormProb,
+    regionalRainRate: rainRate,
+    activeStorm: storm
+  }));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 md:p-6 select-none animate-in fade-in duration-200">

@@ -49,7 +49,12 @@ export default function AnalyticReportModal({
   const g = calculateGravity(lat);
   const depthProfile = generatePressureDepthProfile(lat, sst, salinity);
   const nearestBeaches = getNearestBeaches(lat, lon, 4);
-  const beachForecasts = nearestBeaches.map((b) => calculateBeachRainForecast(b, stormProb));
+  const beachForecasts = nearestBeaches.map((b) => calculateBeachRainForecast(b, {
+    regionalRainProb: rainProb,
+    regionalStormProb: stormProb,
+    regionalRainRate: rainRate,
+    activeStorm: activeRegion?.activeStorm
+  }));
 
   const reportId = useMemo(() => {
     return `OV3D-${Math.abs(Math.round(lat * 100))}-${Math.abs(Math.round(lon * 100))}-2026`;

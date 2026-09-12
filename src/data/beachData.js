@@ -1,3 +1,5 @@
+import { calculateScientificWeather } from '../utils/weatherService.js';
+
 /**
  * Coastal Beaches & Marine Weather / Rain Prediction Engine
  * Provides accurate beach coordinates, rainfall projections, surf risks, and coastal alerts
@@ -337,71 +339,109 @@ export function getNearestBeaches(lat, lon, maxCount = 5) {
 }
 
 /**
- * Calculates deterministic, accurate meteorological rain and surf prediction for a specific beach
- * Accounts for proximity to storm centers, monsoon troughs, and latitude
+ * Calculates deterministic, physically accurate meteorological rain and surf predictions for a specific beach.
+ * Combines local coastal climatology (latitude, ITCZ, onshore flow) with distance-decayed regional storm coupling.
+ *
+ * @param {Object} beach - Coastal beach object with lat, lon, normalWaveHeight, distanceKm
+ * @param {Object|number} optionsOrStormProb - Options object { regionalRainProb, regionalStormProb, regionalRainRate, activeStorm } or legacy numeric storm probability
+ * @param {Object} [legacyStorm] - Optional legacy active storm object
+ * @returns {Object} Comprehensive, individualized beach rain & surf forecast
  */
-export function calculateBeachRainForecast(beach, regionalStormProb = 75, activeStorm = null) {
-  // Proximity factor: if a regional storm is active, calculate its effect
-  const baseProb = regionalStormProb;
-  const stormFactor = baseProb / 100;
-  const stormName = activeStorm?.name ? ` influenced by ${activeStorm.name}` : '';
-  
-  // Rain probability (%)
-  let rainProbability = Math.min(98, Math.max(10, Math.round(baseProb * 0.85 + Math.sin(beach.lat * 0.3) * 12)));
-  
-  // Rain Rate (mm/h) and 24h Precipitation Total (mm)
+export function calculateBeachRainForecast(beach, optionsOrStormProb = 35, legacyStorm = null) {
+  if (!beach) return null;
+
+  // 1. Resolve calling arguments polymorphically
+  let regionalRainProb = 40;
+  let regionalStormProb = 25;
+  let regionalRainRate = 1.0;
+  let activeStorm = null;
+
+  if (typeof optionsOrStormProb === 'object' && optionsOrStormProb !== null) {
+    regionalRainProb = optionsOrStormProb.regionalRainProb ?? optionsOrStormProb.rainProbability ?? 40;
+    regionalStormProb = optionsOrStormProb.regionalStormProb ?? optionsOrStormProb.stormProbability ?? 25;
+    regionalRainRate = optionsOrStormProb.regionalRainRate ?? optionsOrStormProb.rainRate ?? 1.0;
+    activeStorm = optionsOrStormProb.activeStorm ?? legacyStorm;
+  } else if (typeof optionsOrStormProb === 'number') {
+    regionalStormProb = optionsOrStormProb;
+    regionalRainProb = Math.max(optionsOrStormProb, 35);
+    activeStorm = legacyStorm;
+  }
+
+  // 2. Individualized coastal base meteorology directly computed from beach coordinates
+  const localMet = calculateScientificWeather(beach.lat, beach.lon);
+
+  // 3. Spatial convective coupling: influence decays with distance from marine center
+  const dist = typeof beach.distanceKm === 'number' && beach.distanceKm > 0 ? beach.distanceKm : 450;
+  const proximityWeight = Math.exp(-dist / 750); // e.g. 0.48 at ~550km, 0.35 at ~780km
+
+  // 4. Coupled Rain Probability (%): blends local coastal baseline with regional convective storm
+  const coupledRainProb = Math.round(
+    localMet.rainProbability * (1 - proximityWeight * 0.7) +
+    regionalRainProb * (proximityWeight * 0.7)
+  );
+  const rainProbability = Math.max(5, Math.min(98, coupledRainProb));
+
+  // 5. Surf wave breakers (m): beach profile modulated by open ocean swell and onshore wind
+  const stormFactor = regionalStormProb / 100;
+  const surfWaveHeight = parseFloat(
+    (Math.max(0.6, (beach.normalWaveHeight || 1.2) * (0.85 + (localMet.waveHeight / 2.0) * 0.28 + stormFactor * 0.35))).toFixed(1)
+  );
+
+  // 6. Precipitation Rate (mm/h), 24h Total (mm), Classification, and Beach Safety Flag
   let rainRateMmH = 0;
   let total24hPrecipMm = 0;
-  let rainClassification = 'Fair / Dry';
+  let rainClassification = 'Fair / Mainly Dry';
   let safetyFlag = 'Green (Safe)';
-  let surfWaveHeight = (beach.normalWaveHeight * (1 + stormFactor * 1.2)).toFixed(1);
 
-  if (rainProbability >= 80) {
-    rainRateMmH = parseFloat((18.5 + stormFactor * 22.0).toFixed(1));
-    total24hPrecipMm = Math.round(rainRateMmH * 10 + 40);
+  if (rainProbability >= 75) {
+    rainRateMmH = parseFloat((4.5 + (rainProbability - 75) * 0.35 + regionalRainRate * 0.35).toFixed(1));
+    total24hPrecipMm = Math.round(rainRateMmH * 8 + 16);
     rainClassification = 'Torrential Squalls & Cloudbursts';
-    safetyFlag = 'Red (Hazardous Swell & Gale)';
-  } else if (rainProbability >= 55) {
-    rainRateMmH = parseFloat((7.0 + stormFactor * 11.0).toFixed(1));
-    total24hPrecipMm = Math.round(rainRateMmH * 8 + 15);
-    rainClassification = 'Moderate to Heavy Downpours';
-    safetyFlag = 'Yellow (Caution: Strong Breakers)';
-  } else if (rainProbability >= 30) {
-    rainRateMmH = parseFloat((2.0 + stormFactor * 4.5).toFixed(1));
-    total24hPrecipMm = Math.round(rainRateMmH * 6 + 4);
-    rainClassification = 'Scattered Coastal Showers';
-    safetyFlag = 'Yellow (Moderate Swell)';
+    safetyFlag = surfWaveHeight > 2.0 ? 'Red (Hazardous Swell & Gale)' : 'Yellow (Heavy Surf)';
+  } else if (rainProbability >= 50) {
+    rainRateMmH = parseFloat((1.4 + (rainProbability - 50) * 0.11 + regionalRainRate * 0.15).toFixed(1));
+    total24hPrecipMm = Math.round(rainRateMmH * 6 + 6);
+    rainClassification = 'Moderate Rain Showers';
+    safetyFlag = surfWaveHeight > 1.8 ? 'Yellow (Caution: Strong Breakers)' : 'Yellow (Moderate Swell)';
+  } else if (rainProbability >= 25) {
+    rainRateMmH = parseFloat((0.3 + (rainProbability - 25) * 0.04).toFixed(1));
+    total24hPrecipMm = Math.max(1, Math.round(rainRateMmH * 5 + 1));
+    rainClassification = 'Passing Coastal Drizzle & Showers';
+    safetyFlag = 'Green (Safe)';
   } else {
-    rainRateMmH = parseFloat((0.2 + stormFactor * 1.0).toFixed(1));
-    total24hPrecipMm = Math.round(rainRateMmH * 3);
-    rainClassification = 'Light Passing Drizzle / Clear';
+    rainRateMmH = 0.0;
+    total24hPrecipMm = 0;
+    rainClassification = 'Fair / Mainly Dry';
     safetyFlag = 'Green (Safe)';
   }
 
-  // Wind gusts on beach (km/h)
-  const beachWindGusts = Math.round(25 + stormFactor * 55 + Math.abs(Math.cos(beach.lon * 0.2)) * 15);
-  
-  // 3-Day Forecast Preview
+  // 7. Coastal Wind Gusts (km/h)
+  const beachWindGusts = Math.round(localMet.windSpeedKmH * 0.85 + stormFactor * 22);
+
+  // 8. 3-Day Progressive Forecast
   const threeDayForecast = [
     {
       day: 'Today',
       rainMm: total24hPrecipMm,
       prob: rainProbability,
-      condition: rainProbability > 65 ? 'Heavy Rain' : rainProbability > 35 ? 'Passing Showers' : 'Partly Cloudy'
+      condition: rainProbability >= 65 ? 'Heavy Showers' : rainProbability >= 35 ? 'Passing Rain' : 'Partly Cloudy'
     },
     {
       day: 'Tomorrow',
-      rainMm: Math.round(total24hPrecipMm * 0.85),
-      prob: Math.max(15, rainProbability - 10),
-      condition: rainProbability > 75 ? 'Rain Bands' : 'Scattered Showers'
+      rainMm: Math.round(total24hPrecipMm * 0.75),
+      prob: Math.max(10, Math.round(rainProbability * 0.82)),
+      condition: rainProbability >= 60 ? 'Scattered Rain' : 'Clearing Skies'
     },
     {
       day: 'Day 3',
-      rainMm: Math.round(total24hPrecipMm * 0.6),
-      prob: Math.max(10, rainProbability - 25),
-      condition: rainProbability > 80 ? 'Showers' : 'Clearing / Breezy'
+      rainMm: Math.round(total24hPrecipMm * 0.45),
+      prob: Math.max(5, Math.round(rainProbability * 0.65)),
+      condition: rainProbability >= 70 ? 'Passing Showers' : 'Fair Maritime Sky'
     }
   ];
+
+  const stormName = activeStorm?.name ? ` influenced by ${activeStorm.name}` : '';
+  const advisoryText = `${rainClassification} forecast across ${beach.name}${stormName}. Wave breakers estimated at ${surfWaveHeight}m with wind gusts reaching ${beachWindGusts} km/h. Beachgoers and local fishermen advised: ${safetyFlag}.`;
 
   return {
     beachId: beach.id,
@@ -418,6 +458,6 @@ export function calculateBeachRainForecast(beach, regionalStormProb = 75, active
     beachWindGusts,
     safetyFlag,
     threeDayForecast,
-    advisoryText: `${rainClassification} forecast across ${beach.name}${stormName}. Wave breakers estimated at ${surfWaveHeight}m with wind gusts reaching ${beachWindGusts} km/h. Beachgoers and local fishermen advised: ${safetyFlag}.`
+    advisoryText
   };
 }
