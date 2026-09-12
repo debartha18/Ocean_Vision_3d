@@ -36,6 +36,7 @@ export default function App() {
   const [simSpeed, setSimSpeed] = useState(1);
   const [selectedBuoy, setSelectedBuoy] = useState(null);
   const [copilotExternalPrompt, setCopilotExternalPrompt] = useState(null);
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   // Dynamic Colorbar, Palette, Layer Opacity & 3D Vertical Exaggeration State
   const [palette, setPalette] = useState('turbo');
@@ -176,6 +177,7 @@ export default function App() {
         onOpenAnalyticReport={() => setIsAnalyticReportOpen(true)}
         onOpenDepthPressure={() => setIsDepthPressureOpen(true)}
         onOpenNetcdfIngestion={() => setIsNetcdfIngestionOpen(true)}
+        onOpenCopilot={() => setIsCopilotOpen(true)}
       />
 
       {/* 2. Main Central Workstation or Tabbed Views */}
@@ -429,6 +431,8 @@ export default function App() {
         setIsNetcdfIngestionOpen={setIsNetcdfIngestionOpen}
         externalPrompt={copilotExternalPrompt}
         onClearExternalPrompt={() => setCopilotExternalPrompt(null)}
+        isOpen={isCopilotOpen}
+        setIsOpen={setIsCopilotOpen}
       />
     </div>
   );

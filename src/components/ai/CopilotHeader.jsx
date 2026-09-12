@@ -12,17 +12,20 @@ export default function CopilotHeader({
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-sky-500/20 bg-[#061226]/80 select-none">
       <div className="flex items-center gap-2.5">
-        <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 text-white shadow-glow-cyan">
-          <Bot className="w-4 h-4" />
-          <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+        <div className="relative flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-tr from-cyan-500 via-sky-400 to-indigo-600 text-white shadow-glow-cyan border border-cyan-300/60 p-0.5">
+          <span className="text-lg">🧜‍♀️</span>
+          <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-[#061226]"></span>
           </span>
         </div>
 
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-white tracking-wide">AI Ocean Copilot</span>
+            <span className="text-xs font-bold text-white tracking-wide flex items-center gap-1">
+              <span>Nerida</span>
+              <span className="text-[10px] text-cyan-300 font-normal">• AI Ocean Copilot</span>
+            </span>
             <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 truncate max-w-[110px]">
               {activeBasinName}
             </span>

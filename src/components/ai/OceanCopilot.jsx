@@ -4,6 +4,7 @@ import CopilotHeader from './CopilotHeader';
 import CopilotContextCard from './CopilotContextCard';
 import CopilotQuickActions from './CopilotQuickActions';
 import CopilotChat from './CopilotChat';
+import MermaidMascot from './MermaidMascot';
 import { buildOceanContext } from '../../lib/ai/oceanContext';
 import { executeToolCalls } from '../../lib/ai/toolRegistry';
 import { sendCopilotMessage } from '../../lib/ai/copilotClient';
@@ -34,9 +35,13 @@ export default function OceanCopilot({
   setIsColorbarSettingsOpen,
   setIsNetcdfIngestionOpen,
   externalPrompt,
-  onClearExternalPrompt
+  onClearExternalPrompt,
+  isOpen: propIsOpen,
+  setIsOpen: propSetIsOpen
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [localIsOpen, setLocalIsOpen] = useState(false);
+  const isOpen = propIsOpen !== undefined ? propIsOpen : localIsOpen;
+  const setIsOpen = propSetIsOpen || setLocalIsOpen;
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([]);
@@ -162,34 +167,13 @@ export default function OceanCopilot({
 
   return (
     <>
-      {/* 1. Floating Bottom-Right Trigger Button */}
-      {!isOpen && (
-        <div className="fixed bottom-24 right-5 z-40 animate-in fade-in slide-in-from-bottom-3 duration-300">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="group flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-[#071d49] via-[#09356b] to-[#0b548b] hover:from-[#092c73] hover:to-[#0e6ba8] text-white border border-cyan-400/40 shadow-glow-cyan hover:shadow-2xl hover:border-cyan-300 transition-all cursor-pointer select-none"
-            title="Open AI Ocean Copilot (Ctrl+K)"
-          >
-            <div className="relative flex items-center justify-center w-7 h-7 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 group-hover:scale-105 transition-transform">
-              <Bot className="w-4 h-4 text-cyan-300" />
-              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
-              </span>
-            </div>
-
-            <div className="flex flex-col text-left">
-              <span className="text-xs font-bold tracking-wide text-white flex items-center gap-1.5">
-                AI Ocean Copilot
-                <Sparkles className="w-3 h-3 text-cyan-400" />
-              </span>
-              <span className="text-[9px] font-mono text-cyan-300/80">
-                {activeRegion?.name || 'Ocean Telemetry'} • Ctrl+K
-              </span>
-            </div>
-          </button>
-        </div>
-      )}
+      {/* 1. Floating Animated Mermaid Marine Character Mascot */}
+      <MermaidMascot
+        isOpen={isOpen}
+        onClick={() => setIsOpen(true)}
+        activeRegionName={activeRegion?.name}
+        activeSst={activeRegion?.sst ? activeRegion.sst.toFixed(1) : '29.8'}
+      />
 
       {/* 2. Slide-Over / Docked Intelligence Panel */}
       {isOpen && (

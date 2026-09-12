@@ -16,7 +16,8 @@ export default function Header({
   onOpenAlerts,
   onOpenAnalyticReport,
   onOpenDepthPressure,
-  onOpenNetcdfIngestion
+  onOpenNetcdfIngestion,
+  onOpenCopilot
 }) {
   const { t } = useTranslation();
 
@@ -125,6 +126,22 @@ export default function Header({
           <span className="text-sky-500">•</span>
           <span className="text-cyan-300 font-bold">{currentTime || '12:00'} UTC</span>
         </button>
+
+        {/* AI Ocean Copilot (Nerida) Trigger */}
+        {onOpenCopilot && (
+          <button
+            onClick={onOpenCopilot}
+            title="Open AI Ocean Copilot (Nerida)"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-teal-600/90 via-cyan-600/90 to-sky-500/90 hover:from-teal-500 hover:to-cyan-400 border border-cyan-300/60 text-xs text-white shadow-glow-cyan transition-all cursor-pointer shrink-0"
+          >
+            <span className="text-sm">🧜‍♀️</span>
+            <span className="font-bold hidden sm:inline text-[11px]">AI Copilot</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+          </button>
+        )}
 
         {/* Analytic Report Quick Trigger */}
         <button
