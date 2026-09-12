@@ -216,22 +216,40 @@ export default function ScrollOceanExperience({
         id="section-hero"
         className="relative min-h-[90vh] flex flex-col justify-between items-center text-center px-4 sm:px-6 py-12 pointer-events-none"
       >
-        <div className="w-full max-w-4xl mx-auto pt-16 sm:pt-24 space-y-6 pointer-events-auto">
-          {/* Version badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0D202B] border border-[#193544] text-[#8FA8B2] text-xs font-semibold backdrop-blur-md shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#0C969C] animate-pulse" />
-            <span className="text-[#CCD0CF]">{t('brand.name', 'Ocean Vision 3D')} • {t('brand.version', 'v2.4 Live')}</span>
-            <span className="text-[#214555]">|</span>
-            <span className="text-[#8FA8B2]">{t('navbar.satelliteActive', 'Satellite Telemetry Active')}</span>
+        <div className="relative w-full max-w-3xl mx-auto pt-16 sm:pt-24 space-y-6 pointer-events-auto">
+          {/* Subtle localized atmospheric gradient behind hero text only (fades smoothly to transparent) */}
+          <div 
+            className="absolute left-1/2 top-12 sm:top-16 -translate-x-1/2 w-[120%] sm:w-[110%] max-w-2xl h-[280px] -z-10 pointer-events-none rounded-full"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(6, 20, 27, 0.30) 0%, rgba(6, 20, 27, 0.15) 50%, rgba(6, 20, 27, 0) 80%)',
+              filter: 'blur(24px)'
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Status badge */}
+          <div 
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-medium backdrop-blur-md"
+            style={{
+              backgroundColor: 'rgba(13, 32, 43, 0.80)',
+              border: '1px solid rgba(107, 163, 190, 0.22)',
+              color: '#8EAEB3'
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0C969C]/80" />
+            <span>{t('brand.name', 'Ocean Vision 3D')} • {t('brand.version', 'v2.4 Live')} • {t('navbar.satelliteActive', 'Satellite Telemetry Active')}</span>
           </div>
 
           {/* Main Title */}
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-[#CCD0CF] via-[#8FA8B2] to-[#637C87] drop-shadow-lg">
+          <h1 
+            className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-wide text-[#B8C8C8]"
+            style={{ textShadow: '0 2px 12px rgba(0, 0, 0, 0.35)' }}
+          >
             OCEAN VISION 3D
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-xl md:text-2xl text-[#8FA8B2] max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-[#7FA1AA] max-w-xl mx-auto font-normal leading-relaxed">
             {t('story.heroSubtitle', 'Explore, visualize and understand our oceans through interactive 3D data.')}
           </p>
 
