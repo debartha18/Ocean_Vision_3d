@@ -21,6 +21,7 @@ import EnsoSimulationDock from './components/ui/EnsoSimulationDock';
 import EnsoSimulationView from './components/ui/EnsoSimulationView';
 import ColorbarSettingsModal from './components/ui/ColorbarSettingsModal';
 import NetcdfIngestionModal from './components/ui/NetcdfIngestionModal';
+import OceanCopilot from './components/ai/OceanCopilot';
 import { REGIONS, createLocationData } from './data/oceanData';
 import { getFormattedCurrentDate, getCurrentUtcTimeHour } from './utils/dateUtils';
 import { getAccurateMeteorology } from './utils/weatherService';
@@ -34,6 +35,7 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [simSpeed, setSimSpeed] = useState(1);
   const [selectedBuoy, setSelectedBuoy] = useState(null);
+  const [copilotExternalPrompt, setCopilotExternalPrompt] = useState(null);
 
   // Dynamic Colorbar, Palette, Layer Opacity & 3D Vertical Exaggeration State
   const [palette, setPalette] = useState('turbo');
@@ -245,6 +247,7 @@ export default function App() {
             isStormLayerActive={isStormLayerActive}
             setIsStormLayerActive={setIsStormLayerActive}
             onOpenDepthPressure={() => setIsDepthPressureOpen(true)}
+            onAskCopilot={(prompt) => setCopilotExternalPrompt(prompt)}
           />
 
           {/* Center 3D Ocean Digital Twin Viewport */}
@@ -297,6 +300,7 @@ export default function App() {
             depth={depth}
             ensoState={ensoState}
             onFocusPacific={() => setActiveTab('El Niño Simulation')}
+            onAskCopilot={(prompt) => setCopilotExternalPrompt(prompt)}
           />
         </div>
       )}
@@ -395,6 +399,36 @@ export default function App() {
             name: `${prev.name.split(' (')[0]} (${dataset.format})`
           }));
         }}
+      />
+
+      {/* 5. AI Ocean Copilot Floating Intelligence Dock & Drawer */}
+      <OceanCopilot
+        activeRegion={activeRegion}
+        selectedParam={selectedParam}
+        setSelectedParam={setSelectedParam}
+        depth={depth}
+        setDepth={setDepth}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        timeHour={timeHour}
+        selectedDate={selectedDate}
+        isStormLayerActive={isStormLayerActive}
+        setIsStormLayerActive={setIsStormLayerActive}
+        ensoState={ensoState}
+        setActiveRegion={setActiveRegion}
+        setActiveTab={setActiveTab}
+        onCustomCoords={handleCustomCoords}
+        setIsAnomalyModalOpen={setIsAnomalyModalOpen}
+        setIsFleetModalOpen={setIsFleetModalOpen}
+        setIsLocationModalOpen={setIsLocationModalOpen}
+        setIsDatePickerModalOpen={setIsDatePickerModalOpen}
+        setIsStormNewsModalOpen={setIsStormNewsModalOpen}
+        setIsAnalyticReportOpen={setIsAnalyticReportOpen}
+        setIsDepthPressureOpen={setIsDepthPressureOpen}
+        setIsColorbarSettingsOpen={setIsColorbarSettingsOpen}
+        setIsNetcdfIngestionOpen={setIsNetcdfIngestionOpen}
+        externalPrompt={copilotExternalPrompt}
+        onClearExternalPrompt={() => setCopilotExternalPrompt(null)}
       />
     </div>
   );

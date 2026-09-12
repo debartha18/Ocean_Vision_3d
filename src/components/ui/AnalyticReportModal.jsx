@@ -13,12 +13,16 @@ import {
   CloudRain, 
   Umbrella, 
   Waves,
-  ShieldAlert
+  ShieldAlert,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import { generatePressureDepthProfile, calculateGravity } from '../../utils/pressureCalculator';
 import { getNearestBeaches, calculateBeachRainForecast } from '../../data/beachData';
 import { VALIDATION_METRICS } from '../../data/oceanData';
 import { getFormattedCurrentDate } from '../../utils/dateUtils';
+import { buildOceanContext } from '../../lib/ai/oceanContext';
+import { processOfflineCopilotQuery } from '../../lib/ai/offlineEngine';
 
 export default function AnalyticReportModal({
   isOpen,
@@ -50,6 +54,17 @@ export default function AnalyticReportModal({
   const reportId = useMemo(() => {
     return `OV3D-${Math.abs(Math.round(lat * 100))}-${Math.abs(Math.round(lon * 100))}-2026`;
   }, [lat, lon]);
+
+  const aiBrief = useMemo(() => {
+    const ctx = buildOceanContext({
+      activeRegion,
+      selectedParam: 'sst',
+      depth: 50,
+      selectedDate,
+      timeHour: 12
+    });
+    return processOfflineCopilotQuery('explain current overview and storm risk', ctx);
+  }, [activeRegion, selectedDate]);
 
   if (!isOpen) return null;
 
@@ -144,6 +159,29 @@ export default function AnalyticReportModal({
             <div>
               <div className="text-[10px] font-mono text-slate-400 uppercase">{t('report.surgeSwell', 'Surge / Wave Swell')}</div>
               <div className="text-sm font-bold font-mono text-amber-300 mt-0.5">{waveHeight} m {t('report.significant', 'Significant')}</div>
+            </div>
+          </div>
+
+          {/* 2.5. AI Ocean Copilot Executive Synthesis */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#071d49]/80 via-[#0a275e]/70 to-[#041433]/80 border border-cyan-400/40 shadow-glow-cyan">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Bot className="w-4 h-4 text-cyan-400" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-300">
+                  AI Ocean Copilot — Executive Oceanographic Synthesis
+                </h3>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  [OBSERVED & SIMULATED]
+                </span>
+                <span className="text-[9px] font-mono text-sky-300 bg-sky-500/20 px-1.5 py-0.5 rounded border border-sky-400/30">
+                  TEOS-10 Grounded
+                </span>
+              </div>
+            </div>
+            <div className="text-xs text-slate-200 leading-relaxed space-y-1.5 font-sans whitespace-pre-line">
+              {aiBrief?.response || 'Synchronizing digital twin ocean telemetry...'}
             </div>
           </div>
 

@@ -39,7 +39,8 @@ export default function LeftControlPanel({
   onOpenStormNews,
   isStormLayerActive,
   setIsStormLayerActive,
-  onOpenDepthPressure
+  onOpenDepthPressure,
+  onAskCopilot
 }) {
   const { t } = useTranslation();
   const [prevRegionId, setPrevRegionId] = useState(activeRegion?.id);
@@ -144,7 +145,19 @@ export default function LeftControlPanel({
           <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
             {t('controls.oceanParameters', 'Parameters')}
           </span>
-          <span className="text-[10px] text-sky-400/80 font-mono">{t('enso.variablesCount', '6 Variables')}</span>
+          <div className="flex items-center gap-1.5">
+            {onAskCopilot && (
+              <button
+                onClick={() => onAskCopilot(`Explain ocean parameter ${selectedParam.toUpperCase()} at ${depth}m depth in ${activeRegion?.name || 'this basin'}`)}
+                className="text-[10px] font-mono text-cyan-300 hover:text-white bg-cyan-500/15 hover:bg-cyan-500/25 px-2 py-0.5 rounded border border-cyan-400/30 flex items-center gap-1 transition-colors cursor-pointer"
+                title="Ask AI Copilot to explain this parameter"
+              >
+                <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
+                <span>Explain</span>
+              </button>
+            )}
+            <span className="text-[10px] text-sky-400/80 font-mono">{t('enso.variablesCount', '6 Variables')}</span>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -190,9 +203,21 @@ export default function LeftControlPanel({
           <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
             {t('controls.verticalDepth', 'Depth (m)')}
           </span>
-          <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
-            {depth} m
-          </span>
+          <div className="flex items-center gap-1.5">
+            {onAskCopilot && (
+              <button
+                onClick={() => onAskCopilot(`Explain ocean stratification and physical dynamics at ${depth}m depth in ${activeRegion?.name || 'this basin'}`)}
+                className="text-[10px] font-mono text-cyan-300 hover:text-white bg-cyan-500/15 hover:bg-cyan-500/25 px-2 py-0.5 rounded border border-cyan-400/30 flex items-center gap-1 transition-colors cursor-pointer"
+                title="Ask AI Copilot to explain depth stratification"
+              >
+                <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
+                <span>Explain Depth</span>
+              </button>
+            )}
+            <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
+              {depth} m
+            </span>
+          </div>
         </div>
 
         {/* Stepped vertical depth track */}

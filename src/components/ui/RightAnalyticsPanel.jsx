@@ -13,7 +13,9 @@ import {
   Wind,
   Globe,
   CloudRain,
-  Radio
+  Radio,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import { 
   IN_SITU_SUMMARY, 
@@ -35,7 +37,8 @@ export default function RightAnalyticsPanel({
   onOpenDepthPressure,
   depth = 50,
   ensoState = { phase: 'elnino', intensity: 0.75 },
-  onFocusPacific
+  onFocusPacific,
+  onAskCopilot
 }) {
   const { t } = useTranslation();
   const chartW = 240;
@@ -160,16 +163,26 @@ export default function RightAnalyticsPanel({
           </div>
         </div>
 
-        <button
-          onClick={onOpenStormNews}
-          className="w-full py-2 px-3 rounded-xl bg-red-500/25 hover:bg-red-500/35 text-xs font-bold text-red-200 border border-red-500/40 flex items-center justify-between transition-all shadow-glow-red cursor-pointer"
-        >
-          <span className="flex items-center gap-1.5">
-            <Newspaper className="w-3.5 h-3.5 text-red-400" />
-            <span>{t('analytics.stormNews', 'Live Marine Storm News')}</span>
-          </span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            onClick={onOpenStormNews}
+            className="py-2 px-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-[11px] font-bold text-red-200 border border-red-500/30 flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate"
+          >
+            <Newspaper className="w-3 h-3 text-red-400 shrink-0" />
+            <span className="truncate">{t('analytics.stormNews', 'Storm News')}</span>
+          </button>
+
+          {onAskCopilot && (
+            <button
+              onClick={() => onAskCopilot(`Assess storm threat, maritime squall intensity, and wave safety for ${activeRegion?.name || 'this basin'}`)}
+              className="py-2 px-2.5 rounded-xl bg-gradient-to-r from-sky-600/40 to-cyan-600/40 hover:from-sky-600/60 hover:to-cyan-600/60 text-[11px] font-bold text-cyan-200 border border-cyan-400/30 flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-glow-cyan truncate"
+              title="Ask AI Copilot to assess maritime storm threat"
+            >
+              <Bot className="w-3 h-3 text-cyan-300 shrink-0" />
+              <span className="truncate">Ask Copilot</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* 0.5. Official Analytical Report & Print Action Card */}
@@ -365,13 +378,26 @@ export default function RightAnalyticsPanel({
           {t('analytics.thermalAnomalyDetected', AI_ANOMALY.headline)}
         </p>
 
-        <button
-          onClick={onOpenAnomalyModal}
-          className="w-full py-1.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-xs font-bold text-red-300 flex items-center justify-center gap-1.5 transition-all border border-red-500/40 shadow-glow-red cursor-pointer"
-        >
-          <span>{t('analytics.inspectDetails', 'View Diagnostics & Impact')}</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            onClick={onOpenAnomalyModal}
+            className="py-1.5 px-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-xs font-bold text-red-300 flex items-center justify-center gap-1 transition-all border border-red-500/40 shadow-glow-red cursor-pointer truncate"
+          >
+            <span className="truncate">{t('analytics.inspectDetails', 'Diagnostics')}</span>
+            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+          </button>
+
+          {onAskCopilot && (
+            <button
+              onClick={() => onAskCopilot(`Diagnose subsurface thermal anomaly, thermocline gradient, and Oxygen Minimum Zone in ${activeRegion?.name || 'this basin'}`)}
+              className="py-1.5 px-2.5 rounded-xl bg-gradient-to-r from-sky-600/40 to-cyan-600/40 hover:from-sky-600/60 hover:to-cyan-600/60 text-xs font-bold text-cyan-200 border border-cyan-400/40 shadow-glow-cyan flex items-center justify-center gap-1 transition-all cursor-pointer truncate"
+              title="Ask AI Copilot to analyze this thermal anomaly"
+            >
+              <Bot className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
+              <span className="truncate">Ask Copilot</span>
+            </button>
+          )}
+        </div>
       </div>
     </aside>
   );
