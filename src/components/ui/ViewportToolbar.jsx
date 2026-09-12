@@ -193,33 +193,6 @@ export default function ViewportToolbar({
           })}
         </div>
       </div>
-
-      {/* 5. Bottom-Right Ocean Vision 3D Ocean Model Insignia Badge */}
-      <div className="absolute bottom-4 right-4 z-20 pointer-events-auto hidden sm:block">
-        <div 
-          title="Ocean Vision 3D | Explore • Analyze • Preserve"
-          className="glass-panel px-3 py-2 rounded-2xl flex items-center gap-2.5 border border-sky-500/30 shadow-cockpit backdrop-blur-md bg-[#050e26]/85 hover:border-cyan-400/60 transition-all group"
-        >
-          <img
-            src="/oceanova-logo.jpg"
-            alt="Ocean Vision 3D Model"
-            className="w-9 h-9 rounded-xl object-cover border border-cyan-400/50 shadow-glow-cyan group-hover:scale-105 transition-transform"
-          />
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white">
-                Ocean Vision 3D
-              </span>
-              <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono font-bold border border-cyan-500/30">
-                {t('brand.badge3d', '3D MODEL')}
-              </span>
-            </div>
-            <span className="text-[9px] font-semibold tracking-wider text-sky-300/75 uppercase">
-              {t('brand.motto', 'Explore • Analyze • Preserve')}
-            </span>
-          </div>
-        </div>
-      </div>
     </>
   );
 }
