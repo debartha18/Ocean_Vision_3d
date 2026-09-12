@@ -1,6 +1,6 @@
 {
   "brand": {
-    "name": "OCEANOVA",
+    "name": "Ocean Vision 3D",
     "version": "v2.4 Live",
     "motto": "Explore • Analyze • Preserve",
     "subtitle": "Ocean Digital Twin Platform",
@@ -92,7 +92,7 @@
     "waveSwell": "Global Wave Swell Energy",
     "activeStorms": "Active Tropical Vortices",
     "qcScore": "QC Assimilation Score",
-    "twinDashboard": "OCEANOVA • Digital Twin Dashboard",
+    "twinDashboard": "Ocean Vision 3D • Digital Twin Dashboard",
     "bannerSubtitle": "Planetary ocean telemetry, satellite altimetry assimilation, and 3D simulation state",
     "launch3D": "Launch 3D View",
     "openMap": "Open World Map",

@@ -1,5 +1,5 @@
 /**
- * OCEANOVA Dynamic Translation Client
+ * Ocean Vision 3D Dynamic Translation Client
  * Calls /api/translate without exposing keys or credentials to the browser.
  */
 

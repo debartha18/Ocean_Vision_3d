@@ -37,12 +37,12 @@ export default function Header({
       <div 
         onClick={() => setActiveTab('3D View')}
         className="flex items-center gap-3 cursor-pointer group shrink-0"
-        title="OCEANOVA | Explore • Analyze • Preserve"
+        title="Ocean Vision 3D | Explore • Analyze • Preserve"
       >
         <div className="relative">
           <img
             src="/oceanova-logo.jpg"
-            alt="OCEANOVA Logo"
+            alt="Ocean Vision 3D Logo"
             className="w-10 h-10 rounded-xl object-cover border border-cyan-400/50 shadow-glow-cyan group-hover:scale-105 transition-all"
           />
           <span className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060f26]" title={t('navbar.satelliteActive', 'Satellite Telemetry Active')} />
@@ -50,7 +50,7 @@ export default function Header({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white group-hover:from-white group-hover:to-cyan-200 transition-all">
-              OCEANOVA
+              Ocean Vision 3D
             </h1>
             <span className="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded">
               v2.4 Live

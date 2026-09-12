@@ -1,5 +1,5 @@
 /**
- * OCEANOVA Official Supported Indian Languages Registry
+ * Ocean Vision 3D Official Supported Indian Languages Registry
  * Grounded in Eighth Schedule of the Constitution of India + ISO 639 standard.
  */
 

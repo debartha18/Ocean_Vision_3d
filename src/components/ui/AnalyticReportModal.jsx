@@ -99,12 +99,12 @@ export default function AnalyticReportModal({
               <div className="flex items-center gap-3">
                 <img
                   src="/oceanova-logo.jpg"
-                  alt="OCEANOVA"
+                  alt="Ocean Vision 3D"
                   className="w-10 h-10 rounded-xl object-cover border border-cyan-400/40 shadow-glow-cyan"
                 />
                 <div>
                   <h1 className="text-xl font-black tracking-wider text-white">
-                    {t('report.docTitle', 'OCEANOVA — OCEAN DIGITAL TWIN REPORT')}
+                    {t('report.docTitle', 'OCEAN VISION 3D — OCEAN DIGITAL TWIN REPORT')}
                   </h1>
                   <p className="text-xs text-sky-400 font-mono uppercase tracking-wider">
                     {t('report.docSubtitle', 'Explore • Analyze • Preserve — Global Integrated Ocean Observing System (GOOS) Synthesis')}

@@ -35,13 +35,13 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-5 p-5 rounded-3xl bg-gradient-to-r from-[#06183d]/90 via-[#0a2357]/80 to-[#041029]/90 border border-sky-500/30 shadow-cockpit">
           <img
             src="/oceanova-logo.jpg"
-            alt="OCEANOVA Mission Emblem"
+            alt="Ocean Vision 3D Mission Emblem"
             className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border border-cyan-400/50 shadow-glow-cyan shrink-0 hover:scale-105 transition-transform"
           />
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-2xl md:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white">
-                OCEANOVA
+                Ocean Vision 3D
               </h1>
               <span className="px-2 py-0.5 text-xs font-semibold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded">
                 v2.4 Live

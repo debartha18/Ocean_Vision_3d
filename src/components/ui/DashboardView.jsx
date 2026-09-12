@@ -88,19 +88,19 @@ export default function DashboardView({
 
   return (
     <div className="relative flex-1 overflow-y-auto bg-[#030712] text-slate-100 p-4 md:p-6 select-none animate-in fade-in duration-200 custom-scrollbar">
-      {/* 1. Header Banner with OCEANOVA Emblem */}
+      {/* 1. Header Banner with Ocean Vision 3D Emblem */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-sky-500/20">
         <div className="flex items-center gap-4">
           <img
             src="/oceanova-logo.jpg"
-            alt="OCEANOVA"
+            alt="Ocean Vision 3D"
             className="w-14 h-14 rounded-2xl object-cover border border-cyan-400/40 shadow-glow-cyan hidden sm:block shrink-0"
           />
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <h1 className="text-xl md:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white uppercase">
-                {t('dashboard.twinDashboard', 'OCEANOVA • Digital Twin Dashboard')}
+                {t('dashboard.twinDashboard', 'Ocean Vision 3D • Digital Twin Dashboard')}
               </h1>
             </div>
             <p className="text-xs text-slate-300/80 mt-1">
