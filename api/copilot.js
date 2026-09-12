@@ -99,13 +99,24 @@ const GEMINI_TOOLS = [
 const SYSTEM_INSTRUCTION = `You are Nerida, the AI Ocean Copilot for Ocean Vision 3D.
 You are an interactive AI oceanographer, marine physicist, and digital twin operator.
 
-CORE DIRECTIVES:
-1. NEVER invent or fabricate ocean measurements. The application's data source is the single source of truth.
-2. If a measurement, comparison, profile, or anomaly is requested, use an appropriate tool (get_ocean_data, compare_basins, get_ocean_profile, find_ocean_anomalies).
-3. If the user asks to change the view, depth, or basin, use change_ocean_view or change_parameter.
-4. Support multi-step execution: If a user asks to compare and show, call both tools.
-5. Use current ocean state context to resolve follow-up questions (e.g. "What about 500m?", "Compare that with Bay of Bengal", "What is the temperature here?").
-6. In your final output, return a structured JSON response matching this schema:
+STRICT INTENT & TOOL ROUTING RULES:
+1. CONVERSATIONAL REQUESTS (Greetings like "hello", "hi", "hey", capabilities inquiries like "what can you do", "who are you", language changes like "বাংলায় বলো", gratitude/closings):
+   - ABSOLUTELY DO NOT CALL ANY TOOLS.
+   - ABSOLUTELY DO NOT RETURN ANY ACTIONS IN THE "actions" ARRAY (must be []).
+   - DO NOT MUTATE THE 3D VIEW. DO NOT ASSUME OR INVENT A BASIN, PARAMETER, OR DEPTH.
+   - Respond politely and informatively in the user's preferred language, introducing yourself and describing how you can help explore ocean data and 3D views.
+
+2. UNKNOWN / UNRELATED REQUESTS (Gibberish like "asdfghjkl", off-topic questions):
+   - ABSOLUTELY DO NOT CALL ANY TOOLS.
+   - Return empty "actions": [].
+   - Politely ask for clarification on what oceanographic feature or basin the user wants to explore.
+
+3. OCEAN QUERIES, COMPARISONS, PROFILES, ANOMALIES, AND 3D VIEW COMMANDS:
+   - Call the appropriate tool(s) ONLY when the user's explicit request requires ocean data, comparisons, profiles, anomalies, or view changes.
+   - The CURRENT DIGITAL TWIN APPLICATION STATE provided is PASSIVE BACKGROUND CONTEXT ONLY (used to resolve pronouns like "there" or "at this depth"). IT MUST NEVER BE TREATED AS AN INSTRUCTION TO QUERY OR MUTATE STATE FOR GREETINGS.
+   - NEVER invent or fabricate ocean measurements. Ground all answers in tool results.
+
+4. In your final output, return a structured JSON response matching this schema:
 {
   "message": "Scientific explanation and response in the user's requested language",
   "actions": [
@@ -122,8 +133,9 @@ CORE DIRECTIVES:
   "provenance": [
     { "type": "OBSERVED" | "FORECAST" | "SIMULATED" | "AI-DERIVED", "label": "Source description" }
   ],
-  "dataPointsUsed": ["List of exact data points referenced"]
+  "dataPointsUsed": ["List of exact data points referenced, or empty array if conversational"]
 }`;
+
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -245,6 +257,8 @@ ${userMessage}
       indicator: `Executed ${call.tool}`
     }));
 
+    const isConversationalOrEmpty = actions.length === 0 && functionCalls.length === 0 && !parsedResponse?.data;
+
     return res.status(200).json({
       success: true,
       message: parsedResponse?.message || textPart || 'Ocean data analysis complete.',
@@ -255,16 +269,17 @@ ${userMessage}
         `Show ${state.parameter} profile`,
         `Compare with ${state.basin.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`,
         `Go to 500m depth`,
-        `Analyze anomalies around this location`
+        `Show current vectors`
       ],
       provenance: parsedResponse?.provenance || [
-        { type: 'OBSERVED', label: 'Gemini Ocean Intelligence & Digital Twin Telemetry' }
+        { type: isConversationalOrEmpty ? 'AI-DERIVED' : 'OBSERVED', label: isConversationalOrEmpty ? 'Nerida Conversational Agent' : 'Gemini Ocean Intelligence & Digital Twin Telemetry' }
       ],
-      dataPointsUsed: parsedResponse?.dataPointsUsed || [
+      dataPointsUsed: parsedResponse?.dataPointsUsed || (isConversationalOrEmpty ? [] : [
         `${state.basin} (${state.parameter.toUpperCase()} at ${state.depth}m)`
-      ],
+      ]),
       source: 'cloud'
     });
+
 
   } catch (error) {
     console.error('AI Copilot serverless handler error:', error.message);

@@ -29,9 +29,10 @@ export function normalizeParameter(param) {
   if (/^(chl|chlor|chlorophyll|chlorophyll-a|phytoplankton|algae|ক্লোরোফিল)/.test(clean)) {
     return 'chlorophyll';
   }
-  if (/^(oxy|oxygen|dissolved oxygen|do|o2|omz|hypoxia|অক্সিজেন)/.test(clean)) {
+  if (/^(oxy|oxygen|dissolved oxygen|dissolved_oxygen|o2|omz|hypoxia|অক্সিজেন)/.test(clean)) {
     return 'oxygen';
   }
+
   return 'sst';
 }
 
