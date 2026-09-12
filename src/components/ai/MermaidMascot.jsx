@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, X } from 'lucide-react';
 
@@ -11,6 +11,48 @@ export default function MermaidMascot({
   const { t } = useTranslation();
   const [showBubble, setShowBubble] = useState(true);
   const [isWaving, setIsWaving] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Position state with localStorage persistence & viewport boundary clamping
+  const [position, setPosition] = useState(() => {
+    if (typeof window === 'undefined') return { x: 0, y: 0 };
+    try {
+      const saved = localStorage.getItem('ov3d_mascot_pos');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+          const maxX = Math.max(16, window.innerWidth - 90);
+          const maxY = Math.max(16, window.innerHeight - 120);
+          return {
+            x: Math.min(Math.max(16, parsed.x), maxX),
+            y: Math.min(Math.max(16, parsed.y), maxY)
+          };
+        }
+      }
+    } catch {
+      // fallback to default
+    }
+    return {
+      x: Math.max(16, window.innerWidth - 100),
+      y: Math.max(16, window.innerHeight - 180)
+    };
+  });
+
+  // Clamp position within viewport on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setPosition((prev) => {
+        const maxX = Math.max(16, window.innerWidth - 90);
+        const maxY = Math.max(16, window.innerHeight - 120);
+        return {
+          x: Math.min(Math.max(16, prev.x), maxX),
+          y: Math.min(Math.max(16, prev.y), maxY)
+        };
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Periodic waving greeting animation
   useEffect(() => {
@@ -21,15 +63,92 @@ export default function MermaidMascot({
     return () => clearInterval(interval);
   }, []);
 
+  const dragInfo = useRef({
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0,
+    hasMoved: false,
+  });
+
+  const handlePointerDown = (e) => {
+    // Only primary mouse button or touch
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+    dragInfo.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      originX: position.x,
+      originY: position.y,
+      hasMoved: false,
+    };
+
+    const handlePointerMove = (moveEvt) => {
+      const dx = moveEvt.clientX - dragInfo.current.startX;
+      const dy = moveEvt.clientY - dragInfo.current.startY;
+
+      if (!dragInfo.current.hasMoved && Math.hypot(dx, dy) > 4) {
+        dragInfo.current.hasMoved = true;
+        setIsDragging(true);
+      }
+
+      if (dragInfo.current.hasMoved) {
+        const maxX = Math.max(16, window.innerWidth - 90);
+        const maxY = Math.max(16, window.innerHeight - 120);
+        const newX = Math.min(Math.max(16, dragInfo.current.originX + dx), maxX);
+        const newY = Math.min(Math.max(16, dragInfo.current.originY + dy), maxY);
+
+        setPosition({ x: newX, y: newY });
+      }
+    };
+
+    const handlePointerUp = () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+
+      if (dragInfo.current.hasMoved) {
+        setIsDragging(false);
+        setPosition((currentPos) => {
+          try {
+            localStorage.setItem('ov3d_mascot_pos', JSON.stringify(currentPos));
+          } catch {}
+          return currentPos;
+        });
+      } else {
+        onClick?.();
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+  };
+
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 flex flex-col items-end select-none pointer-events-auto">
-      {/* 1. Speech Callout Bubble (Floating Above Mermaid) */}
-      {showBubble && (
-        <div className="relative mb-2 mr-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div
+      style={{
+        position: 'fixed',
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        touchAction: 'none',
+        zIndex: 50,
+      }}
+      className="flex flex-col items-end select-none pointer-events-auto"
+    >
+      {/* 1. Speech Callout Bubble (Floating Above or Below based on screen position) */}
+      {showBubble && !isDragging && (
+        <div 
+          className={`absolute ${position.y < 160 ? 'top-[calc(100%+8px)]' : 'bottom-[calc(100%+8px)]'} ${position.x < 220 ? 'left-0' : 'right-0'} z-50 animate-in fade-in duration-200 pointer-events-auto`}
+          style={{ width: 'max-content', maxWidth: '240px' }}
+        >
           <div 
-            onClick={onClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.();
+            }}
             className="group max-w-[210px] p-2.5 rounded-2xl bg-gradient-to-br from-[#061838]/95 via-[#0a2754]/95 to-[#05132d]/95 border border-cyan-400/50 shadow-glow-cyan text-white cursor-pointer hover:border-cyan-300 hover:scale-105 transition-all backdrop-blur-xl"
           >
             <div className="flex items-center justify-between gap-1 mb-1">
@@ -62,15 +181,17 @@ export default function MermaidMascot({
           </div>
 
           {/* Speech bubble tail pointer */}
-          <div className="absolute -bottom-1.5 right-8 w-3 h-3 bg-[#0a2754] border-r border-b border-cyan-400/50 transform rotate-45"></div>
+          <div className={`absolute ${position.y < 160 ? '-top-1.5 border-l border-t' : '-bottom-1.5 border-r border-b'} ${position.x < 220 ? 'left-8' : 'right-8'} w-3 h-3 bg-[#0a2754] border-cyan-400/50 transform rotate-45`}></div>
         </div>
       )}
 
-      {/* 2. Floating Animated Mermaid Mascot Avatar Widget */}
+      {/* 2. Floating Animated Mermaid Mascot Avatar Widget (Draggable) */}
       <div 
-        onClick={onClick}
-        className="relative group cursor-pointer"
-        title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Ctrl+K)')}
+        onPointerDown={handlePointerDown}
+        className={`relative group touch-none select-none transition-transform duration-150 ${
+          isDragging ? 'cursor-grabbing scale-110 shadow-glow-cyan' : 'cursor-grab hover:scale-105'
+        }`}
+        title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Drag to reposition)')}
       >
         {/* Bioluminescent Ocean Ripple Glow Rings */}
         <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl group-hover:bg-cyan-400/35 animate-pulse transition-all"></div>
@@ -205,7 +326,7 @@ export default function MermaidMascot({
         <div className="mt-1 flex items-center justify-center">
           <span className="px-2 py-0.5 rounded-full bg-[#03091e]/90 text-[10px] font-bold text-cyan-300 border border-cyan-400/40 shadow-glow-cyan flex items-center gap-1 group-hover:border-cyan-300">
             <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
-            <span>AI Copilot</span>
+            <span>{t('mascot.aiCopilot', 'AI Copilot')}</span>
           </span>
         </div>
       </div>
