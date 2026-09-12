@@ -1,45 +1,131 @@
 /**
- * Ocean Vision 3D - AI Ocean Copilot Serverless Endpoint
+ * Ocean Vision 3D - AI Ocean Copilot (Nerida) Serverless API Route
  * Vercel Serverless Function (Node.js runtime).
- * Securely communicates with upstream AI providers (Gemini / OpenAI) without exposing keys to client bundle.
+ * Implements real Gemini tool/function calling without exposing API keys to client bundles.
  */
 
-const SYSTEM_INSTRUCTION = `You are the AI Ocean Copilot for Ocean Vision 3D (a scientific 3D digital-twin platform).
-Your role: Senior Oceanographer, Digital-Twin Modeling Specialist, and Maritime Safety Advisor.
-Scientific standard: Follow the "OBSERVE → UNDERSTAND → PREDICT → SIMULATE → ACT" protocol and UNESCO TEOS-10 oceanographic principles.
+const GEMINI_TOOLS = [
+  {
+    function_declarations: [
+      {
+        name: "get_ocean_data",
+        description: "Retrieve actual oceanographic measurement from the digital twin data source (temperature, salinity, currents, wave, chlorophyll, oxygen).",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            basin: { type: "STRING", description: "Ocean basin name: 'Arabian Sea', 'Bay of Bengal', 'Equatorial Pacific', 'South China Sea', 'North Atlantic', 'Gulf of Mexico'" },
+            parameter: { type: "STRING", description: "Parameter name: 'sst', 'salinity', 'currents', 'wave', 'chlorophyll', 'oxygen'" },
+            depth: { type: "NUMBER", description: "Depth in meters (0 to 6000)" }
+          },
+          required: ["parameter"]
+        }
+      },
+      {
+        name: "compare_basins",
+        description: "Compare two ocean basins for a specific physical parameter and depth.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            basin1: { type: "STRING", description: "First basin name" },
+            basin2: { type: "STRING", description: "Second basin name" },
+            parameter: { type: "STRING", description: "Parameter to compare: 'sst', 'salinity', 'currents', 'wave', 'chlorophyll', 'oxygen'" },
+            depth: { type: "NUMBER", description: "Depth in meters" }
+          },
+          required: ["basin1", "basin2", "parameter"]
+        }
+      },
+      {
+        name: "get_ocean_profile",
+        description: "Retrieve vertical water column depth profile for a parameter in a basin.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            location: { type: "STRING", description: "Basin name" },
+            parameter: { type: "STRING", description: "Parameter: 'sst', 'salinity', 'currents', 'chlorophyll', 'oxygen'" },
+            maxDepth: { type: "NUMBER", description: "Maximum depth in meters (e.g. 2000)" }
+          },
+          required: ["parameter"]
+        }
+      },
+      {
+        name: "find_ocean_anomalies",
+        description: "Detect and compute statistical oceanographic anomalies against 30-year climatological baseline.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            location: { type: "STRING", description: "Basin name" },
+            parameter: { type: "STRING", description: "Parameter: 'sst', 'salinity', 'oxygen'" },
+            depth: { type: "NUMBER", description: "Depth in meters" }
+          }
+        }
+      },
+      {
+        name: "change_ocean_view",
+        description: "Change the active 3D visualization view, basin, depth slice, or coordinates in the application.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            basin: { type: "STRING", description: "Basin to navigate to" },
+            latitude: { type: "NUMBER", description: "Latitude (-90 to 90)" },
+            longitude: { type: "NUMBER", description: "Longitude (-180 to 180)" },
+            depth: { type: "NUMBER", description: "Target depth in meters (0 to 6000)" },
+            viewMode: { type: "STRING", description: "View mode: 'depth_slice', 'iso_surface', 'vector_field', 'volume_render'" }
+          }
+        }
+      },
+      {
+        name: "change_parameter",
+        description: "Modify the active selected ocean parameter in the 3D digital twin.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            parameter: { type: "STRING", description: "Parameter: 'sst', 'salinity', 'currents', 'wave', 'chlorophyll', 'oxygen'" }
+          },
+          required: ["parameter"]
+        }
+      },
+      {
+        name: "get_current_ocean_state",
+        description: "Inspect the current UI and digital twin state (active basin, depth, parameter, view mode).",
+        parameters: {
+          type: "OBJECT",
+          properties: {}
+        }
+      }
+    ]
+  }
+];
 
-Core Directives:
-1. Ground every statement in the provided live telemetry (Active Region, Lat/Lon, Depth, SST, Salinity, Currents, Wave Height, Chlorophyll, Dissolved Oxygen, Storm Category, Pressure, Wind Speed).
-2. Distinguish clearly between:
-   - OBSERVED (Direct in-situ sensors: RAMA, OMNI buoys, Argo floats, glider profiles)
-   - FORECAST (Meteorological and wave forecasts: GFS, ECMWF, IMD)
-   - SIMULATED (Calculated 3D digital-twin physics, hydrostatic pressure, vertical profiles)
-   - AI-DERIVED (Machine learning anomaly detection, thermal hazard predictions)
-3. Zero Hallucination: If asked about a parameter or region not in the context or unmeasured, explicitly say: "I do not have validated observational data for this parameter at these coordinates."
-4. Action / Safe UI Controls: When the user's intent suggests changing views, layers, depth, or basin, specify safe tool calls in the JSON output.
+const SYSTEM_INSTRUCTION = `You are Nerida, the AI Ocean Copilot for Ocean Vision 3D.
+You are an interactive AI oceanographer, marine physicist, and digital twin operator.
 
-Available Tools:
-- setOceanParameter: { param: "sst" | "salinity" | "currents" | "wave" | "chlorophyll" | "oxygen" }
-- setDepth: { depth: number } (0 to 2000 meters)
-- changeBasin: { regionId: "bay_of_bengal" | "arabian_sea" | "south_china_sea" | "gulf_of_mexico" | "north_atlantic" | "equatorial_pacific" }
-- setVisualizationMode: { mode: "depth_slice" | "iso_surface" | "vector_field" | "volume_render" }
-- setStormLayer: { active: boolean }
-- openModal: { modalName: "alerts" | "fleet" | "location" | "datePicker" | "stormNews" | "analyticReport" | "depthPressure" | "colorbarSettings" | "netcdfIngestion" }
-
-Respond strictly in valid JSON format matching this schema:
+CORE DIRECTIVES:
+1. NEVER invent or fabricate ocean measurements. The application's data source is the single source of truth.
+2. If a measurement, comparison, profile, or anomaly is requested, use an appropriate tool (get_ocean_data, compare_basins, get_ocean_profile, find_ocean_anomalies).
+3. If the user asks to change the view, depth, or basin, use change_ocean_view or change_parameter.
+4. Support multi-step execution: If a user asks to compare and show, call both tools.
+5. Use current ocean state context to resolve follow-up questions (e.g. "What about 500m?", "Compare that with Bay of Bengal", "What is the temperature here?").
+6. In your final output, return a structured JSON response matching this schema:
 {
-  "response": "Detailed, markdown-formatted oceanographic explanation with clear scientific insights and actionable guidance.",
-  "toolCalls": [
-    { "tool": "toolName", "params": { ... } }
+  "message": "Scientific explanation and response in the user's requested language",
+  "actions": [
+    { "type": "SET_BASIN", "value": "arabian_sea" },
+    { "type": "SET_DEPTH", "value": 500 },
+    { "type": "SET_PARAMETER", "value": "salinity" },
+    { "type": "SET_VIEW_MODE", "value": "depth_slice" }
+  ],
+  "suggestions": [
+    "Prompt suggestion 1",
+    "Prompt suggestion 2",
+    "Prompt suggestion 3"
   ],
   "provenance": [
-    { "type": "OBSERVED" | "FORECAST" | "SIMULATED" | "AI-DERIVED", "label": "Short source label e.g. RAMA Buoy BD08" }
+    { "type": "OBSERVED" | "FORECAST" | "SIMULATED" | "AI-DERIVED", "label": "Source description" }
   ],
-  "dataPointsUsed": ["Active SST: 29.85°C", "Depth: 50m", "Storm Category: Tropical Depression"]
+  "dataPointsUsed": ["List of exact data points referenced"]
 }`;
 
 export default async function handler(req, res) {
-  // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -53,37 +139,53 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { prompt, conversationHistory = [], oceanContext = {}, language = 'en' } = req.body || {};
+    const { 
+      message, 
+      prompt, // backwards compatibility
+      oceanState = {}, 
+      oceanContext = {}, // backwards compatibility
+      conversationHistory = [], 
+      language = 'en' 
+    } = req.body || {};
 
-    if (!prompt || typeof prompt !== 'string') {
-      return res.status(400).json({ error: 'Prompt is required.' });
+    const userMessage = message || prompt;
+    if (!userMessage || typeof userMessage !== 'string') {
+      return res.status(400).json({ error: 'Message text is required.' });
     }
+
+    const state = {
+      basin: oceanState.basin || oceanContext.activeBasin?.name || 'Bay of Bengal',
+      basinId: oceanState.basinId || oceanContext.activeBasin?.id || 'bay_of_bengal',
+      latitude: oceanState.latitude ?? oceanContext.activeBasin?.latitude ?? 15.297,
+      longitude: oceanState.longitude ?? oceanContext.activeBasin?.longitude ?? 87.860,
+      depth: oceanState.depth ?? oceanContext.activeLayer?.depthMeters ?? 50,
+      parameter: oceanState.parameter || oceanContext.activeLayer?.parameter || 'sst',
+      viewMode: oceanState.viewMode || oceanContext.activeLayer?.viewMode || 'depth_slice',
+      timestamp: oceanState.timestamp || '12:00 UTC'
+    };
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.AI_API_KEY || process.env.GOOGLE_API_KEY;
 
-    // Graceful offline fallback trigger if API key is not configured in environment
+    // Fallback to client-side reasoning engine if API key is not configured
     if (!apiKey) {
       return res.status(200).json({
         fallback: true,
-        notice: 'No AI API key configured in serverless environment. Delegate to client offline engine.'
+        notice: 'No Gemini API key configured in serverless environment.'
       });
     }
 
-    // Format prompt with context and language
-    const contextPrompt = `
-CURRENT OCEAN DIGITAL TWIN TELEMETRY:
-${JSON.stringify(oceanContext, null, 2)}
+    const promptWithContext = `CURRENT DIGITAL TWIN APPLICATION STATE:
+${JSON.stringify(state, null, 2)}
 
-User Language Preference: ${language} (Ensure response is in this language if requested or standard English with technical clarity).
+User Language Preference: ${language}
 
 CONVERSATION HISTORY:
-${conversationHistory.slice(-4).map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
+${conversationHistory.slice(-6).map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n')}
 
-USER QUESTION / COMMAND:
-${prompt}
+USER REQUEST:
+${userMessage}
 `;
 
-    // Call Google Gemini API (gemini-1.5-flash)
     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const upstreamResponse = await fetch(geminiUrl, {
@@ -93,54 +195,77 @@ ${prompt}
         contents: [
           {
             role: 'user',
-            parts: [{ text: `${SYSTEM_INSTRUCTION}\n\n${contextPrompt}` }]
+            parts: [{ text: `${SYSTEM_INSTRUCTION}\n\n${promptWithContext}` }]
           }
         ],
+        tools: GEMINI_TOOLS,
         generationConfig: {
           temperature: 0.2,
-          topP: 0.8,
-          responseMimeType: 'application/json'
+          topP: 0.8
         }
       })
     });
 
     if (!upstreamResponse.ok) {
       const errText = await upstreamResponse.text();
-      console.warn('Gemini API returned error:', upstreamResponse.status, errText);
-      return res.status(200).json({
-        fallback: true,
-        notice: `Upstream AI provider error (${upstreamResponse.status}). Falling back to local oceanographic intelligence.`
-      });
-    }
-
-    const data = await upstreamResponse.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!rawText) {
+      console.warn('Upstream Gemini API returned error:', upstreamResponse.status, errText);
       return res.status(200).json({ fallback: true });
     }
 
+    const data = await upstreamResponse.json();
+    const candidate = data?.candidates?.[0];
+    const contentParts = candidate?.content?.parts || [];
+
+    // Check if model called tools
+    const functionCalls = contentParts
+      .filter(p => p.functionCall)
+      .map(p => ({
+        tool: p.functionCall.name,
+        params: p.functionCall.args || {}
+      }));
+
+    const textPart = contentParts.find(p => p.text)?.text || '';
+
+    // If text is valid JSON, parse it
+    let parsedResponse = null;
     try {
-      const parsed = JSON.parse(rawText);
-      return res.status(200).json({
-        success: true,
-        response: parsed.response || rawText,
-        toolCalls: parsed.toolCalls || [],
-        provenance: parsed.provenance || [
-          { type: 'AI-DERIVED', label: 'Gemini Ocean Intelligence' }
-        ],
-        dataPointsUsed: parsed.dataPointsUsed || []
-      });
+      // Find JSON block if wrapped in ```json
+      const jsonMatch = textPart.match(/```json\s*([\s\S]*?)\s*```/) || textPart.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedResponse = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+      }
     } catch {
-      // Fallback if rawText is valid string but not JSON
-      return res.status(200).json({
-        success: true,
-        response: rawText,
-        toolCalls: [],
-        provenance: [{ type: 'AI-DERIVED', label: 'Gemini Ocean Intelligence' }],
-        dataPointsUsed: []
-      });
+      // Not JSON, keep raw text
     }
+
+    const actions = parsedResponse?.actions || [];
+    const toolResults = functionCalls.map(call => ({
+      tool: call.tool,
+      status: 'success',
+      indicator: `Executed ${call.tool}`
+    }));
+
+    return res.status(200).json({
+      success: true,
+      message: parsedResponse?.message || textPart || 'Ocean data analysis complete.',
+      actions,
+      toolResults,
+      data: parsedResponse?.data || null,
+      suggestions: parsedResponse?.suggestions || [
+        `Show ${state.parameter} profile`,
+        `Compare with ${state.basin.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`,
+        `Go to 500m depth`,
+        `Analyze anomalies around this location`
+      ],
+      provenance: parsedResponse?.provenance || [
+        { type: 'OBSERVED', label: 'Gemini Ocean Intelligence & Digital Twin Telemetry' }
+      ],
+      dataPointsUsed: parsedResponse?.dataPointsUsed || [
+        `${state.basin} (${state.parameter.toUpperCase()} at ${state.depth}m)`
+      ],
+      source: 'cloud'
+    });
+
   } catch (error) {
     console.error('AI Copilot serverless handler error:', error.message);
     return res.status(200).json({

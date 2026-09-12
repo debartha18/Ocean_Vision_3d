@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, X, Minimize2, Maximize2, Trash2 } from 'lucide-react';
+import { X, Minimize2, Maximize2, Trash2 } from 'lucide-react';
 
 export default function CopilotHeader({
   isExpanded,

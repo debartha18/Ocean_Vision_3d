@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Waves, Calendar, Moon, Bell, Compass, Globe2, FileText, Gauge, Database } from 'lucide-react';
+import { Calendar, Moon, Bell, Compass, Globe2, FileText, Gauge, Database } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { getFormattedCurrentDate } from '../../utils/dateUtils';
 

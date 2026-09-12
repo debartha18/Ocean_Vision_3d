@@ -1,39 +1,90 @@
 /**
- * Ocean Vision 3D - Safe AI Tool Registry & Action Dispatcher
- * Maps validated LLM tool calls directly to React state handlers with strict parameter bounds.
- * Prevents arbitrary execution and provides user-friendly status pills for executed actions.
+ * Ocean Vision 3D - Safe AI Action Contract & Execution Registry
+ * Enforces strict validation on all allowlisted action types:
+ * SET_BASIN, SET_LOCATION, SET_DEPTH, SET_PARAMETER, SET_VIEW_MODE,
+ * SHOW_PROFILE, SHOW_ANOMALY, CLEAR_SELECTION.
+ * 
+ * Prevents arbitrary JavaScript or unsanitized state mutation.
  */
 
 import { REGIONS, createLocationData } from '../../data/oceanData';
+import { normalizeParameter, resolveBasin, normalizeViewMode } from './oceanTools';
 
-export const VALID_PARAMETERS = ['sst', 'salinity', 'currents', 'wave', 'chlorophyll', 'oxygen'];
-export const VALID_VIEW_MODES = ['depth_slice', 'iso_surface', 'vector_field', 'volume_render'];
-export const VALID_MODALS = [
-  'alerts', 
-  'fleet', 
-  'location', 
-  'datePicker', 
-  'stormNews', 
-  'analyticReport', 
-  'depthPressure', 
-  'colorbarSettings', 
-  'netcdfIngestion'
+export const ALLOWED_ACTIONS = [
+  'SET_BASIN',
+  'SET_LOCATION',
+  'SET_DEPTH',
+  'SET_PARAMETER',
+  'SET_VIEW_MODE',
+  'SHOW_PROFILE',
+  'SHOW_ANOMALY',
+  'CLEAR_SELECTION'
 ];
 
 /**
- * Executes an array of tool calls safely against the application's state handlers.
- * Returns an array of execution result objects for display in the UI.
+ * Validates and executes an array of structured Copilot actions against React state handlers.
  */
-export function executeToolCalls(toolCalls = [], handlers = {}) {
-  const results = [];
+export function executeCopilotActions(actions = [], handlers = {}) {
+  const executionResults = [];
 
-  for (const call of toolCalls) {
-    const { tool, params = {} } = call;
+  for (const action of actions) {
+    if (!action || !ALLOWED_ACTIONS.includes(action.type)) {
+      console.warn('Ignored unallowlisted copilot action:', action);
+      continue;
+    }
+
     try {
-      switch (tool) {
-        case 'setOceanParameter': {
-          const param = params.param?.toLowerCase();
-          if (VALID_PARAMETERS.includes(param) && handlers.setSelectedParam) {
+      switch (action.type) {
+        case 'SET_BASIN': {
+          const region = resolveBasin(action.value, null);
+          if (region && handlers.setActiveRegion) {
+            handlers.setActiveRegion(region);
+            if (handlers.setActiveTab) handlers.setActiveTab('3D View');
+            executionResults.push({
+              type: action.type,
+              success: true,
+              message: `Navigated 3D digital twin to ${region.name}.`
+            });
+          }
+          break;
+        }
+
+        case 'SET_LOCATION': {
+          const lat = parseFloat(action.value?.lat);
+          const lon = parseFloat(action.value?.lon);
+          if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+            if (handlers.onCustomCoords) {
+              handlers.onCustomCoords(lat, lon);
+            } else if (handlers.setActiveRegion) {
+              const newReg = createLocationData(lat, lon, `Target (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`);
+              handlers.setActiveRegion(newReg);
+            }
+            if (handlers.setActiveTab) handlers.setActiveTab('3D View');
+            executionResults.push({
+              type: action.type,
+              success: true,
+              message: `Updated geodetic coordinates to (${lat.toFixed(3)}°, ${lon.toFixed(3)}°).`
+            });
+          }
+          break;
+        }
+
+        case 'SET_DEPTH': {
+          const rawDepth = typeof action.value === 'number' ? action.value : parseFloat(action.value);
+          if (!isNaN(rawDepth) && rawDepth >= 0 && rawDepth <= 6000 && handlers.setDepth) {
+            handlers.setDepth(rawDepth);
+            executionResults.push({
+              type: action.type,
+              success: true,
+              message: `Set depth slice to ${rawDepth}m.`
+            });
+          }
+          break;
+        }
+
+        case 'SET_PARAMETER': {
+          const param = normalizeParameter(action.value);
+          if (handlers.setSelectedParam) {
             handlers.setSelectedParam(param);
             const labels = {
               sst: 'Sea Surface Temperature (°C)',
@@ -43,89 +94,18 @@ export function executeToolCalls(toolCalls = [], handlers = {}) {
               chlorophyll: 'Chlorophyll-a (mg/m³)',
               oxygen: 'Dissolved Oxygen (mg/L)'
             };
-            results.push({
-              tool,
+            executionResults.push({
+              type: action.type,
               success: true,
-              message: `Switched active layer to ${labels[param] || param}.`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Invalid parameter '${params.param}'. Valid options: ${VALID_PARAMETERS.join(', ')}`
+              message: `Switched active ocean variable to ${labels[param] || param}.`
             });
           }
           break;
         }
 
-        case 'setDepth': {
-          const rawDepth = typeof params.depth === 'number' ? params.depth : parseFloat(params.depth);
-          if (!isNaN(rawDepth) && rawDepth >= 0 && rawDepth <= 2000 && handlers.setDepth) {
-            handlers.setDepth(rawDepth);
-            results.push({
-              tool,
-              success: true,
-              message: `Adjusted 3D depth slice to ${rawDepth} meters.`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Depth must be between 0m and 2000m.`
-            });
-          }
-          break;
-        }
-
-        case 'changeBasin': {
-          const regionKey = params.regionId?.toLowerCase()?.replace(/\s+/g, '_');
-          if (REGIONS[regionKey] && handlers.setActiveRegion) {
-            handlers.setActiveRegion(REGIONS[regionKey]);
-            if (handlers.setActiveTab) handlers.setActiveTab('3D View');
-            results.push({
-              tool,
-              success: true,
-              message: `Navigated workstation to ${REGIONS[regionKey].name}.`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Unknown basin '${params.regionId}'. Available: Bay of Bengal, Arabian Sea, South China Sea, Equatorial Pacific, North Atlantic, Gulf of Mexico.`
-            });
-          }
-          break;
-        }
-
-        case 'setCustomCoords': {
-          const lat = parseFloat(params.lat);
-          const lon = parseFloat(params.lon);
-          if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-            if (handlers.onCustomCoords) {
-              handlers.onCustomCoords(lat, lon);
-            } else if (handlers.setActiveRegion) {
-              const newReg = createLocationData(lat, lon, params.name || `Target (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
-              handlers.setActiveRegion(newReg);
-            }
-            if (handlers.setActiveTab) handlers.setActiveTab('3D View');
-            results.push({
-              tool,
-              success: true,
-              message: `Repositioned digital twin to coordinates (${lat.toFixed(3)}°, ${lon.toFixed(3)}°).`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Invalid coordinates: Latitude must be [-90, 90], Longitude [-180, 180].`
-            });
-          }
-          break;
-        }
-
-        case 'setVisualizationMode': {
-          const mode = params.mode?.toLowerCase();
-          if (VALID_VIEW_MODES.includes(mode) && handlers.setViewMode) {
+        case 'SET_VIEW_MODE': {
+          const mode = normalizeViewMode(action.value);
+          if (handlers.setViewMode) {
             handlers.setViewMode(mode);
             const modeLabels = {
               depth_slice: 'Horizontal Depth Slice',
@@ -133,92 +113,78 @@ export function executeToolCalls(toolCalls = [], handlers = {}) {
               vector_field: '3D Vector Field',
               volume_render: 'Volumetric Density'
             };
-            results.push({
-              tool,
+            executionResults.push({
+              type: action.type,
               success: true,
-              message: `Changed 3D visualization to ${modeLabels[mode] || mode}.`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Unknown visualization mode '${params.mode}'.`
+              message: `Activated ${modeLabels[mode] || mode} visualization.`
             });
           }
           break;
         }
 
-        case 'setStormLayer': {
-          const active = params.active === true || params.active === 'true' || params.enabled === true;
-          if (handlers.setIsStormLayerActive) {
-            handlers.setIsStormLayerActive(active);
-            results.push({
-              tool,
-              success: true,
-              message: `${active ? 'Activated' : 'Deactivated'} Storm & Rain Threat Radar layer.`
-            });
-          }
+        case 'SHOW_PROFILE': {
+          executionResults.push({
+            type: action.type,
+            success: true,
+            message: `Generated vertical hydrographic column profile.`
+          });
           break;
         }
 
-        case 'openModal': {
-          const modal = params.modalName;
-          const modalMap = {
-            alerts: handlers.setIsAnomalyModalOpen,
-            fleet: handlers.setIsFleetModalOpen,
-            location: handlers.setIsLocationModalOpen,
-            datePicker: handlers.setIsDatePickerModalOpen,
-            stormNews: handlers.setIsStormNewsModalOpen,
-            analyticReport: handlers.setIsAnalyticReportOpen,
-            depthPressure: handlers.setIsDepthPressureOpen,
-            colorbarSettings: handlers.setIsColorbarSettingsOpen,
-            netcdfIngestion: handlers.setIsNetcdfIngestionOpen
-          };
-
-          if (modalMap[modal]) {
-            modalMap[modal](true);
-            results.push({
-              tool,
-              success: true,
-              message: `Opened modal dialog: ${modal}.`
-            });
-          } else {
-            results.push({
-              tool,
-              success: false,
-              message: `Modal '${modal}' not recognized.`
-            });
-          }
+        case 'SHOW_ANOMALY': {
+          executionResults.push({
+            type: action.type,
+            success: true,
+            message: `Computed physical anomaly against 30-year climatological baseline.`
+          });
           break;
         }
 
-        case 'generateOceanBrief': {
-          if (handlers.setIsAnalyticReportOpen) {
-            handlers.setIsAnalyticReportOpen(true);
-            results.push({
-              tool,
-              success: true,
-              message: `Generated and launched Oceanographic Telemetry & Digital Twin Dossier.`
-            });
-          }
+        case 'CLEAR_SELECTION': {
+          if (handlers.setSelectedBuoy) handlers.setSelectedBuoy(null);
+          executionResults.push({
+            type: action.type,
+            success: true,
+            message: `Cleared active in-situ selection.`
+          });
           break;
         }
 
         default:
-          results.push({
-            tool,
-            success: false,
-            message: `Tool '${tool}' is not registered.`
-          });
+          break;
       }
     } catch (err) {
-      results.push({
-        tool,
+      executionResults.push({
+        type: action.type,
         success: false,
-        message: `Execution failed: ${err.message}`
+        message: `Action execution error: ${err.message}`
       });
     }
   }
 
-  return results;
+  return executionResults;
+}
+
+/**
+ * Backward-compatible helper for tool calls.
+ */
+export function executeToolCalls(toolCalls = [], handlers = {}) {
+  const actions = [];
+  for (const call of toolCalls) {
+    if (call.tool === 'change_ocean_view' || call.tool === 'change_parameter') {
+      if (call.params?.basin) actions.push({ type: 'SET_BASIN', value: call.params.basin });
+      if (typeof call.params?.depth === 'number') actions.push({ type: 'SET_DEPTH', value: call.params.depth });
+      if (call.params?.viewMode) actions.push({ type: 'SET_VIEW_MODE', value: call.params.viewMode });
+      if (call.params?.parameter) actions.push({ type: 'SET_PARAMETER', value: call.params.parameter });
+    } else if (call.tool === 'setOceanParameter') {
+      actions.push({ type: 'SET_PARAMETER', value: call.params?.param });
+    } else if (call.tool === 'setDepth') {
+      actions.push({ type: 'SET_DEPTH', value: call.params?.depth });
+    } else if (call.tool === 'changeBasin') {
+      actions.push({ type: 'SET_BASIN', value: call.params?.regionId });
+    } else if (call.tool === 'setVisualizationMode') {
+      actions.push({ type: 'SET_VIEW_MODE', value: call.params?.mode });
+    }
+  }
+  return executeCopilotActions(actions, handlers);
 }

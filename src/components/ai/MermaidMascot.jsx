@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, MessageCircle, X, Compass, Waves } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 
 export default function MermaidMascot({
   onClick,

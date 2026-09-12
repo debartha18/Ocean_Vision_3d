@@ -1,29 +1,42 @@
 /**
  * Ocean Vision 3D - Copilot Client Bridge
- * Manages conversation exchanges, communicates with /api/copilot,
- * and falls back immediately to offlineEngine if offline or unconfigured.
+ * Coordinates conversation requests, queries /api/copilot,
+ * and delegates seamlessly to the dynamic reasoning engine if offline.
  */
 
-import { processOfflineCopilotQuery } from './offlineEngine';
+import { executeNeridaReasoning } from './offlineEngine';
 
 export async function sendCopilotMessage({
-  prompt,
+  message,
+  prompt, // backwards compatibility
+  oceanState,
+  oceanContext, // backwards compatibility
   conversationHistory = [],
-  oceanContext = {},
   language = 'en'
 }) {
+  const query = message || prompt || '';
+  const state = oceanState || (oceanContext ? {
+    basin: oceanContext.activeBasin?.name,
+    basinId: oceanContext.activeBasin?.id,
+    latitude: oceanContext.activeBasin?.latitude,
+    longitude: oceanContext.activeBasin?.longitude,
+    depth: oceanContext.activeLayer?.depthMeters,
+    parameter: oceanContext.activeLayer?.parameter,
+    viewMode: oceanContext.activeLayer?.viewMode,
+    timestamp: oceanContext.simulationTime
+  } : {});
+
   try {
-    // Attempt upstream serverless API call
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second safety timeout
+    const timeoutId = setTimeout(() => controller.abort(), 8500);
 
     const response = await fetch('/api/copilot', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        prompt,
+        message: query,
+        oceanState: state,
         conversationHistory,
-        oceanContext,
         language
       }),
       signal: controller.signal
@@ -33,24 +46,24 @@ export async function sendCopilotMessage({
 
     if (response.ok) {
       const data = await response.json();
-      if (data && !data.fallback && data.response) {
+      if (data && !data.fallback && (data.message || data.response)) {
         return {
-          response: data.response,
-          toolCalls: data.toolCalls || [],
-          provenance: data.provenance || [{ type: 'AI-DERIVED', label: 'Cloud Ocean Intelligence' }],
+          message: data.message || data.response,
+          actions: data.actions || [],
+          toolResults: data.toolResults || [],
+          data: data.data || null,
+          suggestions: data.suggestions || [],
+          provenance: data.provenance || [{ type: 'AI-DERIVED', label: 'Gemini Cloud Intelligence' }],
           dataPointsUsed: data.dataPointsUsed || [],
           source: 'cloud'
         };
       }
     }
   } catch (err) {
-    console.info('Copilot client switching to local offline oceanographic engine:', err.message);
+    console.info('Copilot client delegating to local dynamic reasoning engine:', err.message);
   }
 
-  // Resilient fallback to offline domain intelligence engine
-  const offlineResult = processOfflineCopilotQuery(prompt, oceanContext);
-  return {
-    ...offlineResult,
-    source: 'offline'
-  };
+  // Dynamic local reasoning engine (zero hardcoded responses, real tool execution)
+  const result = executeNeridaReasoning(query, state, conversationHistory);
+  return result;
 }

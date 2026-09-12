@@ -1,5 +1,5 @@
-import { getFormattedCurrentDate } from '../utils/dateUtils';
-import { calculateScientificWeather } from '../utils/weatherService';
+import { getFormattedCurrentDate } from '../utils/dateUtils.js';
+import { calculateScientificWeather } from '../utils/weatherService.js';
 
 export const REGIONS = {
   bay_of_bengal: {

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Bot, Send, Sparkles } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import CopilotHeader from './CopilotHeader';
 import CopilotContextCard from './CopilotContextCard';
 import CopilotQuickActions from './CopilotQuickActions';
 import CopilotChat from './CopilotChat';
 import MermaidMascot from './MermaidMascot';
 import { buildOceanContext } from '../../lib/ai/oceanContext';
-import { executeToolCalls } from '../../lib/ai/toolRegistry';
+import { executeCopilotActions, executeToolCalls } from '../../lib/ai/toolRegistry';
 import { sendCopilotMessage } from '../../lib/ai/copilotClient';
 
 export default function OceanCopilot({
@@ -39,6 +40,7 @@ export default function OceanCopilot({
   isOpen: propIsOpen,
   setIsOpen: propSetIsOpen
 }) {
+  const { i18n } = useTranslation();
   const [localIsOpen, setLocalIsOpen] = useState(false);
   const isOpen = propIsOpen !== undefined ? propIsOpen : localIsOpen;
   const setIsOpen = propSetIsOpen || setLocalIsOpen;
@@ -49,8 +51,9 @@ export default function OceanCopilot({
   const [engineSource, setEngineSource] = useState('offline');
   const inputRef = useRef(null);
 
-  // Group UI state handlers for safe tool execution
-  const handlers = {
+  // Group UI state handlers for safe allowlisted action execution via ref to avoid churn
+  const handlersRef = useRef({});
+  handlersRef.current = {
     setSelectedParam,
     setDepth,
     setViewMode,
@@ -81,13 +84,16 @@ export default function OceanCopilot({
     ensoState
   });
 
-  const handleSendMessage = useCallback(async (textToSend) => {
-    const query = textToSend || inputText;
-    if (!query.trim() || isLoading) return;
+  const currentLang = i18n?.language || 'en';
 
+  const handleSendMessage = useCallback(async (textToSend) => {
+    const query = typeof textToSend === 'string' ? textToSend : inputText;
+    if (!query || !query.trim() || isLoading) return;
+
+    const trimmedQuery = query.trim();
     const userMsg = {
       role: 'user',
-      content: query.trim(),
+      content: trimmedQuery,
       timestamp: new Date().toLocaleTimeString()
     };
 
@@ -97,26 +103,42 @@ export default function OceanCopilot({
 
     try {
       const result = await sendCopilotMessage({
-        prompt: query,
+        message: trimmedQuery,
+        prompt: trimmedQuery,
         conversationHistory: messages,
         oceanContext,
-        language: 'en'
+        oceanState: {
+          basin: activeRegion?.name,
+          basinId: activeRegion?.id,
+          depth: depth,
+          parameter: selectedParam,
+          viewMode: viewMode,
+          latitude: activeRegion?.latitude,
+          longitude: activeRegion?.longitude,
+          rawRegion: activeRegion
+        },
+        language: currentLang
       });
 
       setEngineSource(result.source || 'offline');
 
-      // Execute safe UI actions if requested by the AI engine
-      let toolResults = [];
-      if (result.toolCalls && result.toolCalls.length > 0) {
-        toolResults = executeToolCalls(result.toolCalls, handlers);
+      // Execute allowlisted application actions
+      let toolExecutionResults = [];
+      if (result.actions && result.actions.length > 0) {
+        toolExecutionResults = executeCopilotActions(result.actions, handlersRef.current);
+      } else if (result.toolCalls && result.toolCalls.length > 0) {
+        toolExecutionResults = executeToolCalls(result.toolCalls, handlersRef.current);
       }
 
       const assistantMsg = {
         role: 'assistant',
-        content: result.response,
-        toolResults,
-        provenance: result.provenance,
-        dataPointsUsed: result.dataPointsUsed,
+        content: result.message || result.response,
+        actions: result.actions || [],
+        data: result.data || null,
+        suggestions: result.suggestions || [],
+        toolResults: toolExecutionResults.length > 0 ? toolExecutionResults : (result.toolResults || []),
+        provenance: result.provenance || [{ type: 'AI-DERIVED', label: 'Nerida Dynamic Model' }],
+        dataPointsUsed: result.dataPointsUsed || [],
         timestamp: new Date().toLocaleTimeString()
       };
 
@@ -135,7 +157,8 @@ export default function OceanCopilot({
       setIsLoading(false);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [inputText, isLoading, messages, oceanContext]);
+  }, [inputText, isLoading, messages, oceanContext, activeRegion, depth, selectedParam, viewMode, currentLang]);
+
 
   // Handle external prompts (e.g. from "Explain this" buttons on other panels)
   useEffect(() => {
@@ -144,7 +167,7 @@ export default function OceanCopilot({
       handleSendMessage(externalPrompt);
       if (onClearExternalPrompt) onClearExternalPrompt();
     }
-  }, [externalPrompt, handleSendMessage, onClearExternalPrompt]);
+  }, [externalPrompt, handleSendMessage, onClearExternalPrompt, setIsOpen]);
 
   // Global keyboard shortcut: Ctrl+K or Cmd+K to toggle Copilot
   useEffect(() => {
@@ -156,8 +179,9 @@ export default function OceanCopilot({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [setIsOpen]);
 
+  // Enter sends, Shift+Enter creates a new line
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -180,8 +204,8 @@ export default function OceanCopilot({
         <div
           className={`fixed bottom-24 right-4 z-40 flex flex-col rounded-3xl border border-cyan-500/35 bg-[#030816]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out select-none ${
             isExpanded
-              ? 'w-[640px] max-w-[96vw] h-[720px] max-h-[86vh]'
-              : 'w-[430px] max-w-[95vw] h-[580px] max-h-[80vh]'
+              ? 'w-[660px] max-w-[96vw] h-[740px] max-h-[88vh]'
+              : 'w-[440px] max-w-[95vw] h-[600px] max-h-[82vh]'
           }`}
           style={{
             boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(6, 182, 212, 0.15)'
@@ -213,43 +237,44 @@ export default function OceanCopilot({
             onSelectPrompt={(prompt) => handleSendMessage(prompt)}
           />
 
-          {/* Bottom Chat Input Form */}
+          {/* Bottom Chat Input Form with Shift+Enter Support */}
           <div className="p-3 border-t border-sky-500/20 bg-[#040e21]/90">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-              className="flex items-center gap-2"
-            >
+            <div className="flex items-end gap-2">
               <div className="relative flex-1">
-                <input
+                <textarea
                   ref={inputRef}
-                  type="text"
+                  rows={1}
                   value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
+                  onChange={(e) => {
+                    setInputText(e.target.value);
+                    // auto-resize height up to 80px
+                    e.target.style.height = 'auto';
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 80)}px`;
+                  }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask Copilot (e.g. 'Show SST at 100m in Arabian Sea')..."
+                  placeholder="Ask Nerida (e.g. 'Show SST at 100m in Arabian Sea')..."
                   disabled={isLoading}
-                  className="w-full bg-[#071633] text-slate-100 placeholder-slate-400 text-xs px-3.5 py-2.5 rounded-xl border border-sky-500/30 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all font-sans"
+                  className="w-full bg-[#071633] text-slate-100 placeholder-slate-400 text-xs px-3.5 py-2.5 rounded-xl border border-sky-500/30 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all font-sans resize-none max-h-20"
+                  style={{ minHeight: '38px' }}
                 />
               </div>
 
               <button
-                type="submit"
+                type="button"
+                onClick={() => handleSendMessage()}
                 disabled={!inputText.trim() || isLoading}
-                className="p-2.5 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-500 hover:from-cyan-500 hover:to-sky-400 disabled:opacity-40 disabled:cursor-not-allowed text-white shadow-glow-cyan transition-all cursor-pointer shrink-0"
+                className="p-2.5 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-500 hover:from-cyan-500 hover:to-sky-400 disabled:opacity-40 disabled:cursor-not-allowed text-white shadow-glow-cyan transition-all cursor-pointer shrink-0 mb-0.5"
               >
                 <Send className="w-4 h-4" />
               </button>
-            </form>
+            </div>
 
             <div className="flex items-center justify-between mt-1.5 px-1 text-[9px] text-slate-400 font-mono">
               <span className="flex items-center gap-1">
                 <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
                 Zero-Hallucination Ocean Intelligence
               </span>
-              <span>Enter ↵</span>
+              <span>Enter ↵ · Shift+Enter ↵ for newline</span>
             </div>
           </div>
         </div>
