@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "ఉపగ్రహ టెలిమెట్రీ సక్రియం",
     "reportBtn": "నివేదిక",
-    "stormBtn": "తుఫాను"
+    "stormBtn": "తుఫాను",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "స్థానం / కోఆర్డినేట్లు",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "వాతావరణ ముప్పు పొర",
     "severeStormTracks": "3D తీవ్ర తుఫాను మార్గాలు",
     "stormOn": "3D తుఫాను: ఆన్",
-    "stormOff": "3D తుఫాను: ఆఫ్"
+    "stormOff": "3D తుఫాను: ఆఫ్",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "సముద్ర ఉపరితల ఉష్ణోగ్రత",
@@ -84,7 +86,8 @@
     "stormNews": "ప్రత్యక్ష సముద్ర తుఫాను వార్తలు",
     "viewDetailedComparison": "వివరణాత్మక పోలికను చూడండి",
     "critical": "కీలకమైనది",
-    "inspectDetails": "నిర్ధారణ మరియు ప్రభావాన్ని చూడండి"
+    "inspectDetails": "నిర్ధారణ మరియు ప్రభావాన్ని చూడండి",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "సక్రియ పరిశీలన నౌకాదళం",
@@ -120,7 +123,9 @@
     "logarithmic": "లాగరిథమిక్ (log₁₀)",
     "close": "మూసివేయి",
     "active": "క్రియాశీలం",
-    "liveSync": "ప్రత్యక్ష సమకాలీకరణ"
+    "liveSync": "ప్రత్యక్ష సమకాలీకరణ",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "సముద్ర శాస్త్ర టెలిమెట్రీ పత్రం",
@@ -142,7 +147,50 @@
     "docSubtitle": "అన్వేషించండి • విశ్లేషించండి • పరిరక్షించండి — గ్లోబల్ ఇంటిగ్రేటెడ్ ఓషన్ అబ్జర్వింగ్ సిస్టమ్ (GOOS)",
     "reportId": "నివేదిక ID",
     "dateTime": "తేదీ / సమయం",
-    "qcPassed": "నాణ్యతా నియంత్రణ: QC స్థాయి-3 ఉత్తీర్ణం"
+    "qcPassed": "నాణ్యతా నియంత్రణ: QC స్థాయి-3 ఉత్తీర్ణం",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "యునెస్కో TEOS-10 హైడ్రోస్టాటిక్ పీడన కాలిక్యులేటర్",
@@ -158,7 +206,9 @@
     "depthRegime": "లోతు మండల బెంచ్‌మార్క్",
     "hadalMatrix": "ప్రామాణిక లోతు బెంచ్‌మార్క్‌లు",
     "close": "కాలిక్యులేటర్‌ను మూసివేయి",
-    "depthZ": "ఎంచుకున్న ఉపరితల లోతు"
+    "depthZ": "ఎంచుకున్న ఉపరితల లోతు",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "ఉపరితల పొర (ఎపిపెలాజిక్)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "సగటు సముద్ర అగాధ అంతస్తు",
     "hadal_entry": "హడల్ కందకం ప్రవేశం",
     "puerto_rico": "ప్యూర్టో రికో ట్రెంచ్ లోతు",
-    "challenger": "ఛాలెంజర్ డీప్ గరిష్ట లోతు"
+    "challenger": "ఛాలెంజర్ డీప్ గరిష్ట లోతు",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "మూర్డ్ బోయా టెలిమెట్రీ స్టేషన్",
@@ -203,7 +263,9 @@
     "resetStandard": "ప్రామాణిక స్థితికి రీసెట్ చేయండి",
     "layerOpacity": "పొర అపారదర్శకత",
     "verticalExaggeration": "నిలువు లోతు అతిశయోక్తి",
-    "apply3d": "వర్తింపజేసి 3D దృశ్యాన్ని చూడండి"
+    "apply3d": "వర్తింపజేసి 3D దృశ్యాన్ని చూడండి",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "తీరప్రాంత వాతావరణ సూచన & బీచ్ వర్షపు రాడార్",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "తేలియాడే స్టేషన్లు ఆర్కిమెడిస్ తేలియాడే సూత్రాల ప్రకారం వాస్తవిక తరంగాలలో కదులుతాయి.",
     "coastalRadarTitle": "అధిక ఖచ్చితత్వ తీరప్రాంత రాడార్",
     "coastalRadarDesc": "లోతైన సముద్రం నుండి తీరప్రాంత బీచ్‌ల వరకు నిజ-సమయ వర్షం మరియు తరంగాలను అనుసంధానించే ఇంజిన్.",
-    "techStackTitle": "ఆర్కిటెక్చర్ మరియు ఆధునిక వెబ్ స్టాక్"
+    "techStackTitle": "ఆర్కిటెక్చర్ మరియు ఆధునిక వెబ్ స్టాక్",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

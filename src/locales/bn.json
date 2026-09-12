@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "স্যাটেলাইট টেলিমেট্রি সক্রিয়",
     "reportBtn": "প্রতিবেদন",
-    "stormBtn": "ঝড়"
+    "stormBtn": "ঝড়",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "অবস্থান / স্থানাঙ্ক",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "আবহাওয়াগত হুমকি স্তর",
     "severeStormTracks": "3D তীব্র ঝড় ট্র্যাক",
     "stormOn": "3D ঝড়: চালু",
-    "stormOff": "3D ঝড়: বন্ধ"
+    "stormOff": "3D ঝড়: বন্ধ",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "সমুদ্রপৃষ্ঠের তাপমাত্রা",
@@ -84,7 +86,8 @@
     "stormNews": "লাইভ সামুদ্রিক ঝড় সংবাদ",
     "viewDetailedComparison": "বিস্তারিত তুলনা দেখুন",
     "critical": "সংকটজনক",
-    "inspectDetails": "নির্ণয় ও প্রভাব দেখুন"
+    "inspectDetails": "নির্ণয় ও প্রভাব দেখুন",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "সক্রিয় পর্যবেক্ষণকারী বহর",
@@ -120,7 +123,9 @@
     "logarithmic": "লগারিদমিক (log₁₀)",
     "close": "বন্ধ করুন",
     "active": "সক্রিয়",
-    "liveSync": "লাইভ সিঙ্ক"
+    "liveSync": "লাইভ সিঙ্ক",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "সমুদ্রবিজ্ঞান টেলিমেট্রি নথি",
@@ -142,7 +147,50 @@
     "docSubtitle": "অন্বেষণ • বিশ্লেষণ • সংরক্ষণ — বৈশ্বিক সমন্বিত মহাসাগর পর্যবেক্ষণ ব্যবস্থা (GOOS)",
     "reportId": "প্রতিবেদন আইডি",
     "dateTime": "তারিখ / সময়",
-    "qcPassed": "গুণমান নিয়ন্ত্রণ: QC স্তর-৩ উত্তীর্ণ"
+    "qcPassed": "গুণমান নিয়ন্ত্রণ: QC স্তর-৩ উত্তীর্ণ",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "ইউনেস্কো TEOS-10 হাইড্রোস্ট্যাটিক চাপ ক্যালকুলেটর",
@@ -158,7 +206,9 @@
     "depthRegime": "গভীরতা স্তর বেঞ্চমার্ক",
     "hadalMatrix": "আদর্শ আঞ্চলিক গভীরতা বেঞ্চমার্ক",
     "close": "ক্যালকুলেটর বন্ধ করুন",
-    "depthZ": "নির্বাচিত উপপৃষ্ঠীয় গভীরতা"
+    "depthZ": "নির্বাচিত উপপৃষ্ঠীয় গভীরতা",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "পৃষ্ঠ স্তর (এপিপেলাজিক)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "গড় মহাসাগরীয় তলদেশ",
     "hadal_entry": "হেদাল খাত প্রবেশ",
     "puerto_rico": "পুয়ের্তো রিকো পরিখা গভীরতা",
-    "challenger": "চ্যালেঞ্জার ডিপ সর্বোচ্চ গভীরতা"
+    "challenger": "চ্যালেঞ্জার ডিপ সর্বোচ্চ গভীরতা",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "মুরিং বয় টেলিমেট্রি স্টেশন",
@@ -203,7 +263,9 @@
     "resetStandard": "মানদণ্ডে রিসেট করুন",
     "layerOpacity": "স্তরের অস্বচ্ছতা",
     "verticalExaggeration": "উল্লম্ব গভীরতার অতিরঞ্জন",
-    "apply3d": "প্রয়োগ করুন এবং ৩D দৃশ্য দেখুন"
+    "apply3d": "প্রয়োগ করুন এবং ৩D দৃশ্য দেখুন",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "উপকূলীয় আবহাওয়ার পূর্বাভাস ও সমুদ্র সৈকত বৃষ্টিপাত রাডার",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "আর্কিমিডিসের প্লবতা সূত্র অনুসারে ভাসমান টেলিমেট্রি বয়ার বাস্তবসম্মত গতিশীলতা।",
     "coastalRadarTitle": "উচ্চ-নির্ভুল উপকূলীয় রাডার",
     "coastalRadarDesc": "গভীর সমুদ্রের শর্তাবলীর সাথে উপকূলীয় সৈকত গন্তব্যগুলোর বাস্তব সময়ের আবহাওয়া সংযোজক ইঞ্জিন।",
-    "techStackTitle": "স্থাপত্য ও আধুনিক ওয়েব স্ট্যাক"
+    "techStackTitle": "স্থাপত্য ও আধুনিক ওয়েব স্ট্যাক",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

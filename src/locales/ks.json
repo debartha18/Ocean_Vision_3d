@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "سیٹلائٹ ٹیلی میٹری فعال",
     "reportBtn": "رپورٹ",
-    "stormBtn": "طوفان"
+    "stormBtn": "طوفان",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "مقام / نقاط",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "موسمی خطرہ تہہ",
     "severeStormTracks": "3D شدید طوفان کے راستے",
     "stormOn": "3D طوفان: آن",
-    "stormOff": "3D طوفان: آف"
+    "stormOff": "3D طوفان: آف",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "سطح سمندر کا درجہ حرارت",
@@ -84,7 +86,8 @@
     "stormNews": "لائیو سمندری طوفان کی خبریں",
     "viewDetailedComparison": "تفصیلی موازنہ وچھو",
     "critical": "سنگین",
-    "inspectDetails": "تشخیص تہٕ اثر وچھو"
+    "inspectDetails": "تشخیص تہٕ اثر وچھو",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "فعال مشاہداتی بیڑہ",
@@ -120,7 +123,9 @@
     "logarithmic": "لوگارتھمک (log₁₀)",
     "close": "بند کریں",
     "active": "فعال",
-    "liveSync": "لائیو مطابقت پذیری"
+    "liveSync": "لائیو مطابقت پذیری",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "stormModal": {
     "title": "ساحلی موسم کی پیشن گوئی اور ساحلی بارش کا راڈار",
@@ -283,7 +288,9 @@
     "buoyPhysicsDesc": "تیرتے ہوئے اسٹیشن آرکیمیڈیز کے اصولوں کے مطابق لہروں کے ساتھ حرکت کرتے ہیں۔",
     "coastalRadarTitle": "اعلیٰ درستگی والا ساحلی راڈار",
     "coastalRadarDesc": "گہرے سمندر سے ساحلی علاقوں تک بارش اور لہروں کو جوڑنے والا لائیو انجن۔",
-    "techStackTitle": "فن تعمیر اور جدید ویب اسٹیک"
+    "techStackTitle": "فن تعمیر اور جدید ویب اسٹیک",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "colorbar": {
     "title": "کلر بار اور 3D متغیر کنٹرولز",
@@ -296,7 +303,9 @@
     "resetStandard": "معیار پر دوبارہ سیٹ کریں",
     "layerOpacity": "تہہ کی کثافت",
     "verticalExaggeration": "عمودی گہرائی کا مبالغہ",
-    "apply3d": "لاگو کریں اور 3D منظر دیکھیں"
+    "apply3d": "لاگو کریں اور 3D منظر دیکھیں",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "fleet": {
     "title": "خود مختار سمندری سینسر بیڑہ رصد گاہ",
@@ -331,7 +340,9 @@
     "gravitySomigliana": "مقامی کشش ثقل g(φ)",
     "depthRegime": "گہرائی زون معیار",
     "hadalMatrix": "معیاری زونل گہرائی معیارات",
-    "close": "کیلکولیٹر بند کریں"
+    "close": "کیلکولیٹر بند کریں",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "report": {
     "title": "بحریات ٹیلی میٹری دستاویز",
@@ -353,7 +364,50 @@
     "benchmark": "گہرائی زون معیار",
     "sensorPayload": "سینسر پے لوڈ",
     "transmissionProtocol": "ٹیلی میٹری پروٹوکول",
-    "close": "ڈوزیئر بند کریں"
+    "close": "ڈوزیئر بند کریں",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "zones": {
     "surface": "سطحی تہہ (ایپی پیلاجک)",
@@ -366,7 +420,17 @@
     "abyssal_floor": "اوسط سمندری عمیق فرش",
     "hadal_entry": "ہیدل کھائی میں داخلہ",
     "puerto_rico": "پورٹو ریکو ٹرینچ گہرائی",
-    "challenger": "چیلنجر ڈیپ زیادہ سے زیادہ گہرائی"
+    "challenger": "چیلنجر ڈیپ زیادہ سے زیادہ گہرائی",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

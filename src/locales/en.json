@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "Satellite Telemetry Active",
     "reportBtn": "Report",
-    "stormBtn": "Storm"
+    "stormBtn": "Storm",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "Position / Coordinates",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "Meteorological Threat Layer",
     "severeStormTracks": "3D Severe Storm Tracks",
     "stormOn": "3D Storm: ON",
-    "stormOff": "3D Storm: OFF"
+    "stormOff": "3D Storm: OFF",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "Sea Surface Temperature",
@@ -84,7 +86,8 @@
     "stormNews": "Live Marine Storm News",
     "viewDetailedComparison": "View Detailed Comparison",
     "critical": "Critical",
-    "inspectDetails": "View Diagnostics & Impact"
+    "inspectDetails": "View Diagnostics & Impact",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "Active Observing Fleet",
@@ -120,7 +123,9 @@
     "logarithmic": "Logarithmic (log₁₀)",
     "close": "Close",
     "active": "Active",
-    "liveSync": "Live Sync"
+    "liveSync": "Live Sync",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "Oceanographic Telemetry Dossier",
@@ -135,7 +140,57 @@
     "benchmark": "Depth Regime Benchmark",
     "sensorPayload": "Sensor Payload",
     "transmissionProtocol": "Telemetry Protocol",
-    "close": "Close Dossier"
+    "close": "Close Dossier",
+    "dossierTitle": "Oceanographic Telemetry & Digital Twin Dossier",
+    "printPdf": "Print Report / Save as PDF",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "docTitle": "OCEAN VISION 3D — OCEAN DIGITAL TWIN REPORT",
+    "docSubtitle": "Explore • Analyze • Preserve — Global Integrated Ocean Observing System (GOOS) Synthesis",
+    "reportId": "REPORT ID",
+    "dateTime": "DATE / TIME",
+    "qcPassed": "Quality Control: QC Level-3 Passed",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "UNESCO TEOS-10 Hydrostatic Pressure Calculator",
@@ -150,7 +205,10 @@
     "gravitySomigliana": "Local Gravity g(φ)",
     "depthRegime": "Depth Regime Benchmark",
     "hadalMatrix": "Standard Zonal Depth Benchmarks",
-    "close": "Close Calculator"
+    "close": "Close Calculator",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "depthZ": "Selected Subsurface Depth",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "Epipelagic (Surface Layer)",
@@ -163,7 +221,17 @@
     "abyssal_floor": "Mean Ocean Abyssal Floor",
     "hadal_entry": "Hadal Trench Entry",
     "puerto_rico": "Puerto Rico Trench Deep",
-    "challenger": "Challenger Deep Maximum"
+    "challenger": "Challenger Deep Maximum",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "Moored Buoy Telemetry Station",
@@ -192,7 +260,9 @@
     "resetStandard": "Reset to Standard",
     "layerOpacity": "Layer Opacity",
     "verticalExaggeration": "Vertical Depth Exaggeration",
-    "apply3d": "Apply & View 3D Scene"
+    "apply3d": "Apply & View 3D Scene",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "Coastal Weather Forecast & Beach Rain Radar",
@@ -355,7 +425,9 @@
     "buoyPhysicsDesc": "Floating telemetry stations evaluate analytical wave surface equations at their exact coordinates, producing realistic Archimedean buoyant heave, pitch, and roll response aligned with wave gradients.",
     "coastalRadarTitle": "High-Precision Coastal Radar",
     "coastalRadarDesc": "Dynamic Haversine distance engine linking deep ocean conditions to coastal beach destinations worldwide with real-time precipitation accumulation, wave breakers, and safety flags.",
-    "techStackTitle": "Architecture & Modern Web Stack"
+    "techStackTitle": "Architecture & Modern Web Stack",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

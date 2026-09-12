@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "ഉപഗ്രഹ ടെലിമെട്രി സജീവം",
     "reportBtn": "റിപ്പോർട്ട്",
-    "stormBtn": "ചുഴലിക്കാറ്റ്"
+    "stormBtn": "ചുഴലിക്കാറ്റ്",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "സ്ഥാനം / കോർഡിനേറ്റുകൾ",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "കാലാവസ്ഥാ ഭീഷണി പാളി",
     "severeStormTracks": "3D ചുഴലിക്കാറ്റ് പാതകൾ",
     "stormOn": "3D ചുഴലിക്കാറ്റ്: ഓൺ",
-    "stormOff": "3D ചുഴലിക്കാറ്റ്: ഓഫ്"
+    "stormOff": "3D ചുഴലിക്കാറ്റ്: ഓഫ്",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "സമുദ്രോപരിതല താപനില",
@@ -84,7 +86,8 @@
     "stormNews": "തത്സമയ സമുദ്ര ചുഴലിക്കാറ്റ് വാർത്തകൾ",
     "viewDetailedComparison": "വിശദമായ താരതമ്യം കാണുക",
     "critical": "ഗുരുതരം",
-    "inspectDetails": "ഡയഗ്നോസ്റ്റിക്സും സ്വാധീനവും കാണുക"
+    "inspectDetails": "ഡയഗ്നോസ്റ്റിക്സും സ്വാധീനവും കാണുക",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "സജീവ നിരീക്ഷണ കപ്പൽപ്പട",
@@ -120,7 +123,9 @@
     "logarithmic": "ലോഗരിതമിക് (log₁₀)",
     "close": "അടയ്ക്കുക",
     "active": "സജീവം",
-    "liveSync": "തത്സമയ സമന്വയം"
+    "liveSync": "തത്സമയ സമന്വയം",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "സമുദ്രശാസ്ത്ര ടെലിമെട്രി രേഖ",
@@ -142,7 +147,50 @@
     "docSubtitle": "പര്യവേക്ഷണം ചെയ്യുക • വിശകലനം ചെയ്യുക • സംരക്ഷിക്കുക — ഗ്ലോബൽ ഇന്റഗ്രേറ്റഡ് ഓഷ്യൻ ഒബ്സർവിംഗ് സിസ്റ്റം (GOOS)",
     "reportId": "റിപ്പോർട്ട് ഐഡി",
     "dateTime": "തീയതി / സമയം",
-    "qcPassed": "ഗുണനിലവാര നിയന്ത്രണം: QC ലെവൽ-3 വിജയിച്ചു"
+    "qcPassed": "ഗുണനിലവാര നിയന്ത്രണം: QC ലെവൽ-3 വിജയിച്ചു",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "യുനെസ്കോ TEOS-10 ഹൈഡ്രോസ്റ്റാറ്റിക് മർദ്ദം കാൽക്കുലേറ്റർ",
@@ -158,7 +206,9 @@
     "depthRegime": "ആഴ മേഖല മാനദണ്ഡം",
     "hadalMatrix": "സാധാരണ ആഴ മാനദണ്ഡങ്ങൾ",
     "close": "കാൽക്കുലേറ്റർ അടയ്ക്കുക",
-    "depthZ": "തിരഞ്ഞെടുത്ത ആഴം"
+    "depthZ": "തിരഞ്ഞെടുത്ത ആഴം",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "ഉപരിതല പാളി (എപ്പിപെലാജിക്)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "ശരാശരി സമുദ്ര അബിസൽ തറ",
     "hadal_entry": "ഹദൽ കിടങ്ങ് പ്രവേശനം",
     "puerto_rico": "പ്യൂർട്ടോ റിക്കോ ട്രെഞ്ച് ആഴം",
-    "challenger": "ചലഞ്ചർ ഡീപ് പരമാവധി ആഴം"
+    "challenger": "ചലഞ്ചർ ഡീപ് പരമാവധി ആഴം",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "മൂർഡ് ബോയ ടെലിമെട്രി സ്റ്റേഷൻ",
@@ -203,7 +263,9 @@
     "resetStandard": "സാധാരണ നിലയിലേക്ക് മാറ്റുക",
     "layerOpacity": "പാളിയുടെ സുതാര്യത",
     "verticalExaggeration": "ലംബ ആഴത്തിന്റെ അതിശയോക്തി",
-    "apply3d": "പ്രയോഗിച്ച് 3D ദൃശ്യം കാണുക"
+    "apply3d": "പ്രയോഗിച്ച് 3D ദൃശ്യം കാണുക",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "തീരദേശ കാലാവസ്ഥാ പ്രവചനവും ബീച്ച് മഴ റഡാറും",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "ആർക്കിമിഡീസ് തത്വങ്ങൾക്കനുസൃതമായി തിരമാലകളിൽ ചലിക്കുന്ന നിരീക്ഷണ സ്റ്റേഷനുകൾ.",
     "coastalRadarTitle": "തീരദേശ റഡാർ",
     "coastalRadarDesc": "ആഴക്കടലിൽ നിന്ന് തീരദേശങ്ങളിലേക്ക് തത്സമയ മഴയും തിരമാലകളും ബന്ധിപ്പിക്കുന്ന എഞ്ചിൻ.",
-    "techStackTitle": "ആർക്കിടെക്ചറും ആധുനിക വെബ് സാങ്കേതികവിദ്യയും"
+    "techStackTitle": "ആർക്കിടെക്ചറും ആധുനിക വെബ് സാങ്കേതികവിദ്യയും",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

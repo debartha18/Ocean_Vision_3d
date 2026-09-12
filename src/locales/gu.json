@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "સેટેલાઇટ ટેલિમેટ્રી સક્રિય",
     "reportBtn": "અહેવાલ",
-    "stormBtn": "તોફાન"
+    "stormBtn": "તોફાન",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "સ્થિતિ / કોઓર્ડિનેટ્સ",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "હવામાન સંકટ સ્તર",
     "severeStormTracks": "3D તીવ્ર તોફાન ટ્રેક",
     "stormOn": "3D તોફાન: ચાલુ",
-    "stormOff": "3D તોફાન: બંધ"
+    "stormOff": "3D તોફાન: બંધ",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "સમુદ્ર સપાટીનું તાપમાન",
@@ -84,7 +86,8 @@
     "stormNews": "લાઇવ દરિયાઈ તોફાન સમાચાર",
     "viewDetailedComparison": "વિગતવાર સરખામણી જુઓ",
     "critical": "ગંભીર",
-    "inspectDetails": "નિદાન અને અસર જુઓ"
+    "inspectDetails": "નિદાન અને અસર જુઓ",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "સક્રિય અવલોકન કાફલો",
@@ -120,7 +123,9 @@
     "logarithmic": "લોગરીધમિક (log₁₀)",
     "close": "બંધ કરો",
     "active": "સક્રિય",
-    "liveSync": "લાઇવ સિંક"
+    "liveSync": "લાઇવ સિંક",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "સમુદ્રશાસ્ત્ર ટેલિમેટ્રી દસ્તાવેજ",
@@ -142,7 +147,50 @@
     "docSubtitle": "શોધ • વિશ્લેષણ • સંરક્ષણ — ગ્લોબલ ઇન્ટિગ્રેટેડ ઓશન ઓબ્ઝર્વિંગ સિસ્ટમ (GOOS)",
     "reportId": "રિપોર્ટ ID",
     "dateTime": "તારીખ / સમય",
-    "qcPassed": "ગુણવત્તા નિયંત્રણ: QC સ્તર-3 પાસ"
+    "qcPassed": "ગુણવત્તા નિયંત્રણ: QC સ્તર-3 પાસ",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "યુનેસ્કો TEOS-10 હાઇડ્રોસ્ટેટિક પ્રેશર કેલ્ક્યુલેટર",
@@ -158,7 +206,9 @@
     "depthRegime": "ઊંડાઈ ક્ષેત્ર બેંચમાર્ક",
     "hadalMatrix": "માનક ઝોનલ ઊંડાઈ બેંચમાર્ક",
     "close": "કેલ્ક્યુલેટર બંધ કરો",
-    "depthZ": "પસંદ કરેલ પેટા સપાટી ઊંડાઈ"
+    "depthZ": "પસંદ કરેલ પેટા સપાટી ઊંડાઈ",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "સપાટી સ્તર (એપીપેલાજિક)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "સરેરાશ સમુદ્રી અગાધ તળિયું",
     "hadal_entry": "હડલ ખાઈ પ્રવેશ",
     "puerto_rico": "પ્યુઅર્ટો રિકો ટ્રેન્ચ ઊંડાઈ",
-    "challenger": "ચેલેન્જર ડીપ મહત્તમ ઊંડાઈ"
+    "challenger": "ચેલેન્જર ડીપ મહત્તમ ઊંડાઈ",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "મૂરિંગ બોયા ટેલિમેટ્રી સ્ટેશન",
@@ -203,7 +263,9 @@
     "resetStandard": "માનક પર ફરીથી સેટ કરો",
     "layerOpacity": "સ્તર અપારદર્શકતા",
     "verticalExaggeration": "ઊભી ઊંડાઈ અતિશયોક્તિ",
-    "apply3d": "લાગુ કરો અને 3D દ્રશ્ય જુઓ"
+    "apply3d": "લાગુ કરો અને 3D દ્રશ્ય જુઓ",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "દરિયાકાંઠા હવામાન આગાહી અને બીચ વરસાદ રડાર",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "તરતા સ્ટેશનો આર્કીમિડીઝના નિયમ અનુસાર મોજાં સાથે સુસંગત ગતિ કરે છે.",
     "coastalRadarTitle": "ચોકસાઈભર્યું દરિયાકાંઠા રડાર",
     "coastalRadarDesc": "ઊંડા સમુદ્રથી દરિયાકાંઠાના બીચ સુધી વાસ્તવિક સમયમાં વરસાદ અને મોજાંને જોડતું એન્જિન.",
-    "techStackTitle": "આર્કિટેક્ચર અને આધુનિક વેબ સ્ટેક"
+    "techStackTitle": "આર્કિટેક્ચર અને આધુનિક વેબ સ્ટેક",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "ᱥᱮᱴᱮᱞᱟᱭᱤᱴ ᱴᱮᱞᱤᱢᱮᱴᱨᱤ ᱪᱟᱹᱞᱩ",
     "reportBtn": "ᱨᱤᱯᱚᱨᱴ",
-    "stormBtn": "ᱛᱩᱯᱷᱟᱱ"
+    "stormBtn": "ᱛᱩᱯᱷᱟᱱ",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "ᱴᱷᱟᱶ / ᱠᱳ-ᱚᱨᱰᱤᱱᱮᱴᱥ",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "ᱦᱚᱭ-ᱫᱟᱜ ᱵᱚᱛᱚᱨ ᱛᱷᱟᱠ",
     "severeStormTracks": "3D ᱥᱚᱠᱛᱚ ᱛᱩᱯᱷᱟᱱ ᱰᱟᱦᱟᱨ",
     "stormOn": "3D ᱛᱩᱯᱷᱟᱱ: ᱪᱟᱹᱞᱩ",
-    "stormOff": "3D ᱛᱩᱯᱷᱟᱱ: ᱵᱚᱸᱫᱽ"
+    "stormOff": "3D ᱛᱩᱯᱷᱟᱱ: ᱵᱚᱸᱫᱽ",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "ᱫᱚᱨᱭᱟ ᱪᱮᱛᱟᱱ ᱞᱚᱞᱚᱥᱚᱝ (SST)",
@@ -84,7 +86,8 @@
     "stormNews": "ᱞᱟᱭᱤᱵᱷ ᱫᱚᱨᱭᱟ ᱛᱩᱯᱷᱟᱱ ᱠᱷᱚᱵᱚᱨ",
     "viewDetailedComparison": "ᱵᱤᱥᱛᱟᱨ ᱛᱩᱞᱟᱹᱡᱚᱠᱷᱟ ᱧᱮᱞ",
     "critical": "ᱜᱟᱹᱦᱤᱨ",
-    "inspectDetails": "ᱵᱤᱪᱟᱹᱨ ᱟᱨ ᱚᱨᱡᱚ ᱧᱮᱞ"
+    "inspectDetails": "ᱵᱤᱪᱟᱹᱨ ᱟᱨ ᱚᱨᱡᱚ ᱧᱮᱞ",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "ᱪᱟᱹᱞᱩ ᱧᱮᱞ ᱵᱮᱲᱟ",
@@ -120,7 +123,9 @@
     "logarithmic": "ᱞᱚᱜᱟᱨᱤᱫᱷᱢᱤᱠ (log₁₀)",
     "close": "ᱵᱚᱸᱫᱽ",
     "active": "ᱪᱟᱹᱞᱩ",
-    "liveSync": "ᱞᱟᱭᱤᱵᱷ ᱥᱤᱝᱠ"
+    "liveSync": "ᱞᱟᱭᱤᱵᱷ ᱥᱤᱝᱠ",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "ᱫᱚᱨᱭᱟ ᱥᱟᱬᱮᱥ ᱴᱮᱞᱤᱢᱮᱴᱨᱤ ᱨᱤᱯᱳᱨᱴ",
@@ -142,7 +147,50 @@
     "benchmark": "ᱜᱟᱹᱦᱤᱨ ᱵᱮᱧᱪᱢᱟᱨᱠ",
     "sensorPayload": "ᱥᱮᱱᱥᱚᱨ ᱯᱮᱞᱳᱰ",
     "transmissionProtocol": "ᱴᱮᱞᱤᱢᱮᱴᱨᱤ ᱯᱨᱳᱴᱳᱠᱳᱞ",
-    "close": "ᱨᱤᱯᱳᱨᱴ ᱵᱚᱸᱫᱽ"
+    "close": "ᱨᱤᱯᱳᱨᱴ ᱵᱚᱸᱫᱽ",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "UNESCO TEOS-10 ᱦᱟᱭᱰᱨᱳᱥᱴᱮᱴᱤᱠ ᱪᱟᱯ ᱦᱤᱥᱟᱹᱵᱽ ᱢᱮᱥᱤᱱ",
@@ -158,7 +206,9 @@
     "gravitySomigliana": "ᱴᱷᱟᱶ ᱜᱩᱨᱩᱛᱣᱟᱠᱚᱨᱥᱚᱱ g(φ)",
     "depthRegime": "ᱜᱟᱹᱦᱤᱨ ᱛᱷᱟᱠ ᱵᱮᱧᱪᱢᱟᱨᱠ",
     "hadalMatrix": "ᱥᱴᱮᱱᱰᱟᱨᱰ ᱜᱟᱹᱦᱤᱨ ᱵᱮᱧᱪᱢᱟᱨᱠ",
-    "close": "ᱦᱤᱥᱟᱹᱵᱽ ᱢᱮᱥᱤᱱ ᱵᱚᱸᱫᱽ"
+    "close": "ᱦᱤᱥᱟᱹᱵᱽ ᱢᱮᱥᱤᱱ ᱵᱚᱸᱫᱽ",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "ᱪᱮᱛᱟᱱ ᱛᱷᱟᱠ (Epipelagic)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "ᱫᱚᱨᱭᱟ ᱞᱟᱛᱟᱨ ᱟᱵᱤᱥᱟᱞ",
     "hadal_entry": "ᱦᱟᱰᱟᱞ ᱜᱟᱹᱦᱤᱨ ᱠᱷᱟᱫᱟᱱ ᱵᱚᱞᱚᱱ",
     "puerto_rico": "ᱯᱩᱭᱮᱨᱛᱳ ᱨᱤᱠᱳ ᱜᱟᱹᱦᱤᱨ",
-    "challenger": "ᱪᱮᱞᱮᱧᱡᱟᱨ ᱰᱤᱯ ᱡᱚᱛᱚ ᱠᱷᱚᱱ ᱜᱟᱹᱦᱤᱨ"
+    "challenger": "ᱪᱮᱞᱮᱧᱡᱟᱨ ᱰᱤᱯ ᱡᱚᱛᱚ ᱠᱷᱚᱱ ᱜᱟᱹᱦᱤᱨ",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "ᱢᱩᱨᱤᱝ ᱵᱩᱭᱟ ᱴᱮᱞᱤᱢᱮᱴᱨᱤ ᱥᱴᱮᱥᱚᱱ",
@@ -200,7 +260,9 @@
     "resetStandard": "ᱥᱴᱮᱱᱰᱟᱨᱰ ᱨᱮ ᱨᱩᱣᱟᱹᱲ",
     "layerOpacity": "ᱛᱷᱟᱠ ᱨᱮᱱᱟᱜ ᱯᱟᱨᱫᱚᱨᱥᱤ",
     "verticalExaggeration": "ᱩᱥᱩᱞ ᱜᱟᱹᱦᱤᱨ ᱵᱟᱹᱲᱛᱤ",
-    "apply3d": "ᱞᱟᱜᱟᱣ ᱢᱮ ᱟᱨ 3D ᱧᱮᱞ ᱢᱮ"
+    "apply3d": "ᱞᱟᱜᱟᱣ ᱢᱮ ᱟᱨ 3D ᱧᱮᱞ ᱢᱮ",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "ᱫᱚᱨᱭᱟ ᱫᱷᱟᱨᱮ ᱦᱚᱭ-ᱫᱟᱜ ᱟᱜᱟᱢ ᱞᱟᱹᱭ ᱟᱨ ᱵᱤᱪ ᱫᱟᱜ ᱡᱟᱹᱲᱤ ᱨᱟᱰᱟᱨ",

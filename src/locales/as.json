@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "উপগ্ৰহ টেলিমেট্ৰি সক্ৰিয়",
     "reportBtn": "প্ৰতিবেদন",
-    "stormBtn": "ধুমুহা"
+    "stormBtn": "ধুমুহা",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "অৱস্থান / স্থানাংক",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "বতৰৰ ভাবুকি স্তৰ",
     "severeStormTracks": "৩D প্ৰচণ্ড ধুমুহা পথ",
     "stormOn": "৩D ধুমুহা: অন",
-    "stormOff": "৩D ধুমুহা: অফ"
+    "stormOff": "৩D ধুমুহা: অফ",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "সাগৰ পৃষ্ঠৰ উষ্ণতা",
@@ -84,7 +86,8 @@
     "stormNews": "লাইভ সামুদ্ৰিক ধুমুহা বাৰ্তা",
     "viewDetailedComparison": "বিতং তুলনা চাওক",
     "critical": "সংকটজনক",
-    "inspectDetails": "নিদান আৰু প্ৰভাৱ চাওক"
+    "inspectDetails": "নিদান আৰু প্ৰভাৱ চাওক",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "সক্ৰিয় নিৰীক্ষণ বহৰ",
@@ -120,7 +123,9 @@
     "logarithmic": "লগাৰিথমেটিক (log₁₀)",
     "close": "বন্ধ কৰক",
     "active": "সক্ৰিয়",
-    "liveSync": "লাইভ সংযোগ"
+    "liveSync": "লাইভ সংযোগ",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "সাগৰ বিজ্ঞান টেলিমেট্ৰি নথি",
@@ -142,7 +147,50 @@
     "docSubtitle": "অন্বেষণ • বিশ্লেষণ • সংৰক্ষণ — গোলকীয় একত্ৰিত মহাসাগৰ নিৰীক্ষণ প্ৰণালী (GOOS)",
     "reportId": "প্ৰতিবেদন নং",
     "dateTime": "তাৰিখ / সময়",
-    "qcPassed": "গুণগত মান নিয়ন্ত্ৰণ: QC স্তৰ-৩ উত্তীৰ্ণ"
+    "qcPassed": "গুণগত মান নিয়ন্ত্ৰণ: QC স্তৰ-৩ উত্তীৰ্ণ",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "ইউনেস্কো TEOS-10 হাইড্ৰ'ষ্টেটিক চাপ গণক",
@@ -158,7 +206,9 @@
     "depthRegime": "গভীৰতা মণ্ডল বেঞ্চমাৰ্ক",
     "hadalMatrix": "মানক মণ্ডল গভীৰতা বেঞ্চমাৰ্ক",
     "close": "গণক বন্ধ কৰক",
-    "depthZ": "নিৰ্বাচিত উপপৃষ্ঠীয় গভীৰতা"
+    "depthZ": "নিৰ্বাচিত উপপৃষ্ঠীয় গভীৰতা",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "পৃষ্ঠ স্তৰ (এপিপেলাজিক)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "গড় মহাসাগৰীয় অতল মজিয়া",
     "hadal_entry": "হেদাল খাত প্ৰৱেশ",
     "puerto_rico": "পুৱেৰ্তো ৰিকো খাত গভীৰতা",
-    "challenger": "চ্যালেঞ্জাৰ ডিপ সৰ্বোচ্চ গভীৰতা"
+    "challenger": "চ্যালেঞ্জাৰ ডিপ সৰ্বোচ্চ গভীৰতা",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "লংগৰ কৰা বয়া টেলিমেট্ৰি ষ্টেচন",
@@ -203,7 +263,9 @@
     "resetStandard": "মানকলৈ পুনঃনিৰ্ধাৰণ কৰক",
     "layerOpacity": "স্তৰৰ অস্বচ্ছতা",
     "verticalExaggeration": "উলম্ব গভীৰতাৰ অতিৰঞ্জন",
-    "apply3d": "প্ৰয়োগ কৰক আৰু ৩D দৃশ্য চাওক"
+    "apply3d": "প্ৰয়োগ কৰক আৰু ৩D দৃশ্য চাওক",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "উপকূলীয় বতৰ পূৰ্বানুমান আৰু বীচ বৰষুণ ৰাডাৰ",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "ভাঁহি থকা ষ্টেচনে আৰ্কিমিডিছৰ প্লৱন বল অনুসৰি ঢৌৰ লগত মিলি গতি কৰে।",
     "coastalRadarTitle": "উচ্চ-সঠিকতা উপকূলীয় ৰাডাৰ",
     "coastalRadarDesc": "গভীৰ সাগৰৰ পৰা উপকূলীয় বীচলৈ বাস্তৱ সময়ৰ বৰষুণ আৰু ঢৌৰ সংযোগ স্থাপন ইঞ্জিন।",
-    "techStackTitle": "স্থাপত্য আৰু আধুনিক ৱেব ষ্টেক"
+    "techStackTitle": "স্থাপত্য আৰু আধুনিক ৱেব ষ্টেক",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",

@@ -21,7 +21,8 @@
     "utc": "UTC",
     "satelliteActive": "ಉಪಗ್ರಹ ಟೆಲಿಮೆಟ್ರಿ ಸಕ್ರಿಯ",
     "reportBtn": "ವರದಿ",
-    "stormBtn": "ಚಂಡಮಾರುತ"
+    "stormBtn": "ಚಂಡಮಾರುತ",
+    "tools": "Oceanographic Tool Suites"
   },
   "controls": {
     "positionCoords": "ಸ್ಥಳ / ನಿರ್ದೇಶಾಂಕಗಳು",
@@ -40,7 +41,8 @@
     "meteorologicalThreatLayer": "ಹವಾಮಾನ ಬೆದರಿಕೆ ಪದರ",
     "severeStormTracks": "3D ತೀವ್ರ ಬಿರುಗಾಳಿ ಪಥಗಳು",
     "stormOn": "3D ಚಂಡಮಾರುತ: ಆನ್",
-    "stormOff": "3D ಚಂಡಮಾರುತ: ಆಫ್"
+    "stormOff": "3D ಚಂಡಮಾರುತ: ಆಫ್",
+    "viewMode": "3D View Mode"
   },
   "parameters": {
     "sst": "ಸಮುದ್ರ ಮೇಲ್ಮೈ ತಾಪಮಾನ",
@@ -84,7 +86,8 @@
     "stormNews": "ಲೈವ್ ಸಾಗರ ಚಂಡಮಾರುತ ಸುದ್ದಿ",
     "viewDetailedComparison": "ವಿವರವಾದ ಹೋಲಿಕೆಯನ್ನು ವೀಕ್ಷಿಸಿ",
     "critical": "ನಿರ್ಣಾಯಕ",
-    "inspectDetails": "ರೋಗನಿರ್ಣಯ ಮತ್ತು ಪರಿಣಾಮವನ್ನು ವೀಕ್ಷಿಸಿ"
+    "inspectDetails": "ರೋಗನಿರ್ಣಯ ಮತ್ತು ಪರಿಣಾಮವನ್ನು ವೀಕ್ಷಿಸಿ",
+    "reportModalTitle": "Generate In-Situ Validation Report"
   },
   "dashboard": {
     "activeFleet": "ಸಕ್ರಿಯ ವೀಕ್ಷಣಾ ನೌಕಾಪಡೆ",
@@ -120,7 +123,9 @@
     "logarithmic": "ಲಾಗರಿಥಮಿಕ್ (log₁₀)",
     "close": "ಮುಚ್ಚಿ",
     "active": "ಸಕ್ರಿಯ",
-    "liveSync": "ಲೈವ್ ಸಿಂಕ್"
+    "liveSync": "ಲೈವ್ ಸಿಂಕ್",
+    "searchLanguage": "Search language...",
+    "selectLanguage": "Select Language"
   },
   "report": {
     "title": "ಸಮುದ್ರಶಾಸ್ತ್ರ ಟೆಲಿಮೆಟ್ರಿ ದಾಖಲೆ",
@@ -142,7 +147,50 @@
     "docSubtitle": "ಅನ್ವೇಷಿಸಿ • ವಿಶ್ಲೇಷಿಸಿ • ಸಂರಕ್ಷಿಸಿ — ಜಾಗತಿಕ ಸಮಗ್ರ ಸಾಗರ ವೀಕ್ಷಣಾ ವ್ಯವಸ್ಥೆ (GOOS)",
     "reportId": "ವರದಿ ID",
     "dateTime": "ದಿನಾಂಕ / ಸಮಯ",
-    "qcPassed": "ಗುಣಮಟ್ಟ ನಿಯಂತ್ರಣ: QC ಹಂತ-3 ತೇರ್ಗಡೆ"
+    "qcPassed": "ಗುಣಮಟ್ಟ ನಿಯಂತ್ರಣ: QC ಹಂತ-3 ತೇರ್ಗಡೆ",
+    "printAnalyticReport": "Print Analytic Report",
+    "printTip": "Press Print or use browser Ctrl+P to save as formatted PDF document.",
+    "closeDossier": "Close Dossier",
+    "targetStation": "Target Station",
+    "geodeticCoords": "Geodetic Coordinates",
+    "gravAccel": "Gravitational Accel.",
+    "surgeSwell": "Surge / Wave Swell",
+    "significant": "Significant",
+    "inSituTelemetry": "In-Situ Physical Oceanographic Telemetry",
+    "sst": "Sea Surface Temp (SST)",
+    "anomalyBaseline": "Anomaly: +1.2°C Baseline",
+    "salinity": "Practical Salinity",
+    "haloclineActive": "Halocline active",
+    "currentVelocity": "Current Velocity",
+    "bearingNE": "Bearing: 045° North-East",
+    "precipRate": "Precipitation Rate",
+    "stormRisk": "Storm Risk",
+    "hydroProfileTitle": "Full Water Column Hydrostatic Pressure Profile (UNESCO Formulation)",
+    "depthZ": "Depth (m)",
+    "pressureDbar": "Pressure (dbar)",
+    "atmospheres": "Atm (atm)",
+    "mpa": "Pressure (MPa)",
+    "psi": "Pressure (PSI)",
+    "oceanicZone": "Oceanographic Zone",
+    "nearestBeachesTitle": "Nearest Coastal Beaches: Rain Forecast & Surf Safety Intelligence",
+    "spatialProximity": "Spatial Proximity Analysis",
+    "away": "away",
+    "flag": "Flag",
+    "rainProb": "Rain Probability",
+    "precip24h": "24h Precip",
+    "surfBreakers": "Surf Breakers",
+    "predictiveQcTitle": "Predictive Model vs In-Situ QC Metrics",
+    "rmse": "Root Mean Sq (RMSE)",
+    "systemicBias": "Systemic Bias",
+    "pearsonCorr": "Pearson Correlation",
+    "synchronizedPlatforms": "49 synchronized in-situ observing platforms reporting (24 Moored Buoys, 18 Argo Profiling Floats, 7 SVP Drifters).",
+    "marineThreatTitle": "Marine Threat & Advisory Status",
+    "stormAdvisory": "Storm Advisory: Central Pressure",
+    "surge": "Surge",
+    "defaultStormName": "Low Pressure Marine Front",
+    "defaultStormForecast": "Convective squalls and elevated wind waves detected in sector.",
+    "telemetryEngine": "Automated Digital Twin Telemetry Engine • OceanVision 3D Core v2.4",
+    "validatedStandards": "Validated by INCOIS / NOAA / Copernicus Standards"
   },
   "depthPressure": {
     "title": "ಯುನೆಸ್ಕೋ TEOS-10 ಹೈಡ್ರೋಸ್ಟಾಟಿಕ್ ಒತ್ತಡ ಕ್ಯಾಲ್ಕುಲೇಟರ್",
@@ -158,7 +206,9 @@
     "depthRegime": "ಆಳ ವಲಯ ಬೆಂಚ್‌ಮಾರ್ಕ್",
     "hadalMatrix": "ಪ್ರಮಾಣಿತ ಆಳ ಬೆಂಚ್‌ಮಾರ್ಕ್‌ಗಳು",
     "close": "ಕ್ಯಾಲ್ಕುಲೇಟರ್ ಮುಚ್ಚಿ",
-    "depthZ": "ಆಯ್ದ ಉಪಮೇಲ್ಮೈ ಆಳ"
+    "depthZ": "ಆಯ್ದ ಉಪಮೇಲ್ಮೈ ಆಳ",
+    "applyTo3D": "Apply Depth Slice to 3D View",
+    "matrixTitle": "Standard Water Column Depth Profile Matrix"
   },
   "zones": {
     "surface": "ಮೇಲ್ಮೈ ಪದರ (ಎಪಿಪೆಲಾಜಿಕ್)",
@@ -171,7 +221,17 @@
     "abyssal_floor": "ಸರಾಸರಿ ಸಾಗರ ಅಬಿಸಲ್ ಮಹಡಿ",
     "hadal_entry": "ಹಡಲ್ ಕಂದಕ ಪ್ರವೇಶ",
     "puerto_rico": "ಪೋರ್ಟೊ ರಿಕೊ ಕಂದಕ ಆಳ",
-    "challenger": "ಚಾಲೆಂಜರ್ ಡೀಪ್ ಗರಿಷ್ಠ ಆಳ"
+    "challenger": "ಚಾಲೆಂಜರ್ ಡೀಪ್ ಗರಿಷ್ಠ ಆಳ",
+    "surfaceIntertidal": "Surface / Intertidal Zone",
+    "scubaRange": "Recreational Scuba Dive Range",
+    "epipelagic50": "Epipelagic Photic Zone (50m)",
+    "epipelagic100": "Epipelagic Photic Zone (Commercial Diving Limit)",
+    "euphoticBoundary": "Euphotic Photic Zone Boundary",
+    "thermoclineBase": "Permanent Thermocline Base",
+    "mesopelagic": "Mesopelagic Twilight Zone (Argo Float Drift Parking)",
+    "abyssalPlain": "Abyssal Plain (Titanic Depth Range)",
+    "abyssalTrench": "Abyssopelagic Ocean Trench",
+    "challengerDeep": "Challenger Deep (Mariana Trench Hadal Zone)"
   },
   "buoy": {
     "title": "ಮೂರಿಂಗ್ ಬೋಯಾ ಟೆಲಿಮೆಟ್ರಿ ನಿಲ್ದಾಣ",
@@ -203,7 +263,9 @@
     "resetStandard": "ಪ್ರಮಾಣಿತಕ್ಕೆ ಮರುಹೊಂದಿಸಿ",
     "layerOpacity": "ಪದರದ ಅಪಾರದರ್ಶಕತೆ",
     "verticalExaggeration": "ಲಂಬ ಆಳ ಉತ್ಪ್ರೇಕ್ಷೆ",
-    "apply3d": "ಅನ್ವಯಿಸಿ ಮತ್ತು 3D ದೃಶ್ಯವನ್ನು ವೀಕ್ಷಿಸಿ"
+    "apply3d": "ಅನ್ವಯಿಸಿ ಮತ್ತು 3D ದೃಶ್ಯವನ್ನು ವೀಕ್ಷಿಸಿ",
+    "settings": "Colorbar & Shaders",
+    "logScale": "Logarithmic Mapping"
   },
   "stormModal": {
     "title": "ಕರಾವಳಿ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ & ಬೀಚ್ ಮಳೆ ರಾಡಾರ್",
@@ -366,7 +428,9 @@
     "buoyPhysicsDesc": "ತೇಲುವ ನಿಲ್ದಾಣಗಳು ಆರ್ಕಿಮಿಡೀಸ್ ತೇಲುವ ತತ್ವಗಳ ಪ್ರಕಾರ ನೈಜ ಅಲೆಗಳೊಂದಿಗೆ ಚಲಿಸುತ್ತವೆ.",
     "coastalRadarTitle": "ಉನ್ನತ ನಿಖರತೆಯ ಕರಾವಳಿ ರಾಡಾರ್",
     "coastalRadarDesc": "ಆಳ ಸಮುದ್ರದಿಂದ ಕರಾವಳಿ ಬೀಚ್‌ಗಳವರೆಗೆ ನೈಜ ಸಮಯದ ಮಳೆ ಮತ್ತು ಅಲೆಗಳನ್ನು ಸಂಪರ್ಕಿಸುವ ಎಂಜಿನ್.",
-    "techStackTitle": "ವಾಸ್ತುಶಿಲ್ಪ ಮತ್ತು ಆಧುನಿಕ ವೆಬ್ ಸ್ಟ್ಯಾಕ್"
+    "techStackTitle": "ವಾಸ್ತುಶಿಲ್ಪ ಮತ್ತು ಆಧುನಿಕ ವೆಬ್ ಸ್ಟ್ಯಾಕ್",
+    "calcSst": "Surface Temp SST (°C)",
+    "calcSal": "Salinity (PSU / g·kg⁻¹)"
   },
   "story": {
     "heroTitle": "Ocean Vision 3D",
