@@ -216,15 +216,36 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     /\b(capital of|cricket|football|soccer|president|prime minister|python game|code a|write a poem|write code|recipe|movie|song|who won|stock price|france|germany|paris|london|cricket match)\b/i.test(q)
   );
 
-  const isGreeting = /\b(hello|hi|hey|greetings|good morning|good afternoon|good evening|howdy|hola|sup|yo)\b/i.test(q) ||
-                     /[\u0980-\u09FF]/.test(query) && /(হ্যালো|নমস্কার|সালাম|কেমন আছো|শুভ সকাল)/i.test(query) ||
-                     /[\u0900-\u097F]/.test(query) && /(नमस्ते|हैलो|प्रणाम|शुभ प्रभात)/i.test(query);
+  const isGoodMorning = /\b(good morning|morning nerida|gm|morning)\b/i.test(q) ||
+                        (/[\u0980-\u09FF]/.test(query) && /(শুভ সকাল)/i.test(query)) ||
+                        (/[\u0900-\u097F]/.test(query) && /(शुभ प्रभात|सुप्रभात)/i.test(query));
 
-  const isIdentityOrHelp = /\b(what can you do|who are you|what are you|who made you|help me|help|features|capabilities|what do you do|how to use|what is your role|tell me about yourself)\b/i.test(q) ||
+  const isGoodNight = /\b(good night|goodnight|gn|sleep well|sweet dreams|night nerida)\b/i.test(q) ||
+                      (/[\u0980-\u09FF]/.test(query) && /(শুভ রাত্রি)/i.test(query)) ||
+                      (/[\u0900-\u097F]/.test(query) && /(शुभ रात्रि|शुभरात्रि)/i.test(query));
+
+  const isGoodDay = /\b(good afternoon|good evening|good day)\b/i.test(q) ||
+                    (/[\u0980-\u09FF]/.test(query) && /(শুভ অপরাহ্ন|শুভ সন্ধ্যা)/i.test(query)) ||
+                    (/[\u0900-\u097F]/.test(query) && /(शुभ दोपहर|शुभ संध्या)/i.test(query));
+
+  const isHowAreYou = /\b(how are you|how r u|how are you doing|how do you do|how's it going|how are things|how are you feeling|what's up|wassup|sup nerida)\b/i.test(q) ||
+                      (/[\u0980-\u09FF]/.test(query) && /(কেমন আছো|কেমন আছেন)/i.test(query)) ||
+                      (/[\u0900-\u097F]/.test(query) && /(आप कैसे हैं|कैसी हो|सब कैसा है)/i.test(query));
+
+  const isCompliment = /\b(awesome|amazing|great job|cool|nice work|well done|wonderful|good job|you are great|you're great|you are cool|you're cool|you are smart|love you)\b/i.test(q) ||
+                       (/[\u0980-\u09FF]/.test(query) && /(দারুণ|চমৎকার|অসাধারণ)/i.test(query)) ||
+                       (/[\u0900-\u097F]/.test(query) && /(बहुत बढ़िया|शाबाश|कमाल)/i.test(query));
+
+  const isGreeting = isGoodMorning || isGoodNight || isGoodDay || isHowAreYou || isCompliment ||
+                     /\b(hello|hi|hey|greetings|howdy|hola|yo|namaste|vanakkam|namaskaram|sat sri akaal|aadab)\b/i.test(q) ||
+                     (/[\u0980-\u09FF]/.test(query) && /(হ্যালো|নমস্কার|সালাম|কেমন আছো|শুভ সকাল|শুভ রাত্রি)/i.test(query)) ||
+                     (/[\u0900-\u097F]/.test(query) && /(नमस्ते|हैलो|प्रणाम|शुभ प्रभात|शुभ रात्रि)/i.test(query));
+
+  const isIdentityOrHelp = /\b(what can you do|who are you|what are you|who made you|help me|help|features|capabilities|what do you do|how to use|what is your role|tell me about yourself|what can i do for you|what can you do for me|what can u do for me|how can you help)\b/i.test(q) ||
                            /(তুমি কি করতে পারো|তুমি কে|কি করতে পারো|সাহায্য|তোমার কাজ কি)/i.test(query) ||
                            /(आप क्या कर सकते हैं|तुम कौन हो|मदद|सहायता|तुम क्या कर सकते हो)/i.test(query);
 
-  const isPoliteClosing = /\b(thanks|thank you|thx|bye|goodbye|see you|ok thanks|okay thanks)\b/i.test(q) ||
+  const isPoliteClosing = /\b(thanks|thank you|thx|bye|goodbye|see you|ok thanks|okay thanks|catch you later|take care)\b/i.test(q) ||
                           /(ধন্যবাদ|বিদায়)/i.test(query) ||
                           /(धन्यवाद|शुक्रिया|अलविदा)/i.test(query);
 
@@ -298,6 +319,11 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     isOutOfDomain,
     isFollowUpMeasurement,
     isGreeting,
+    isGoodMorning,
+    isGoodNight,
+    isGoodDay,
+    isHowAreYou,
+    isCompliment,
     isIdentityOrHelp,
     isPoliteClosing,
     isLanguageSwitchOnly,
@@ -343,45 +369,114 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
   // STRICT RULE: ZERO tool calls, ZERO actions, ZERO 3D changes
   // -------------------------------------------------------------
   if (intent.category === 'CONVERSATIONAL') {
-    provenance.push({ type: 'AI-DERIVED', label: 'Nerida Conversational Copilot' });
+    provenance.push({ type: 'AI-DERIVED', label: 'Nerida Interactive Companion' });
 
-    if (intent.isLanguageSwitchOnly || query.includes('বাংলায় বলো')) {
+    const basinObj = resolveBasin(intent.basin || intent.contextBasin, null);
+    const basinName = basinObj ? basinObj.name : (currentState.basin || 'Bay of Bengal');
+
+    if (intent.isGoodMorning) {
+      if (lang === 'bn') {
+        message = `শুভ সকাল! ☀️ আজ সমুদ্রের ডিজিটাল টুইন সম্পূর্ণরূপে সক্রিয় ও প্রস্তুত।\n\n**${basinName}**-এর আবহাওয়া ও উপগ্রহ ডেটা লাইভ পর্যবেক্ষণ করা হচ্ছে। আমি **Nerida**, আপনার এআই ওশান কোপাইলট — আজ আপনাকে কীভাবে সাহায্য করতে পারি? বর্তমান পৃষ্ঠতলের তাপমাত্রা, উল্লম্ব প্রোফাইল নাকি 3D জলস্তম্ভ দেখতে চান? 🌊`;
+      } else if (lang === 'hi') {
+        message = `शुभ प्रभात! ☀️ आज महासागर पूरी तरह जीवंत और गतिशील है।\n\n**${basinName}** के लिए सभी इन-सीटू सेंसर्स और उपग्रह डेटा तैयार हैं। मैं **नेरिडा (Nerida)** हूँ — बताइए, आज मैं आपके लिए क्या करूँ? क्या आप समुद्री सतह का तापमान, लवणता प्रोफाइल या 3D समुद्र का दृश्य देखना चाहेंगे? 🌊`;
+      } else {
+        message = `Good morning! ☀️ The ocean is awake and dynamic today.\n\nAll autonomous monitoring buoys, Argo floats, and 3D digital-twin telemetry are live and calibrated for **${basinName}**.\n\nI'm **Nerida**, your AI Ocean Copilot — what can I do for you today? Would you like to check current sea surface temperatures, inspect vertical salinity profiles, or explore the 3D subsurface view? 🌊`;
+      }
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push(`What marine life is found in ${basinName}?`);
+      suggestions.push('Show current vectors');
+    } else if (intent.isGoodNight) {
+      if (lang === 'bn') {
+        message = `শুভ রাত্রি! 🌙 শান্তিময় বিশ্রাম নিন।\n\nসারা রাত ধরে আমাদের গভীর সমুদ্রের সেন্সর, আর্গো ফ্লোট এবং মোর্ড বায়াগুলো নিরবচ্ছিন্নভাবে সমুদ্রের স্রোত, তাপমাত্রা ও জোয়ার-ভাটার গতিবিধি পর্যবেক্ষণ করবে।\n\nপরবর্তীতে ফিরে এলে আমি সর্বশেষ সমুদ্রের তথ্য নিয়ে প্রস্তুত থাকব। শুভকামনা ও মিষ্টি স্বপ্ন! 🌊✨`;
+      } else if (lang === 'hi') {
+        message = `शुभ रात्रि! 🌙 अच्छी और सुकून भरी नींद लें।\n\nरात भर हमारे वैश्विक फ्लोट नेटवर्क, गहरे समुद्र के बुआए और सेंसर्स महासागरीय धाराओं व तापमान पर नज़र रखेंगे।\n\nकल जब भी आप लौटेंगे, मैं आपके लिए ताज़ा महासागरीय विश्लेषण तैयार रखूँगी। शुभ रात्रि और मीठे सपने! 🌊✨`;
+      } else {
+        message = `Good night! 🌙 Rest well.\n\nOur global ocean observing fleet, autonomous Argo floats, and moored buoys will continue silently tracking ocean currents, tides, and thermocline shifts through the night.\n\nWhenever you return, I'll have the latest ocean intelligence and 3D simulations ready for you. Smooth sailing and sweet dreams! 🌊✨`;
+      }
+      suggestions.push(`Show SST in ${basinName}`);
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Assess storm & swell risk');
+      suggestions.push('Show current vectors');
+    } else if (intent.isHowAreYou) {
+      if (lang === 'bn') {
+        message = `আমি দারুণ আছি, জিজ্ঞাসা করার জন্য ধন্যবাদ! 🌊\n\nআমাদের সমস্ত ডিজিটাল টুইন মডেল, থার্মোডাইনামিক সমীকরণ ও ওশান বায়াগুলো খুব সুন্দরভাবে কাজ করছে।\n\nআমি সম্পূর্ণ প্রস্তুত — আজ আপনার জন্য কী করতে পারি? আপনি কি **${basinName}**-এর বর্তমান অবস্থা দেখতে চান, ঝড়ের ঝুঁকি যাচাই করতে চান, নাকি 3D জলস্তম্ভে ডুব দিতে চান?`;
+      } else if (lang === 'hi') {
+        message = `मैं बहुत बढ़िया हूँ, पूछने के लिए धन्यवाद! 🌊\n\nहमारे सभी डिजिटल ट्विन मॉडल्स, हाइड्रोडायनामिक इक्वेशंस और इन-सीटू सेंसर्स सुचारू रूप से कार्य कर रहे हैं।\n\nबताइए, आज मैं आपके लिए क्या करूँ? क्या आप **${basinName}** की स्थिति देखना चाहते हैं, चक्रवात का अलर्ट जाँचना चाहते हैं, या 3D समुद्र दृश्य का अन्वेषण करना चाहते हैं?`;
+      } else {
+        message = `I'm doing wonderful, thank you for asking! 🌊\n\nAll digital-twin hydrographic models, TEOS-10 equations, and in-situ sensor streams are running smoothly.\n\nI'm ready to dive in — what can I do for you today? Would you like to inspect conditions in **${basinName}**, check storm threat alerts, or fly through the 3D water column?`;
+      }
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push('Compare Arabian Sea and Bay of Bengal');
+      suggestions.push('Show 3D current vectors');
+    } else if (intent.isCompliment) {
+      if (lang === 'bn') {
+        message = `আপনাকে অনেক ধন্যবাদ! 😊 আপনার সাথে সমুদ্রবিজ্ঞান অন্বেষণ করতে পেরে আমি আনন্দিত। নতুন কোনো অঞ্চল বিশ্লেষণ করতে চাইলে বা 3D ভিউ দেখতে চাইলে যেকোনো সময় বলুন! 🌊`;
+      } else if (lang === 'hi') {
+        message = `बहुत-बहुत धन्यवाद! 😊 आपके साथ महासागर का अध्ययन और अन्वेषण करना बहुत सुखद है। जब भी आप किसी नए बेसिन या 3D दृश्य का विश्लेषण करना चाहें, बस मुझे बताएं! 🌊`;
+      } else {
+        message = `Thank you so much! 😊 It's an absolute pleasure exploring and analyzing our oceans with you. Let me know whenever you'd like to check out another basin, examine depth stratifications, or see the 3D current vectors in action! 🌊`;
+      }
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push(`What marine life is found in ${basinName}?`);
+    } else if (intent.isGoodDay) {
+      if (lang === 'bn') {
+        message = `শুভ দিন! 🌊 **${basinName}**-এর সমস্ত সমুদ্রবিজ্ঞান সেন্সর লাইভ ডেটা পাঠাচ্ছে। আমি **Nerida** — আপনি এখন কী অন্বেষণ বা বিশ্লেষণ করতে চান?`;
+      } else if (lang === 'hi') {
+        message = `शुभ दिन! 🌊 **${basinName}** के सभी समुद्री सेंसर्स लाइव डेटा भेज रहे हैं। मैं **नेरिडा** हूँ — बताइए, अभी आप क्या देखना या समझना चाहेंगे?`;
+      } else {
+        message = `Good day! 🌊 All oceanographic sensors and numerical models for **${basinName}** are reporting live telemetry. I'm **Nerida** — what would you like to explore or analyze right now?`;
+      }
+      suggestions.push(`Show SST in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push('Show current vectors');
+    } else if (intent.isLanguageSwitchOnly || query.includes('বাংলায় বলো')) {
       if (lang === 'bn') {
         message = `অবশ্যই! আমি এখন থেকে আপনার সাথে বাংলায় আলোচনা করব।\n\nআমি **Nerida**, Ocean Vision 3D-এর ডিজিটাল টুইন কোপাইলট। আপনি আমাকে সমুদ্রের তাপমাত্রা, লবণাক্ততা, স্রোতের গতিবেগ, উল্লম্ব গভীরতা প্রোফাইল বা বিভিন্ন বেসিনের তুলনামূলক তথ্য জিজ্ঞাসা করতে পারেন।`;
       } else {
         message = `Understood! I will communicate in your preferred language.\n\nI am **Nerida**, your Ocean Vision 3D digital-twin copilot. Ask me about sea surface temperature, salinity, currents, depth profiles, or basin comparisons.`;
       }
+      suggestions.push(`Show SST in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push('Show current vectors');
     } else if (intent.isIdentityOrHelp) {
       if (lang === 'bn') {
-        message = `আমি **Nerida**, Ocean Vision 3D-এর এআই ওশানোগ্রাফিক কোপাইলট।\n\nআমি আপনাকে নিম্নলিখিত বিষয়গুলোতে সহায়তা করতে পারি:\n- 🌊 **সমুদ্রের ভৌত চলক:** তাপমাত্রা (SST), লবণাক্ততা, সমুদ্রস্রোত, ঢেউ, ক্লোরোফিল এবং দ্রবীভূত অক্সিজেন পরিমাপ।\n- 📏 **গভীরতা প্রোফাইল:** পৃষ্ঠ থেকে ৬০০০ মিটার পর্যন্ত জলস্তম্ভের বিশ্লেষণ (থার্মোক্লাইন ও হ্যালোক্লাইন)।\n- ⚖️ **বেসিন তুলনা:** বঙ্গোপসাগর ও আরব সাগরের আবহাওয়া ও সমুদ্রগত পরিস্থিতির তুলনা।\n- 🔍 **অস্বাভাবিকতা নির্ণয়:** ৩০ বছরের জলবায়ু বেসলাইনের বিপরীতে থার্মাল অ্যানোমালি শনাক্তকরণ।\n- 🎮 **3D ডিজিটাল টুইন নিয়ন্ত্রণ:** নির্দিষ্ট বেসিন, গভীরতার স্লাইস বা 3D ভেক্টর ফিল্ড সক্রিয় করা।\n\nআপনি কী অন্বেষণ করতে চান?`;
+        message = `নমস্কার! আমি **Nerida**, Ocean Vision 3D-এর এআই ওশানোগ্রাফিক কোপাইলট। 🌊\n\nআমি আপনাকে কীভাবে সাহায্য করতে পারি এবং কী কী করতে পারি:\n- 🌊 **সমুদ্রের ভৌত চলক:** তাপমাত্রা (SST), লবণাক্ততা, সমুদ্রস্রোত, ঢেউ, ক্লোরোফিল এবং দ্রবীভূত অক্সিজেন পরিমাপ।\n- 📏 **গভীরতা প্রোফাইল:** পৃষ্ঠ থেকে ৬০০০ মিটার পর্যন্ত জলস্তম্ভের বিশ্লেষণ (থার্মোক্লাইন ও হ্যালোক্লাইন)।\n- ⚖️ **বেসিন তুলনা:** বঙ্গোপসাগর ও আরব সাগরের আবহাওয়া ও সমুদ্রগত পরিস্থিতির তুলনা।\n- 🔍 **অস্বাভাবিকতা নির্ণয়:** ৩০ বছরের জলবায়ু বেসলাইনের বিপরীতে থার্মাল অ্যানোমালি শনাক্তকরণ।\n- 🎮 **3D ডিজিটাল টুইন নিয়ন্ত্রণ:** নির্দিষ্ট বেসিন, গভীরতার স্লাইস বা 3D ভেক্টর ফিল্ড সক্রিয় করা।\n\nআজ আমি আপনার জন্য কী করতে পারি? নিচের যেকোনো অপশন বেছে নিতে পারেন!`;
       } else if (lang === 'hi') {
-        message = `मैं **नेरिडा (Nerida)** हूँ, Ocean Vision 3D के लिए आपकी एआई ओशनोग्राफिक कोपायलट।\n\nमैं इन कार्यों में आपकी सहायता कर सकती हूँ:\n- 🌊 **भौतिक पैरामीटर:** सतह तापमान (SST), लवणता, समुद्री धाराएं, तरंगें, क्लोरोफिल और घुलित ऑक्सीजन।\n- 📏 **गहराई प्रोफाइल:** सतह से 6000 मीटर तक का जल-स्तंभ विश्लेषण।\n- ⚖️ **बेसिन तुलना:** बंगाल की खाड़ी और अरब सागर के बीच तुलना।\n- 🔍 **विसंगति विश्लेषण:** 30-वर्षीय क्लाइमेटोलॉजिकल बेसलाइन के विरुद्ध मरीन हीटवेव की पहचान।\n- 🎮 **3D डिजिटल ट्विन नियंत्रण:** विभिन्न बेसिन, गहराई स्लाइस या 3D वेक्टर दृश्य प्रदर्शित करना।\n\nआप क्या देखना चाहेंगे?`;
+        message = `नमस्ते! मैं **नेरिडा (Nerida)** हूँ, Ocean Vision 3D के लिए आपकी एআই ओशनोग्राफिक कोपायलट। 🌊\n\nमैं इन कार्यों में आपकी पूरी सहायता कर सकती हूँ:\n- 🌊 **भौतिक पैरामीटर:** सतह तापमान (SST), लवणता, समुद्री धाराएं, तरंगें, क्लोरोफिल और घुलित ऑक्सीजन।\n- 📏 **गहराई प्रोफाइल:** सतह से 6000 मीटर तक का जल-स्तंभ विश्लेषण।\n- ⚖️ **बेसिन तुलना:** बंगाल की खाड़ी और अरब सागर के बीच तुलना।\n- 🔍 **विसंगति विश्लेषण:** 30-वर्षीय क्लाइमेटोलॉजिकल बेसलाइन के विरुद्ध मरीन हीटवेव की पहचान।\n- 🎮 **3D डिजिटल ट्विन नियंत्रण:** विभिन्न बेसिन, गहराई स्लाइस या 3D वेक्टर दृश्य प्रदर्शित करना।\n\nबताइए, आज मैं आपके लिए क्या कर सकती हूँ?`;
       } else {
-        message = `Hello! I am **Nerida**, your AI Ocean Copilot for the **Ocean Vision 3D** digital twin platform.\n\nHere is how I can assist your oceanographic exploration:\n- 🌊 **Physical Variables:** Query real observations and TEOS-10 models for Temperature (SST), Salinity, Currents, Wave Swell, Chlorophyll-a, and Dissolved Oxygen.\n- 📏 **Vertical Column Profiles:** Analyze thermocline and halocline stratification from the surface down to 6000m.\n- ⚖️ **Multi-Basin Comparisons:** Compare environmental dynamics between the Arabian Sea, Bay of Bengal, Equatorial Pacific, and other basins.\n- 🔍 **Anomaly Diagnostics:** Detect marine heatwaves and physical deviations against 30-year climatological baselines.\n- 🎮 **Digital Twin Teleoperation:** Directly navigate the 3D viewer, adjust depth slices, or activate 3D current vector fields.\n\nTry asking me a question below or selecting a quick query!`;
+        message = `Hello! I'm **Nerida**, your AI Ocean Copilot and interactive companion for **Ocean Vision 3D**. 🌊\n\nHere is how I can assist your exploration today:\n- 🌊 **Physical Telemetry:** Query real observations and TEOS-10 models for Temperature (SST), Salinity, Currents, Wave Swell, Chlorophyll-a, and Dissolved Oxygen.\n- 📏 **Vertical Column Profiles:** Analyze thermocline and halocline stratification from the surface down to 6,000m.\n- ⚖️ **Multi-Basin Comparisons:** Compare environmental dynamics between the Arabian Sea, Bay of Bengal, Equatorial Pacific, and other basins.\n- 🔍 **Anomaly Diagnostics:** Detect marine heatwaves and physical deviations against 30-year climatological baselines.\n- 🎮 **Digital Twin Teleoperation:** Directly navigate the 3D viewer, adjust depth slices, or activate 3D current vector fields.\n\nWhat can I do for you today? Try picking a suggestion below or asking me anything!`;
       }
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push('Compare Arabian Sea and Bay of Bengal');
+      suggestions.push('Show current vectors');
     } else if (intent.isPoliteClosing) {
       if (lang === 'bn') {
-        message = `আপনাকেও ধন্যবাদ! সমুদ্রের ডিজিটাল টুইন সম্পর্কে আরও কোনো প্রশ্ন থাকলে নির্দ্বিধায় জিজ্ঞাসা করুন। শুভকামনা! 🌊`;
+        message = `আপনাকেও অনেক ধন্যবাদ! সমুদ্রের ডিজিটাল টুইন সম্পর্কে আরও কোনো প্রশ্ন থাকলে নির্দ্বিধায় জিজ্ঞাসা করুন। শুভকামনা! 🌊`;
       } else if (lang === 'hi') {
-        message = `आपका धन्यवाद! डिजिटल ट्विन के बारे में कोई और प्रश्न हो तो अवश्य पूछें। शुभ यात्रा! 🌊`;
+        message = `आपका बहुत-बहुत धन्यवाद! डिजिटल ट्विन के बारे में कोई और प्रश्न हो तो अवश्य पूछें। शुभ यात्रा! 🌊`;
       } else {
         message = `You are very welcome! If you need further oceanographic analysis or 3D navigation, I'm right here. Smooth sailing! 🌊`;
       }
+      suggestions.push(`Show SST in ${basinName}`);
+      suggestions.push('Assess storm & swell risk');
     } else {
-      // Standard Greeting ("hello", "hi", "hey")
+      // Standard Greeting ("hello", "hi", "hey", etc.)
       if (lang === 'bn') {
-        message = `নমস্কার! আমি **Nerida**, Ocean Vision 3D-এর এআই ওশান কোপাইলট। আমি আপনাকে বাস্তব ও সিমুলেটেড সমুদ্রের অবস্থা অন্বেষণ করতে, বিভিন্ন বেসিন তুলনা করতে, উল্লম্ব প্রোফাইল দেখতে এবং 3D ভিউ নিয়ন্ত্রণ করতে সহায়তা করতে পারি। আজ আপনি কী অন্বেষণ করতে চান?`;
+        message = `নমস্কার! আমি **Nerida**, Ocean Vision 3D-এর এআই ওশান কোপাইলট। আমি বর্তমানে **${basinName}** পর্যবেক্ষণ করছি।\n\nআজ আপনাকে কীভাবে সাহায্য করতে পারি? আপনি কি সমুদ্রের তাপমাত্রা, লবণাক্ততা, স্রোত, উল্লম্ব গভীরতা প্রোফাইল দেখতে চান নাকি 3D ডিজিটাল টুইন অন্বেষণ করতে চান? 🌊`;
       } else if (lang === 'hi') {
-        message = `नमस्ते! मैं **नेरिडा**, Ocean Vision 3D की एआई ओशन कोपायलट हूँ। मैं आपको महासागरीय स्थितियों, बेसिन तुलना, वर्टिकल प्रोफाइल, विसंगतियों का विश्लेषण करने और 3D दृश्य को नियंत्रित करने में मदद कर सकती हूँ। आप क्या देखना चाहेंगे?`;
+        message = `नमस्ते! मैं **नेरिडा (Nerida)** हूँ, Ocean Vision 3D की एआई ओशन कोपायलट। मैं इस समय **${basinName}** पर नज़र रख रही हूँ।\n\nबताइए, आज मैं आपके लिए क्या कर सकती हूँ? क्या आप समुद्री स्थिति, तापमान, लवणता, गहराई प्रोफाइल या 3D दृश्य देखना चाहेंगे? 🌊`;
       } else {
-        message = `Hello! I'm **Nerida**, your AI Ocean Copilot. I can help you explore ocean conditions, compare regions, analyze profiles, anomalies, currents, and control the 3D ocean view. What would you like to investigate?`;
+        message = `Hello! I'm **Nerida**, your AI Ocean Copilot. I'm currently tracking ocean dynamics in the **${basinName}**.\n\nWhat can I do for you today? We can explore sea surface temperature, salinity, currents, vertical depth profiles, or take a flythrough of the 3D ocean view! 🌊`;
       }
+      suggestions.push(`Explain current conditions in ${basinName}`);
+      suggestions.push('Show the temperature profile');
+      suggestions.push(`What marine life is found in ${basinName}?`);
+      suggestions.push('Show current vectors');
     }
-
-    suggestions.push('Show SST at 100m in Arabian Sea');
-    suggestions.push('Compare Arabian Sea and Bay of Bengal');
-    suggestions.push('Show the temperature profile');
-    suggestions.push('Show current vectors');
   }
 
   // -------------------------------------------------------------
@@ -528,21 +623,24 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
   }
 
   // -------------------------------------------------------------
-  // ROUTE 5: UNKNOWN / AMBIGUOUS (Gibberish e.g. "asdfghjkl")
+  // ROUTE 5: UNKNOWN / AMBIGUOUS (Gibberish or unparseable input)
   // -------------------------------------------------------------
   else if (intent.category === 'UNKNOWN') {
-    provenance.push({ type: 'AI-DERIVED', label: 'Nerida Query Clarifier' });
+    provenance.push({ type: 'AI-DERIVED', label: 'Nerida Interactive Assistant' });
+
+    const basinObj = resolveBasin(intent.basin || intent.contextBasin, null);
+    const bName = basinObj ? basinObj.name : (currentState.basin || 'Bay of Bengal');
 
     if (lang === 'bn') {
-      message = `আমি বুঝতে পারছি না আপনি কী জানতে চাচ্ছেন। আপনি আমাকে সমুদ্রের তাপমাত্রা, লবণাক্ততা, স্রোত, সামুদ্রিক প্রাণী, বেসিন তুলনা বা 3D ডিজিটাল টুইন নিয়ন্ত্রণ সম্পর্কে জিজ্ঞাসা করতে পারেন।`;
+      message = `আমি ঠিক বুঝতে পারিনি, তবে আমি আপনাকে সাহায্য করতে প্রস্তুত! 🌊\n\nআপনি আমাকে নিচের বিষয়গুলো জিজ্ঞাসা করতে পারেন:\n- *"${bName}-এর বর্তমান পরিস্থিতি ব্যাখ্যা করো"*\n- *"${bName}-এ ৫০০ মিটারে তাপমাত্রা কত?"*\n- *"${bName}-এ কী কী সামুদ্রিক প্রাণী বাস করে?"*\n- *"তাপমাত্রার উল্লম্ব প্রোফাইল দেখাও"*\n- *"3D-তে সমুদ্রস্রোত প্রদর্শন করো"*\n\nআজ আপনি কী অন্বেষণ করতে চান?`;
     } else if (lang === 'hi') {
-      message = `मुझे समझ नहीं आया कि आप क्या पूछ रहे हैं। आप मुझसे समुद्री स्थिति, तापमान, लवणता, समुद्री जीव, बेसिन तुलना या 3D डिजिटल ट्विन दृश्य के बारे में पूछ सकते हैं।`;
+      message = `मैं इसे पूरी तरह समझ नहीं पाई, लेकिन मैं आपकी सहायता के लिए तैयार हूँ! 🌊\n\nआप मुझसे इस तरह के प्रश्न पूछ सकते हैं:\n- *"${bName} की वर्तमान स्थिति समझाएं"*\n- *"${bName} में 500m पर तापमान कितना है?"*\n- *"${bName} में कौन से समुद्री जीव पाए जाते हैं?"*\n- *"तापमान का वर्टिकल प्रोफाइल दिखाएं"*\n- *"3D में महासागरीय धाराएं प्रदर्शित करें"*\n\nबताइए, आज आप क्या देखना चाहेंगे?`;
     } else {
-      message = `I'm not sure what you're asking. I can help with ocean conditions, marine life, oceanography, comparisons, anomalies, profiles, and the 3D ocean view.`;
+      message = `I didn't quite catch that, but I'm right here and ready to help! 🌊\n\nYou can ask me things like:\n- *"Explain current conditions in ${bName}"*\n- *"What is the temperature at 500m in ${bName}?"*\n- *"What marine life is found in ${bName}?"*\n- *"Show the temperature profile"*\n- *"Compare Arabian Sea and Bay of Bengal"*\n- Or *"Show current vectors in 3D"*!\n\nWhat can I do for you today?`;
     }
 
-    suggestions.push('Show me the Arabian Sea at 500m');
-    suggestions.push('Compare that with the Bay of Bengal');
+    suggestions.push(`Explain current conditions in ${bName}`);
+    suggestions.push(`What is the temperature at 500m?`);
     suggestions.push('Show the temperature profile');
     suggestions.push('Show current vectors');
   }
