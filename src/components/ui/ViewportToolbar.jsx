@@ -141,7 +141,7 @@ export default function ViewportToolbar({
         >
           <div className="flex items-center justify-between text-xs font-semibold text-slate-200 mb-1.5">
             <div className="flex items-center gap-1.5">
-              <span>{currentParam.name}</span>
+              <span>{t(`parameters.${currentParam.id}`, currentParam.name)}</span>
               {isLogScale && (
                 <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">log₁₀</span>
               )}

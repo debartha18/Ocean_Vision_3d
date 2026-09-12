@@ -133,7 +133,7 @@ export default function Header({
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-600/80 to-cyan-500/80 hover:from-sky-500 hover:to-cyan-400 border border-cyan-400/40 text-xs text-white shadow-glow-cyan transition-all cursor-pointer shrink-0"
         >
           <FileText className="w-3.5 h-3.5 text-white" />
-          <span className="font-bold hidden sm:inline text-[11px]">Report</span>
+          <span className="font-bold hidden sm:inline text-[11px]">{t('navbar.reportBtn', 'Report')}</span>
         </button>
 
         {/* Storm Radar & News Bulletin Button */}
@@ -143,7 +143,7 @@ export default function Header({
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/70 border border-red-500/40 text-xs text-red-300 shadow-glow-red transition-all cursor-pointer shrink-0"
         >
           <Bell className="w-3.5 h-3.5 text-red-400 animate-pulse" />
-          <span className="font-bold hidden sm:inline text-[11px]">Storm</span>
+          <span className="font-bold hidden sm:inline text-[11px]">{t('navbar.stormBtn', 'Storm')}</span>
           <span className="px-1.5 py-0.5 rounded bg-red-500/30 text-[9px] font-mono font-bold text-white">
             {activeRegion?.stormProbability ?? 30}%
           </span>

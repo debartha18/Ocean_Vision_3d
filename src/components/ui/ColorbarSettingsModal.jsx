@@ -316,7 +316,7 @@ export default function ColorbarSettingsModal({
             onClick={onClose}
             className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-xs font-bold text-white shadow-glow-cyan transition-all cursor-pointer"
           >
-            {t('common.close', 'Apply & View 3D Scene')}
+            {t('colorbar.apply3d', 'Apply & View 3D Scene')}
           </button>
         </div>
       </div>

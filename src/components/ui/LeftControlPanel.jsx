@@ -132,7 +132,7 @@ export default function LeftControlPanel({
             type="submit"
             className="w-full py-1 rounded-lg bg-sky-600/70 hover:bg-cyan-500 hover:text-slate-950 text-white text-[11px] font-bold transition-all flex items-center justify-center gap-1 shadow-glow-cyan"
           >
-            <span>Target Coordinates</span>
+            <span>{t('locationModal.targetCustom', 'Target Coordinates')}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
@@ -144,7 +144,7 @@ export default function LeftControlPanel({
           <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
             {t('controls.oceanParameters', 'Parameters')}
           </span>
-          <span className="text-[10px] text-sky-400/80 font-mono">6 Variables</span>
+          <span className="text-[10px] text-sky-400/80 font-mono">{t('enso.variablesCount', '6 Variables')}</span>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -262,7 +262,7 @@ export default function LeftControlPanel({
             <Calendar className="w-3.5 h-3.5 text-cyan-400" />
             <span className="font-bold text-white">{selectedDate}</span>
           </div>
-          <button className="text-[11px] text-cyan-400 hover:underline">Change</button>
+          <button className="text-[11px] text-cyan-400 hover:underline">{t('common.change', 'Change')}</button>
         </div>
 
         {/* Scrubber Range Slider */}
@@ -327,31 +327,31 @@ export default function LeftControlPanel({
                 : 'bg-slate-800/60 text-slate-400 border-slate-700'
             }`}
           >
-            {isStormLayerActive ? '3D Storm: ON' : '3D Storm: OFF'}
+            {isStormLayerActive ? t('controls.stormOn', '3D Storm: ON') : t('controls.stormOff', '3D Storm: OFF')}
           </button>
         </div>
 
         <div className="grid grid-cols-2 gap-1.5 mb-2.5 font-mono text-center">
           <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">Rain Chance</div>
+            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.rainChance', 'Rain Chance')}</div>
             <div className="text-xs font-bold text-cyan-300">
               {activeRegion?.rainProbability ?? 35}%
             </div>
           </div>
           <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">Rain Rate</div>
+            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.rainRate', 'Rain Rate')}</div>
             <div className="text-xs font-bold text-amber-300">
               {activeRegion?.rainRate ?? 1.5} <span className="text-[7.5px]">mm/h</span>
             </div>
           </div>
           <div className="bg-[#120716] p-1.5 rounded-xl border border-red-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">Storm Risk</div>
+            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.stormRisk', 'Storm Risk')}</div>
             <div className="text-xs font-bold text-red-400">
               {activeRegion?.stormProbability ?? 30}%
             </div>
           </div>
           <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">Wave Swell</div>
+            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.breakerSwell', 'Wave Swell')}</div>
             <div className="text-xs font-bold text-sky-200">
               {activeRegion?.waveHeight ?? 1.65} <span className="text-[7.5px]">m</span>
             </div>

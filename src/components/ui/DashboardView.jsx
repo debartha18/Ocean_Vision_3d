@@ -100,11 +100,11 @@ export default function DashboardView({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <h1 className="text-xl md:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white uppercase">
-                OCEANOVA • Digital Twin Dashboard
+                {t('dashboard.twinDashboard', 'OCEANOVA • Digital Twin Dashboard')}
               </h1>
             </div>
             <p className="text-xs text-slate-300/80 mt-1">
-              <strong className="text-cyan-400">Explore • Analyze • Preserve</strong> — Planetary ocean telemetry, satellite altimetry assimilation, and 3D simulation state
+              <strong className="text-cyan-400">{t('brand.motto', 'Explore • Analyze • Preserve')}</strong> — {t('dashboard.bannerSubtitle', 'Planetary ocean telemetry, satellite altimetry assimilation, and 3D simulation state')}
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function DashboardView({
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-xs font-bold text-white shadow-glow-cyan transition-all cursor-pointer"
           >
             <FileText className="w-4 h-4" />
-            <span>Print Analytic Report</span>
+            <span>{t('common.printReport', 'Print Analytic Report')}</span>
           </button>
         </div>
       </div>
@@ -168,10 +168,10 @@ export default function DashboardView({
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <Compass className="w-4 h-4 text-cyan-400" />
-              <span>Global Ocean Basins & In-Situ Hubs</span>
+              <span>{t('dashboard.globalBasinsHubs', 'Global Ocean Basins & In-Situ Hubs')}</span>
             </h2>
             <span className="text-[10px] font-mono text-cyan-300">
-              Select basin to launch 3D twin or view on map
+              {t('dashboard.selectBasinPrompt', 'Select basin to launch 3D twin or view on map')}
             </span>
           </div>
 
@@ -192,7 +192,7 @@ export default function DashboardView({
                       <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
                         <span>{reg.name}</span>
                         {isSelected && (
-                          <span className="px-1.5 py-0.2 rounded bg-cyan-500/30 text-cyan-300 text-[9px] font-mono">Active Target</span>
+                          <span className="px-1.5 py-0.2 rounded bg-cyan-500/30 text-cyan-300 text-[9px] font-mono">{t('dashboard.activeTarget', 'Active Target')}</span>
                         )}
                       </h3>
                       <div className="text-[10px] font-mono text-cyan-300/80">{reg.coords}</div>
@@ -202,7 +202,7 @@ export default function DashboardView({
                         ? 'bg-red-500/30 text-red-300 border border-red-500/40'
                         : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                     }`}>
-                      {reg.stormProbability > 70 ? 'Cyclone Alert' : 'Nominal'}
+                      {reg.stormProbability > 70 ? t('analytics.severeAlert', 'Cyclone Alert') : t('dashboard.nominal', 'Nominal')}
                     </span>
                   </div>
 
@@ -213,22 +213,22 @@ export default function DashboardView({
                       <div className="text-xs font-bold text-white">{reg.sst}°C</div>
                     </div>
                     <div className="bg-[#030c22] p-1.5 rounded-xl border border-sky-500/10">
-                      <div className="text-[8px] text-slate-400">Salinity</div>
+                      <div className="text-[8px] text-slate-400">{t('parameters.salinity', 'Salinity')}</div>
                       <div className="text-xs font-bold text-sky-300">{reg.salinity}</div>
                     </div>
                     <div className="bg-[#030c22] p-1.5 rounded-xl border border-sky-500/10">
-                      <div className="text-[8px] text-slate-400">Current</div>
+                      <div className="text-[8px] text-slate-400">{t('parameters.currents', 'Current')}</div>
                       <div className="text-xs font-bold text-cyan-300">{reg.currentSpeed} m/s</div>
                     </div>
                     <div className="bg-[#030c22] p-1.5 rounded-xl border border-sky-500/10">
-                      <div className="text-[8px] text-slate-400">Swell</div>
+                      <div className="text-[8px] text-slate-400">{t('stormModal.breakerSwell', 'Swell')}</div>
                       <div className="text-xs font-bold text-amber-300">{reg.waveHeight}m</div>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-sky-500/15 text-[10px] gap-2">
                     <span className="text-slate-400 truncate max-w-[160px]">
-                      Threat: <b className="text-white">{reg.activeStorm?.name || 'Nominal'}</b>
+                      {t('stormModal.stormRisk', 'Threat')}: <b className="text-white">{reg.activeStorm?.name || t('dashboard.nominal', 'Nominal')}</b>
                     </span>
                     <div className="flex items-center gap-2">
                       <button
@@ -239,7 +239,7 @@ export default function DashboardView({
                         className="px-2 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 font-bold flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <MapPin className="w-2.5 h-2.5 text-cyan-400" />
-                        <span>Map</span>
+                        <span>{t('navbar.mapView', 'Map')}</span>
                       </button>
                       <button
                         onClick={() => {
@@ -249,7 +249,7 @@ export default function DashboardView({
                         className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white font-bold flex items-center gap-1 shadow-glow-cyan cursor-pointer transition-all"
                       >
                         <Waves className="w-2.5 h-2.5" />
-                        <span>3D Twin</span>
+                        <span>{t('brand.twin', '3D Twin')}</span>
                       </button>
                     </div>
                   </div>
@@ -264,11 +264,11 @@ export default function DashboardView({
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-red-400" />
-              <span>Real-Time Alert Feed</span>
+              <span>{t('dashboard.alertFeed', 'Real-Time Alert Feed')}</span>
             </h2>
             <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Live Stream
+              {t('dashboard.liveStream', 'Live Stream')}
             </span>
           </div>
 
@@ -280,10 +280,10 @@ export default function DashboardView({
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2 text-xs font-bold text-red-400 uppercase tracking-wider">
                 <Cpu className="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform" />
-                <span>{AI_ANOMALY.title}</span>
+                <span>{t('analytics.aiDiagnostics', AI_ANOMALY.title)}</span>
               </div>
               <span className="text-[9px] font-mono text-red-300 group-hover:underline flex items-center gap-0.5">
-                Inspect <ExternalLink className="w-2.5 h-2.5" />
+                {t('dashboard.inspect', 'Inspect')} <ExternalLink className="w-2.5 h-2.5" />
               </span>
             </div>
             <div className="text-xs font-bold text-white mb-1.5">{AI_ANOMALY.anomalyType}</div>
@@ -291,8 +291,8 @@ export default function DashboardView({
               {AI_ANOMALY.details}
             </p>
             <div className="flex items-center justify-between text-[10px] font-mono text-red-300 bg-red-500/20 p-2 rounded-xl border border-red-500/30">
-              <span>Confidence: {AI_ANOMALY.confidence}</span>
-              <span>Deviation: {AI_ANOMALY.deviation}</span>
+              <span>{t('anomalyModal.confidence', 'Confidence')}: {AI_ANOMALY.confidence}</span>
+              <span>{t('anomalyModal.deviation', 'Deviation')}: {AI_ANOMALY.deviation}</span>
             </div>
           </div>
 
@@ -302,7 +302,7 @@ export default function DashboardView({
             className="glass-panel p-4 rounded-2xl border border-sky-500/25 bg-[#071638]/70 cursor-pointer hover:border-cyan-400/50 transition-all group"
           >
             <h3 className="text-xs font-bold uppercase tracking-wider text-sky-200 mb-3 flex items-center justify-between">
-              <span>Observing Platforms Distribution</span>
+              <span>{t('dashboard.platformsDistribution', 'Observing Platforms Distribution')}</span>
               <span className="text-[10px] font-mono text-cyan-300 group-hover:underline">49 Total Active →</span>
             </h3>
 
@@ -322,8 +322,8 @@ export default function DashboardView({
           {/* Satellite Constellation Status */}
           <div className="glass-panel p-4 rounded-2xl border border-sky-500/25 bg-[#071638]/70 text-xs">
             <div className="text-xs font-bold uppercase tracking-wider text-cyan-300 mb-2 flex items-center justify-between">
-              <span>Satellite Telemetry Uplinks</span>
-              <span className="text-[9px] font-mono text-emerald-400">All Nominal</span>
+              <span>{t('dashboard.satelliteUplinks', 'Satellite Telemetry Uplinks')}</span>
+              <span className="text-[9px] font-mono text-emerald-400">{t('dashboard.allNominal', 'All Nominal')}</span>
             </div>
             <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
               <div className="p-2 rounded-xl bg-[#030c22] border border-sky-500/10">

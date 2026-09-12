@@ -108,19 +108,19 @@ export default function RightAnalyticsPanel({
           <div className="bg-[#120716] p-2 rounded-xl border border-sky-500/20">
             <div className="text-[9px] text-slate-400 uppercase flex items-center justify-center gap-1">
               <CloudRain className="w-3 h-3 text-cyan-400" />
-              <span>Rain Chance</span>
+              <span>{t('stormModal.rainChance', 'Rain Chance')}</span>
             </div>
             <div className={`text-sm font-bold mt-0.5 ${rainProb >= 60 ? 'text-cyan-300' : rainProb >= 30 ? 'text-sky-200' : 'text-slate-300'}`}>
               {rainProb}%
             </div>
             <div className="text-[8px] text-slate-500 mt-0.5">
-              {rainProb >= 70 ? 'High Chance' : rainProb >= 35 ? 'Scattered' : 'Unlikely'}
+              {rainProb >= 70 ? t('analytics.highChance', 'High Chance') : rainProb >= 35 ? t('analytics.scattered', 'Scattered') : t('analytics.unlikely', 'Unlikely')}
             </div>
           </div>
 
           {/* 2. Instantaneous Rain Rate (mm/h) */}
           <div className="bg-[#120716] p-2 rounded-xl border border-sky-500/20">
-            <div className="text-[9px] text-slate-400 uppercase">Rain Rate</div>
+            <div className="text-[9px] text-slate-400 uppercase">{t('stormModal.rainRate', 'Rain Rate')}</div>
             <div className={`text-sm font-bold mt-0.5 ${rainRate > 15 ? 'text-red-400' : rainRate > 5 ? 'text-amber-300' : 'text-emerald-300'}`}>
               {rainRate.toFixed(1)} <span className="text-[8px] text-slate-400">mm/h</span>
             </div>
@@ -131,32 +131,32 @@ export default function RightAnalyticsPanel({
 
           {/* 3. Storm / Cyclone Genesis Risk (%) */}
           <div className="bg-[#120716] p-2 rounded-xl border border-red-500/20">
-            <div className="text-[9px] text-slate-400 uppercase">Storm Risk</div>
+            <div className="text-[9px] text-slate-400 uppercase">{t('stormModal.stormRisk', 'Storm Risk')}</div>
             <div className={`text-sm font-bold mt-0.5 ${stormProb >= 70 ? 'text-red-400' : stormProb >= 40 ? 'text-amber-400' : 'text-emerald-400'}`}>
               {stormProb}%
             </div>
             <div className="text-[8px] text-slate-500 mt-0.5">
-              {stormProb >= 70 ? 'Severe Alert' : stormProb >= 40 ? 'Squall Watch' : 'Low Potential'}
+              {stormProb >= 70 ? t('analytics.severeAlert', 'Severe Alert') : stormProb >= 40 ? t('analytics.squallWatch', 'Squall Watch') : t('analytics.lowPotential', 'Low Potential')}
             </div>
           </div>
 
           {/* 4. Significant Wave Swell (m) */}
           <div className="bg-[#120716] p-2 rounded-xl border border-sky-500/20">
-            <div className="text-[9px] text-slate-400 uppercase">Wave Swell</div>
+            <div className="text-[9px] text-slate-400 uppercase">{t('stormModal.breakerSwell', 'Wave Swell')}</div>
             <div className="text-sm font-bold text-cyan-300 mt-0.5">
               {waveHeight} <span className="text-[8px] text-slate-400">m</span>
             </div>
             <div className="text-[8px] text-slate-500 mt-0.5">
-              {waveHeight >= 3.0 ? 'Rough Sea' : waveHeight >= 1.8 ? 'Moderate Sea' : 'Calm Swell'}
+              {waveHeight >= 3.0 ? t('analytics.roughSea', 'Rough Sea') : waveHeight >= 1.8 ? t('analytics.moderateSea', 'Moderate Sea') : t('analytics.calmSwell', 'Calm Swell')}
             </div>
           </div>
         </div>
 
         {/* Dynamic Forecast Bulletin Bar */}
         <div className="bg-[#0b0512] rounded-xl p-2 border border-white/10 mb-3 text-[10px] text-slate-300 leading-snug">
-          <div className="text-slate-400 font-mono text-[9px] uppercase tracking-wider mb-0.5">Weather Overview:</div>
+          <div className="text-slate-400 font-mono text-[9px] uppercase tracking-wider mb-0.5">{t('stormModal.weatherOverview', 'Weather Overview:')}</div>
           <div className="truncate text-white font-medium">
-            {activeRegion?.activeStorm?.rainfallForecast || `Rain probability: ${rainProb}% | ${rainCat.text}`}
+            {activeRegion?.activeStorm?.rainfallForecast || `${t('stormModal.rainChance', 'Rain probability')}: ${rainProb}% | ${rainCat.text}`}
           </div>
         </div>
 
@@ -180,12 +180,12 @@ export default function RightAnalyticsPanel({
             <span>{t('navbar.analytics', 'Analytical Report')}</span>
           </div>
           <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
-            Printable / PDF
+            {t('analytics.printablePdf', 'Printable / PDF')}
           </span>
         </div>
 
         <p className="text-[11px] text-slate-300 mb-2.5 px-1 leading-tight">
-          Generate formal oceanographic telemetry dossier with depth pressure matrix & beach forecasts.
+          {t('analytics.dossierDesc', 'Generate formal oceanographic telemetry dossier with depth pressure matrix & beach forecasts.')}
         </p>
 
         <button
@@ -200,9 +200,6 @@ export default function RightAnalyticsPanel({
         </button>
       </div>
 
-      {/* 0.55. ENSO STATUS Card matching user layout */}
-
-
       {/* 0.6. Subsurface Hydrostatic Pressure Card */}
       {(() => {
         const pressure = calculateHydrostaticPressure(depth, activeRegion?.lat || 15.0, activeRegion?.sst || 28.0);
@@ -211,13 +208,13 @@ export default function RightAnalyticsPanel({
             <div className="flex items-center justify-between mb-1.5 px-1">
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-sky-200">
                 <Gauge className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Depth Pressure ({depth}m)</span>
+                <span>{t('analytics.depthPressure', 'Depth Pressure')} ({depth}m)</span>
               </div>
               <button
                 onClick={onOpenDepthPressure}
                 className="text-[10px] text-cyan-400 hover:underline font-mono"
               >
-                Calculator ↗
+                {t('analytics.calculator', 'Calculator')} ↗
               </button>
             </div>
 
@@ -344,7 +341,7 @@ export default function RightAnalyticsPanel({
           onClick={onOpenFleetModal}
           className="w-full text-center text-[11px] text-sky-400 hover:text-cyan-300 flex items-center justify-center gap-1 transition-colors"
         >
-          <span>View Detailed Comparison</span>
+          <span>{t('analytics.viewDetailedComparison', 'View Detailed Comparison')}</span>
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -357,15 +354,15 @@ export default function RightAnalyticsPanel({
           </div>
           <div>
             <div className="text-xs font-bold text-red-400 flex items-center gap-1.5">
-              <span>{AI_ANOMALY.title}</span>
-              <span className="text-[9px] bg-red-500/30 text-red-300 px-1.5 py-0.2 rounded uppercase">Critical</span>
+              <span>{t('analytics.aiDiagnostics', AI_ANOMALY.title)}</span>
+              <span className="text-[9px] bg-red-500/30 text-red-300 px-1.5 py-0.2 rounded uppercase">{t('analytics.critical', 'Critical')}</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-mono">Confidence {AI_ANOMALY.confidence}</div>
+            <div className="text-[10px] text-slate-400 font-mono">{t('anomalyModal.confidence', 'Confidence')} {AI_ANOMALY.confidence}</div>
           </div>
         </div>
 
         <p className="text-xs text-slate-200 leading-relaxed mb-3 font-normal">
-          {AI_ANOMALY.headline}
+          {t('analytics.thermalAnomalyDetected', AI_ANOMALY.headline)}
         </p>
 
         <button
