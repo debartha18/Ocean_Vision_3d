@@ -1,9 +1,36 @@
 @import "tailwindcss";
 
+:root {
+  --ov-bg: #06141B;
+  --ov-bg-secondary: #081923;
+  --ov-bg-tertiary: #0B1D27;
+
+  --ov-surface: #0D202B;
+  --ov-surface-2: #142D3A;
+  --ov-surface-3: #183746;
+
+  --ov-border: #193544;
+  --ov-border-light: #214555;
+
+  --ov-primary: #0C969C;
+  --ov-primary-soft: #168FA0;
+
+  --ov-secondary: #274D60;
+  --ov-highlight: #6BA3BE;
+  --ov-soft-highlight: #B8D1D0;
+
+  --ov-text: #CCD0CF;
+  --ov-text-secondary: #8FA8B2;
+  --ov-text-muted: #637C87;
+  
+  --ov-warning: #D6A84F;
+  --ov-danger: #C85A5A;
+}
+
 @layer base {
   body {
-    background-color: #030712;
-    color: #f8fafc;
+    background-color: #06141B;
+    color: #CCD0CF;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow: hidden;
     user-select: none;
@@ -12,46 +39,48 @@
   }
 }
 
-/* Custom Cockpit Glassmorphism & Glow Styles */
+/* Refined Workstation Panels & Calm Shadow Styles */
 .glass-panel {
-  background: rgba(8, 18, 43, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgba(13, 32, 43, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #193544;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
 }
 
 .glass-panel-subtle {
-  background: rgba(13, 27, 62, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 45, 58, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid #193544;
+  border-radius: 12px;
 }
 
 .glow-border-cyan {
-  border-color: rgba(0, 240, 255, 0.6);
-  box-shadow: 0 0 15px -2px rgba(0, 240, 255, 0.35);
+  border-color: #0C969C;
+  box-shadow: 0 0 8px rgba(12, 150, 156, 0.25);
 }
 
 .glow-border-red {
-  border-color: rgba(239, 68, 68, 0.6);
-  box-shadow: 0 0 18px -2px rgba(239, 68, 68, 0.45);
+  border-color: #C85A5A;
+  box-shadow: 0 0 8px rgba(200, 90, 90, 0.25);
 }
 
 .shadow-glow-cyan {
-  box-shadow: 0 0 20px -3px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .shadow-glow-red {
-  box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .shadow-glow-blue {
-  box-shadow: 0 0 25px -4px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .shadow-cockpit {
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
 }
 
 /* Custom scrollbars */
@@ -60,14 +89,14 @@
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(6, 15, 38, 0.8);
+  background: #081923;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4);
+  background: #193544;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.7);
+  background: #274D60;
 }
 
 /* Print Optimization for Analytical Report */

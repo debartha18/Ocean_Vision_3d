@@ -320,7 +320,7 @@ export default function OceanCanvas({
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.fog = new THREE.FogExp2(0x020614, 0.035);
+    scene.fog = new THREE.FogExp2(0x06141b, 0.035);
 
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
     camera.position.set(0.1, 3.4, 4.8);
@@ -338,7 +338,7 @@ export default function OceanCanvas({
     rendererRef.current = renderer;
 
     // Cinematic Ocean Lighting
-    const ambientLight = new THREE.AmbientLight(0x162c5b, 2.2);
+    const ambientLight = new THREE.AmbientLight(0x0a1720, 2.4);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xfff8ee, 3.2);

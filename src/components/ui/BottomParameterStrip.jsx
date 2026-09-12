@@ -57,9 +57,9 @@ export default function BottomParameterStrip({
   ];
 
   return (
-    <footer className="h-20 px-4 py-1.5 flex items-center justify-between gap-2.5 z-30 select-none bg-[#03081a]/95 border-t border-sky-500/20 backdrop-blur-md">
-      {/* 1. 6-Parameter Quick Preview Cards matching reference screenshot */}
-      <div className="flex items-center gap-2 flex-1 overflow-x-auto py-0.5">
+    <footer className="h-16 px-3.5 py-1.5 flex items-center justify-between gap-2 z-30 select-none bg-[#0A1720]/95 border-t border-[#193544] backdrop-blur-md">
+      {/* 1. 6-Parameter Quick Preview Cards */}
+      <div className="flex items-center gap-1.5 flex-1 overflow-x-auto py-0.5 custom-scrollbar">
         {parameterConfigs.map((param) => {
           const isSelected = selectedParam === param.id;
 
@@ -67,18 +67,18 @@ export default function BottomParameterStrip({
             <button
               key={param.id}
               onClick={() => setSelectedParam(param.id)}
-              className={`relative flex-1 min-w-[140px] max-w-[200px] h-[64px] rounded-xl p-2 text-left transition-all duration-200 overflow-hidden flex flex-col justify-between cursor-pointer ${
+              className={`relative flex-1 min-w-[130px] max-w-[190px] h-[52px] rounded-lg px-2.5 py-1.5 text-left transition-colors overflow-hidden flex flex-col justify-between cursor-pointer border ${
                 isSelected
-                  ? 'bg-[#081d48]/95 border border-cyan-400 shadow-glow-cyan scale-[1.01]'
-                  : 'bg-[#05112e]/70 hover:bg-[#08183d]/90 border border-sky-500/25 hover:border-sky-500/50'
+                  ? 'bg-[#0C969C]/12 border-[#0C969C]/60 text-[#CCD0CF]'
+                  : 'bg-[#0D202B] hover:bg-[#142D3A] border-[#193544] text-[#8FA8B2]'
               }`}
             >
               {/* Header Title & Live Value */}
               <div className="relative z-10 flex items-center justify-between gap-1">
-                <span className={`text-[10px] font-bold truncate leading-tight ${isSelected ? 'text-cyan-300' : 'text-slate-200'}`}>
+                <span className={`text-[9.5px] font-medium truncate leading-tight ${isSelected ? 'text-[#CCD0CF]' : 'text-[#8FA8B2]'}`}>
                   {param.title}
                 </span>
-                <span className="text-[10px] font-mono font-bold text-cyan-300 bg-sky-950/70 px-1 py-0.2 rounded border border-cyan-500/25 shrink-0">
+                <span className="text-[9.5px] font-mono font-bold text-[#CCD0CF] bg-[#142D3A] px-1 py-0.2 rounded border border-[#214555] shrink-0">
                   {calculateParameterAtDepth(param.id, depth, activeRegion)}
                 </span>
               </div>
@@ -86,22 +86,22 @@ export default function BottomParameterStrip({
               {/* Visualization / Gradient Bar */}
               <div className="relative z-10 w-full my-0.5">
                 {param.isArrows ? (
-                  <div className="flex items-center justify-center gap-2 py-0.5 text-cyan-400 text-xs font-mono font-bold tracking-wider">
+                  <div className="flex items-center justify-center gap-1.5 text-[#0C969C] text-[11px] font-mono tracking-wider">
                     <span>—→</span>
                     <span>-››</span>
                     <span>-›››</span>
-                    <span className="text-cyan-300">»»»</span>
+                    <span className="text-[#6BA3BE]">»»»</span>
                   </div>
                 ) : (
                   <div
-                    className="h-2 w-full rounded-full border border-white/15 shadow-inner"
+                    className="h-1.5 w-full rounded border border-[#193544]"
                     style={{ background: param.gradient }}
                   />
                 )}
               </div>
 
               {/* Min - Max Scale Labels */}
-              <div className="relative z-10 flex items-center justify-between text-[8.5px] font-mono text-slate-400">
+              <div className="relative z-10 flex items-center justify-between text-[8px] font-mono text-[#637C87]">
                 <span>{param.min}</span>
                 <span>{param.max}</span>
               </div>
@@ -110,26 +110,26 @@ export default function BottomParameterStrip({
         })}
       </div>
 
-      {/* 2. Interactive Global Mini-Map matching reference screenshot */}
+      {/* 2. Interactive Global Mini-Map */}
       <div 
         onClick={onNavigateToMap}
         title="Click to switch to World Satellite Map"
-        className="relative w-40 h-[64px] rounded-xl border border-sky-500/30 overflow-hidden flex flex-col items-center justify-between p-1 shadow-cockpit bg-[#040e24] cursor-pointer hover:border-cyan-400 transition-all group"
+        className="relative w-36 h-[52px] rounded-lg border border-[#193544] hover:border-[#214555] overflow-hidden flex flex-col items-center justify-between p-1 bg-[#0D202B] cursor-pointer transition-colors group shrink-0"
       >
-        <div className="w-full flex items-center justify-between text-[8.5px] font-mono text-slate-300 px-1">
-          <span className="font-bold group-hover:text-cyan-300 transition-colors">Mini Map</span>
-          <span className="text-cyan-400 group-hover:underline">Global</span>
+        <div className="w-full flex items-center justify-between text-[8px] font-mono text-[#8FA8B2] px-1">
+          <span className="font-semibold text-[#CCD0CF]">Mini Map</span>
+          <span className="text-[#0C969C]">Global</span>
         </div>
 
         {/* Satellite Map thumbnail */}
-        <div className="relative w-full flex-1 rounded-md overflow-hidden border border-sky-500/20 bg-[#020714]">
+        <div className="relative w-full flex-1 rounded overflow-hidden border border-[#193544] bg-[#06141B]">
           <img 
             src="/world_map_satellite.jpg" 
             alt="Mini Map" 
-            className="w-full h-full object-cover opacity-80 pointer-events-none group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover opacity-70 pointer-events-none group-hover:scale-105 transition-transform duration-200"
           />
           {/* Active Viewport Bounding Box */}
-          <div className="absolute left-[24%] top-[18%] w-[52%] h-[64%] border border-cyan-400 border-dashed rounded bg-cyan-400/20 pointer-events-none animate-pulse" />
+          <div className="absolute left-[24%] top-[18%] w-[52%] h-[64%] border border-[#0C969C] border-dashed rounded bg-[#0C969C]/15 pointer-events-none" />
         </div>
       </div>
     </footer>

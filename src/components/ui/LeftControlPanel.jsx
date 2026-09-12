@@ -78,32 +78,32 @@ export default function LeftControlPanel({
   };
 
   return (
-    <aside className="w-72 h-full flex flex-col gap-3 p-3 select-none overflow-y-auto z-20">
+    <aside className="w-72 h-full flex flex-col gap-2.5 p-2.5 select-none overflow-y-auto z-20 custom-scrollbar text-[#CCD0CF]">
       {/* 0. Location & Coordinates Operator Card */}
-      <div className="glass-panel rounded-2xl p-3.5 border border-sky-500/30 shadow-cockpit">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-cyan-300">
-            <Compass className="w-3.5 h-3.5 text-cyan-400" />
+      <div className="bg-[#0D202B] rounded-xl p-3 border border-[#193544] shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#8FA8B2]">
+            <Compass className="w-3.5 h-3.5 text-[#0C969C]" />
             <span>{t('controls.positionCoords', 'Position / Coordinates')}</span>
           </div>
           <button
             onClick={onOpenLocationModal}
-            className="text-[10px] font-bold text-cyan-400 hover:text-white bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30 transition-colors cursor-pointer"
+            className="text-[10px] font-medium text-[#CCD0CF] hover:text-white bg-[#142D3A] hover:bg-[#183746] px-2 py-0.5 rounded border border-[#214555] transition-colors cursor-pointer"
           >
             {t('controls.changeBasin', 'Change Basin')}
           </button>
         </div>
 
-        <div className="mb-2 px-1">
-          <div className="text-xs font-bold text-white truncate">{activeRegion?.name || 'Bay of Bengal'}</div>
-          <div className="text-[10px] font-mono text-sky-300/80">{activeRegion?.coords || '15.297° N, 87.860° E'}</div>
+        <div className="mb-2">
+          <div className="text-xs font-semibold text-[#CCD0CF] truncate">{activeRegion?.name || 'Bay of Bengal'}</div>
+          <div className="text-[10px] font-mono text-[#637C87]">{activeRegion?.coords || '15.297° N, 87.860° E'}</div>
         </div>
 
         {/* Inline Latitude & Longitude Input Form */}
-        <form onSubmit={handleApplyCoords} className="bg-[#050e24]/90 p-2.5 rounded-xl border border-sky-500/20 flex flex-col gap-2">
+        <form onSubmit={handleApplyCoords} className="bg-[#0A1720] p-2 rounded-lg border border-[#193544] flex flex-col gap-2">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <span className="text-[9px] font-mono text-slate-400 block mb-0.5">Lat (°N/S)</span>
+              <span className="text-[9px] font-mono text-[#637C87] block mb-0.5">Lat (°N/°S)</span>
               <input
                 type="number"
                 step="0.001"
@@ -112,11 +112,11 @@ export default function LeftControlPanel({
                 value={inputLat}
                 onChange={(e) => setInputLat(e.target.value)}
                 placeholder="15.297"
-                className="w-full px-2 py-1 rounded-lg bg-[#020817] border border-sky-500/30 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-400"
+                className="w-full px-2 py-1 rounded bg-[#06141B] border border-[#193544] text-xs font-mono text-[#CCD0CF] focus:outline-none focus:border-[#0C969C]"
               />
             </div>
             <div>
-              <span className="text-[9px] font-mono text-slate-400 block mb-0.5">Lon (°E/W)</span>
+              <span className="text-[9px] font-mono text-[#637C87] block mb-0.5">Lon (°E/°W)</span>
               <input
                 type="number"
                 step="0.001"
@@ -125,38 +125,37 @@ export default function LeftControlPanel({
                 value={inputLon}
                 onChange={(e) => setInputLon(e.target.value)}
                 placeholder="87.860"
-                className="w-full px-2 py-1 rounded-lg bg-[#020817] border border-sky-500/30 text-xs font-mono text-cyan-300 focus:outline-none focus:border-cyan-400"
+                className="w-full px-2 py-1 rounded bg-[#06141B] border border-[#193544] text-xs font-mono text-[#CCD0CF] focus:outline-none focus:border-[#0C969C]"
               />
             </div>
           </div>
           <button
             type="submit"
-            className="w-full py-1 rounded-lg bg-sky-600/70 hover:bg-cyan-500 hover:text-slate-950 text-white text-[11px] font-bold transition-all flex items-center justify-center gap-1 shadow-glow-cyan"
+            className="w-full py-1.5 rounded-lg bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-[#CCD0CF] text-[11px] font-medium transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <span>{t('locationModal.targetCustom', 'Target Coordinates')}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>{t('locationModal.targetCustom', 'Target Custom Coordinates')}</span>
+            <ArrowRight className="w-3 h-3 text-[#6BA3BE]" />
           </button>
         </form>
       </div>
 
       {/* 1. Parameters Selection Card */}
-      <div className="glass-panel rounded-2xl p-3.5 border border-sky-500/20">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
-            {t('controls.oceanParameters', 'Parameters')}
+      <div className="bg-[#0D202B] rounded-xl p-3 border border-[#193544] shadow-sm">
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#8FA8B2]">
+            {t('controls.oceanParameters', 'Ocean Parameters')}
           </span>
           <div className="flex items-center gap-1.5">
             {onAskCopilot && (
               <button
                 onClick={() => onAskCopilot(`Explain ocean parameter ${selectedParam.toUpperCase()} at ${depth}m depth in ${activeRegion?.name || 'this basin'}`)}
-                className="text-[10px] font-mono text-cyan-300 hover:text-white bg-cyan-500/15 hover:bg-cyan-500/25 px-2 py-0.5 rounded border border-cyan-400/30 flex items-center gap-1 transition-colors cursor-pointer"
+                className="text-[10px] font-mono text-[#6BA3BE] hover:text-white bg-[#142D3A] hover:bg-[#183746] px-2 py-0.5 rounded border border-[#214555] flex items-center gap-1 transition-colors cursor-pointer"
                 title="Ask AI Copilot to explain this parameter"
               >
-                <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
+                <Sparkles className="w-2.5 h-2.5 text-[#0C969C]" />
                 <span>Explain</span>
               </button>
             )}
-            <span className="text-[10px] text-sky-400/80 font-mono">{t('enso.variablesCount', '6 Variables')}</span>
           </div>
         </div>
 
@@ -169,27 +168,31 @@ export default function LeftControlPanel({
               <button
                 key={param.id}
                 onClick={() => setSelectedParam(param.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all duration-200 cursor-pointer ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left transition-all duration-150 cursor-pointer border ${
                   isSelected
-                    ? 'bg-gradient-to-r from-sky-600/90 to-blue-700/90 text-white shadow-glow-cyan border border-cyan-400/50'
-                    : 'bg-[#0a1838]/60 text-slate-300 hover:bg-[#112450]/80 hover:text-white border border-white/5'
+                    ? 'bg-[rgba(12,150,156,0.12)] border-[rgba(12,150,156,0.65)] text-[#CCD0CF]'
+                    : 'bg-[#0A1720] hover:bg-[#142D3A] text-[#8FA8B2] hover:text-[#CCD0CF] border-[#193544]'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
-                  <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-cyan-400/20 text-cyan-300' : 'bg-sky-500/10 text-sky-400'}`}>
-                    <Icon className="w-4 h-4" />
+                <div className="flex items-center gap-2">
+                  <div className={`p-1 rounded ${isSelected ? 'text-[#0C969C]' : 'text-[#637C87]'}`}>
+                    <Icon className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <div className="text-xs font-semibold leading-tight">
+                    <div className={`text-xs ${isSelected ? 'font-semibold text-[#CCD0CF]' : 'font-medium text-[#8FA8B2]'}`}>
                       {t(`parameters.${param.id}`, param.name)}
                     </div>
-                    <div className="text-[10px] font-mono font-bold text-cyan-300">
+                    <div className="text-[10px] font-mono font-bold text-[#CCD0CF]">
                       {calculateParameterAtDepth(param.id, depth, activeRegion)} {param.unit}
                     </div>
                   </div>
                 </div>
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${isSelected ? 'text-cyan-100 bg-cyan-500/30 border border-cyan-400/40' : 'text-slate-400 bg-[#06122d]'}`}>
-                  {depth}m
+                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+                  isSelected 
+                    ? 'text-[#6BA3BE] bg-[#142D3A] border-[#214555]' 
+                    : 'text-[#637C87] bg-[#0D202B] border-[#193544]'
+                }`}>
+                  {depth}m ›
                 </span>
               </button>
             );
@@ -198,32 +201,19 @@ export default function LeftControlPanel({
       </div>
 
       {/* 2. Stepped Depth (m) Vertical Slider Card */}
-      <div className="glass-panel rounded-2xl p-3.5 border border-sky-500/20">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
+      <div className="bg-[#0D202B] rounded-xl p-3 border border-[#193544] shadow-sm">
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#8FA8B2]">
             {t('controls.verticalDepth', 'Depth (m)')}
           </span>
-          <div className="flex items-center gap-1.5">
-            {onAskCopilot && (
-              <button
-                onClick={() => onAskCopilot(`Explain ocean stratification and physical dynamics at ${depth}m depth in ${activeRegion?.name || 'this basin'}`)}
-                className="text-[10px] font-mono text-cyan-300 hover:text-white bg-cyan-500/15 hover:bg-cyan-500/25 px-2 py-0.5 rounded border border-cyan-400/30 flex items-center gap-1 transition-colors cursor-pointer"
-                title="Ask AI Copilot to explain depth stratification"
-              >
-                <Sparkles className="w-2.5 h-2.5 text-cyan-400" />
-                <span>Explain Depth</span>
-              </button>
-            )}
-            <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
-              {depth} m
-            </span>
-          </div>
+          <span className="text-xs font-mono font-semibold text-[#0C969C] bg-[#142D3A] px-2 py-0.5 rounded border border-[#214555]">
+            {depth} m
+          </span>
         </div>
 
         {/* Stepped vertical depth track */}
-        <div className="relative flex flex-col gap-1.5 pl-3 py-1">
-          {/* Vertical line connector */}
-          <div className="absolute left-[19px] top-2 bottom-2 w-0.5 bg-sky-900/80 -z-0" />
+        <div className="relative flex flex-col gap-1 pl-2 py-0.5">
+          <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-[#193544] -z-0" />
           
           {DEPTH_LEVELS.map((lvl) => {
             const isCurrent = depth === lvl;
@@ -231,23 +221,23 @@ export default function LeftControlPanel({
               <button
                 key={lvl}
                 onClick={() => setDepth(lvl)}
-                className="relative z-10 flex items-center gap-3 text-left py-0.5 group transition-colors"
+                className="relative z-10 flex items-center gap-2.5 text-left py-0.5 group transition-colors cursor-pointer"
               >
                 <div
-                  className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
+                  className={`w-3 h-3 rounded-full border transition-all duration-150 flex items-center justify-center ${
                     isCurrent
-                      ? 'bg-cyan-400 border-white shadow-glow-cyan scale-125'
-                      : 'bg-[#081530] border-sky-600 group-hover:border-cyan-400 group-hover:scale-110'
+                      ? 'bg-[#0C969C] border-[#CCD0CF]'
+                      : 'bg-[#06141B] border-[#214555] group-hover:border-[#0C969C]'
                   }`}
                 >
-                  {isCurrent && <div className="w-1.5 h-1.5 rounded-full bg-[#030712]" />}
+                  {isCurrent && <div className="w-1 h-1 rounded-full bg-[#06141B]" />}
                 </div>
                 <span
                   className={`text-xs font-mono transition-colors ${
-                    isCurrent ? 'text-cyan-300 font-bold' : 'text-slate-400 group-hover:text-slate-200'
+                    isCurrent ? 'text-[#CCD0CF] font-semibold' : 'text-[#637C87] group-hover:text-[#8FA8B2]'
                   }`}
                 >
-                  {lvl}
+                  {lvl}m
                 </span>
               </button>
             );
@@ -257,23 +247,23 @@ export default function LeftControlPanel({
         {/* Depth & Hydrostatic Pressure Quick Tool Button */}
         <button
           onClick={onOpenDepthPressure}
-          className="w-full mt-3 py-2 px-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-400/30 text-[11px] font-bold text-cyan-300 flex items-center justify-between transition-all cursor-pointer shadow-sm"
+          className="w-full mt-2.5 py-1.5 px-2.5 rounded-lg bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-[11px] font-medium text-[#CCD0CF] flex items-center justify-between transition-colors cursor-pointer"
         >
           <span className="flex items-center gap-1.5">
-            <Gauge className="w-3.5 h-3.5 text-cyan-400" />
-            <span>{t('controls.hydrostaticPressure', 'Pressure Calculator')} (dbar/atm)</span>
+            <Gauge className="w-3.5 h-3.5 text-[#0C969C]" />
+            <span>{t('controls.hydrostaticPressure', 'Pressure Calculator')}</span>
           </span>
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#637C87]" />
         </button>
       </div>
 
       {/* 3. Time Scrubber & Playback Card */}
-      <div className="glass-panel rounded-2xl p-3.5 border border-sky-500/20">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
-            {t('controls.timeStepper', 'Time')}
+      <div className="bg-[#0D202B] rounded-xl p-3 border border-[#193544] shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#8FA8B2]">
+            {t('controls.timeStepper', 'Time Stepper')}
           </span>
-          <span className="text-xs font-mono text-cyan-300 font-semibold">
+          <span className="text-xs font-mono text-[#0C969C] font-medium">
             {formatTime(timeHour)} UTC
           </span>
         </div>
@@ -281,17 +271,17 @@ export default function LeftControlPanel({
         {/* Date Selector Badge */}
         <div 
           onClick={onOpenDatePicker}
-          className="flex items-center justify-between px-3 py-1.5 mb-3 bg-[#0a1838]/80 hover:bg-[#12285a] border border-sky-500/20 hover:border-cyan-400 rounded-xl text-xs text-sky-200 cursor-pointer transition-colors"
+          className="flex items-center justify-between px-2.5 py-1.5 mb-2 bg-[#0A1720] hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] rounded-lg text-xs cursor-pointer transition-colors"
         >
           <div className="flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="font-bold text-white">{selectedDate}</span>
+            <Calendar className="w-3.5 h-3.5 text-[#0C969C]" />
+            <span className="font-semibold text-[#CCD0CF]">{selectedDate}</span>
           </div>
-          <button className="text-[11px] text-cyan-400 hover:underline">{t('common.change', 'Change')}</button>
+          <span className="text-[10px] text-[#6BA3BE] font-medium">{t('common.change', 'Change')}</span>
         </div>
 
         {/* Scrubber Range Slider */}
-        <div className="px-1 mb-2">
+        <div className="mb-2">
           <input
             type="range"
             min="0"
@@ -299,9 +289,9 @@ export default function LeftControlPanel({
             step="0.25"
             value={timeHour}
             onChange={(e) => setTimeHour(parseFloat(e.target.value))}
-            className="w-full h-1.5 bg-sky-950 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-1 bg-[#193544] rounded-lg appearance-none cursor-pointer accent-[#0C969C]"
           />
-          <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-1">
+          <div className="flex justify-between text-[9px] font-mono text-[#637C87] mt-0.5">
             <span>00:00</span>
             <span>06:00</span>
             <span>12:00</span>
@@ -311,23 +301,23 @@ export default function LeftControlPanel({
         </div>
 
         {/* Playback Controls & Speed */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+        <div className="flex items-center justify-between pt-2 border-t border-[#193544]">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="p-2 rounded-xl bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-400/30 transition-all flex items-center justify-center shadow-glow-cyan"
+            className="p-1.5 rounded-lg bg-[#142D3A] text-[#CCD0CF] hover:text-white hover:bg-[#183746] border border-[#214555] transition-colors flex items-center justify-center cursor-pointer"
           >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 translate-x-0.5" />}
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 translate-x-0.5" />}
           </button>
 
-          <div className="flex items-center gap-1 bg-[#091636] p-1 rounded-xl border border-sky-500/20 text-[11px] font-mono">
+          <div className="flex items-center gap-1 bg-[#0A1720] p-0.5 rounded-lg border border-[#193544] text-[10px] font-mono">
             {[1, 2, 5].map((spd) => (
               <button
                 key={spd}
                 onClick={() => setSimSpeed(spd)}
-                className={`px-2 py-0.5 rounded-lg font-bold transition-colors ${
+                className={`px-1.5 py-0.5 rounded font-medium transition-colors cursor-pointer ${
                   simSpeed === spd
-                    ? 'bg-cyan-500 text-slate-950'
-                    : 'text-sky-300 hover:text-white'
+                    ? 'bg-[#0C969C] text-[#06141B] font-bold'
+                    : 'text-[#8FA8B2] hover:text-[#CCD0CF]'
                 }`}
               >
                 {spd}x
@@ -338,60 +328,60 @@ export default function LeftControlPanel({
       </div>
 
       {/* 4. Storm, Rain & Marine Cyclone Threat Card */}
-      <div className="glass-panel rounded-2xl p-3.5 border border-red-500/30 bg-gradient-to-b from-[#18091c]/80 to-[#07132e]/80">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-red-400">
-            <Zap className="w-3.5 h-3.5 text-red-400 animate-pulse" />
-            <span>{t('controls.meteorologicalThreatLayer', 'Storm & Rain Threat')}</span>
+      <div className="bg-[#0D202B] rounded-xl p-3 border border-[#193544] shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#8FA8B2]">
+            <Zap className="w-3.5 h-3.5 text-[#D6A84F]" />
+            <span>{t('controls.meteorologicalThreatLayer', 'Storm Threat')}</span>
           </div>
           <button
             onClick={() => setIsStormLayerActive && setIsStormLayerActive(!isStormLayerActive)}
-            className={`text-[10px] font-bold px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+            className={`text-[10px] font-medium px-2 py-0.5 rounded border transition-colors cursor-pointer ${
               isStormLayerActive
-                ? 'bg-red-500/30 text-red-300 border-red-400/50'
-                : 'bg-slate-800/60 text-slate-400 border-slate-700'
+                ? 'bg-[#C85A5A]/20 text-[#CCD0CF] border-[#C85A5A]/50 font-semibold'
+                : 'bg-[#0A1720] text-[#8FA8B2] border-[#193544]'
             }`}
           >
             {isStormLayerActive ? t('controls.stormOn', '3D Storm: ON') : t('controls.stormOff', '3D Storm: OFF')}
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-1.5 mb-2.5 font-mono text-center">
-          <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.rainChance', 'Rain Chance')}</div>
-            <div className="text-xs font-bold text-cyan-300">
+        <div className="grid grid-cols-2 gap-1.5 mb-2 font-mono text-center">
+          <div className="bg-[#0A1720] p-1.5 rounded-lg border border-[#193544]">
+            <div className="text-[8px] text-[#637C87] uppercase">{t('stormModal.rainChance', 'Rain Chance')}</div>
+            <div className="text-xs font-semibold text-[#CCD0CF]">
               {activeRegion?.rainProbability ?? 35}%
             </div>
           </div>
-          <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.rainRate', 'Rain Rate')}</div>
-            <div className="text-xs font-bold text-amber-300">
-              {activeRegion?.rainRate ?? 1.5} <span className="text-[7.5px]">mm/h</span>
+          <div className="bg-[#0A1720] p-1.5 rounded-lg border border-[#193544]">
+            <div className="text-[8px] text-[#637C87] uppercase">{t('stormModal.rainRate', 'Rain Rate')}</div>
+            <div className="text-xs font-semibold text-[#CCD0CF]">
+              {activeRegion?.rainRate ?? 1.5} <span className="text-[8px] text-[#637C87]">mm/h</span>
             </div>
           </div>
-          <div className="bg-[#120716] p-1.5 rounded-xl border border-red-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.stormRisk', 'Storm Risk')}</div>
-            <div className="text-xs font-bold text-red-400">
+          <div className="bg-[#0A1720] p-1.5 rounded-lg border border-[#193544]">
+            <div className="text-[8px] text-[#637C87] uppercase">{t('stormModal.stormRisk', 'Storm Risk')}</div>
+            <div className="text-xs font-semibold text-[#D6A84F]">
               {activeRegion?.stormProbability ?? 30}%
             </div>
           </div>
-          <div className="bg-[#120716] p-1.5 rounded-xl border border-sky-500/20">
-            <div className="text-[8.5px] text-slate-400 uppercase">{t('stormModal.breakerSwell', 'Wave Swell')}</div>
-            <div className="text-xs font-bold text-sky-200">
-              {activeRegion?.waveHeight ?? 1.65} <span className="text-[7.5px]">m</span>
+          <div className="bg-[#0A1720] p-1.5 rounded-lg border border-[#193544]">
+            <div className="text-[8px] text-[#637C87] uppercase">{t('stormModal.breakerSwell', 'Wave Swell')}</div>
+            <div className="text-xs font-semibold text-[#6BA3BE]">
+              {activeRegion?.waveHeight ?? 1.65} <span className="text-[8px] text-[#637C87]">m</span>
             </div>
           </div>
         </div>
 
         <button
           onClick={onOpenStormNews}
-          className="w-full py-1.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-xs font-bold text-red-300 flex items-center justify-between transition-colors shadow-glow-red cursor-pointer"
+          className="w-full py-1.5 px-2.5 rounded-lg bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-xs font-medium text-[#CCD0CF] flex items-center justify-between transition-colors cursor-pointer"
         >
           <span className="flex items-center gap-1.5">
-            <Newspaper className="w-3.5 h-3.5" />
-            <span>{t('controls.severeStormTracks', 'Position Storm News')}</span>
+            <Newspaper className="w-3.5 h-3.5 text-[#0C969C]" />
+            <span>{t('controls.severeStormTracks', 'Storm Bulletins')}</span>
           </span>
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#637C87]" />
         </button>
       </div>
     </aside>

@@ -159,7 +159,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-[#030712] text-slate-100 flex flex-col overflow-hidden select-none">
+    <div className="relative w-screen h-screen bg-[#06141B] text-[#CCD0CF] flex flex-col overflow-hidden select-none">
       {/* 1. Top Lightweight Header Bar */}
       <Header
         activeTab={activeTab}
@@ -183,7 +183,7 @@ export default function App() {
         /* CLEAN, MODERN SCROLL-DRIVEN 3D OCEAN EXPERIENCE */
         <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
           {/* A. Fixed 3D Ocean Digital Twin Background */}
-          <div className="absolute inset-0 z-0 bg-[#030712]">
+          <div className="absolute inset-0 z-0 bg-[#06141B]">
             <OceanCanvas
               selectedParam={selectedParam}
               depth={depth}
@@ -201,7 +201,7 @@ export default function App() {
               isLogScale={isLogScale}
             />
             {/* Soft vertical gradient for content legibility */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/70 via-transparent to-[#030712]/85 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#06141B]/70 via-transparent to-[#06141B]/85 pointer-events-none" />
           </div>
 
           {/* B. Scroll-driven Progressive Story Overlay */}
@@ -236,9 +236,9 @@ export default function App() {
             <button
               onClick={() => setIsControlsDrawerOpen(true)}
               title="Open Advanced Controls Drawer"
-              className="px-4 py-2.5 rounded-2xl bg-[#06112c]/90 hover:bg-[#0c235a] border border-cyan-400/40 text-cyan-200 text-xs font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] backdrop-blur-md transition-all cursor-pointer flex items-center gap-2 group"
+              className="px-3.5 py-2 rounded-xl bg-[#0D202B]/95 hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] text-[#CCD0CF] text-xs font-medium shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all cursor-pointer flex items-center gap-2 group"
             >
-              <span className="group-hover:rotate-45 transition-transform">⚙</span>
+              <span className="group-hover:rotate-45 transition-transform text-[#6BA3BE]">⚙</span>
               <span>Controls</span>
             </button>
           </div>
@@ -316,7 +316,7 @@ export default function App() {
           />
 
           {/* Center 3D Ocean Digital Twin Viewport */}
-          <main className="relative flex-1 h-full overflow-hidden bg-[#030712] rounded-3xl my-1 border border-sky-500/20 shadow-inner">
+          <main className="relative flex-1 h-full overflow-hidden bg-[#06141B] rounded-2xl my-1.5 mx-1 border border-[#193544] shadow-md">
             <OceanCanvas
               selectedParam={selectedParam}
               depth={depth}

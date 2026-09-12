@@ -73,21 +73,21 @@ export default function ViewportToolbar({
   return (
     <>
       {/* 1. Top-Left Location Badge */}
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+      <div className="absolute top-3.5 left-3.5 z-20 flex items-center gap-2">
         <div 
           onClick={onOpenLocationModal}
           title="Click to change ocean basin or coordinates"
-          className="glass-panel px-3.5 py-2 rounded-xl flex items-center gap-2.5 border border-sky-500/30 shadow-cockpit cursor-pointer hover:border-cyan-400 hover:scale-[1.02] transition-all"
+          className="bg-[#0D202B] px-3 py-1.5 rounded-xl flex items-center gap-2 border border-[#193544] hover:border-[#214555] shadow-sm cursor-pointer transition-colors"
         >
-          <div className="p-1 rounded-lg bg-sky-500/20 text-cyan-300">
-            <MapPin className="w-4 h-4" />
+          <div className="p-1 rounded-lg bg-[#142D3A] text-[#0C969C]">
+            <MapPin className="w-3.5 h-3.5" />
           </div>
           <div>
-            <div className="text-xs font-bold text-white flex items-center gap-1.5">
+            <div className="text-xs font-semibold text-[#CCD0CF] flex items-center gap-1.5">
               {regionName}
-              <ChevronDown className="w-3.5 h-3.5 text-sky-400" />
+              <ChevronDown className="w-3 h-3 text-[#637C87]" />
             </div>
-            <div className="text-[10px] font-mono text-sky-300/80">
+            <div className="text-[10px] font-mono text-[#6BA3BE]">
               {regionCoords}
             </div>
           </div>
@@ -95,37 +95,37 @@ export default function ViewportToolbar({
       </div>
 
       {/* 2. Left Floating Tool Stack */}
-      <div className="absolute top-20 left-4 z-20 flex flex-col gap-1.5">
-        <div className="glass-panel p-1.5 rounded-2xl flex flex-col gap-1 border border-sky-500/20 shadow-cockpit">
+      <div className="absolute top-18 left-3.5 z-20 flex flex-col gap-1">
+        <div className="bg-[#0D202B] p-1 rounded-xl flex flex-col gap-1 border border-[#193544] shadow-sm">
           <button
             onClick={onResetCamera}
             title="Reset Camera View (Home)"
-            className="p-2.5 rounded-xl text-sky-300 hover:text-white hover:bg-sky-500/20 transition-colors cursor-pointer"
+            className="p-2 rounded-lg text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A] transition-colors cursor-pointer"
           >
             <Home className="w-4 h-4" />
           </button>
           <button
             onClick={onOpenWorldMap || onToggleGlobe}
             title="Open Interactive World Map"
-            className="p-2.5 rounded-xl text-sky-300 hover:text-white hover:bg-sky-500/20 transition-colors cursor-pointer"
+            className="p-2 rounded-lg text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A] transition-colors cursor-pointer"
           >
             <Globe className="w-4 h-4" />
           </button>
           <button
             onClick={() => setIsStormLayerActive && setIsStormLayerActive(!isStormLayerActive)}
-            title="Toggle 3D Storm, Tornado & Cyclone System"
-            className={`p-2.5 rounded-xl transition-colors cursor-pointer ${
+            title="Toggle 3D Storm System"
+            className={`p-2 rounded-lg transition-colors cursor-pointer ${
               isStormLayerActive
-                ? 'bg-red-500/30 text-red-300 shadow-glow-red'
-                : 'text-sky-300 hover:text-white hover:bg-sky-500/20'
+                ? 'bg-[#C85A5A]/20 text-[#CCD0CF] border border-[#C85A5A]/40'
+                : 'text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A]'
             }`}
           >
-            <Zap className={`w-4 h-4 ${isStormLayerActive ? 'animate-pulse' : ''}`} />
+            <Zap className="w-4 h-4" />
           </button>
           <button
             onClick={onOpenColorbarSettings}
             title="Colorbar Editor, Opacity & 3D Depth Exaggeration"
-            className="p-2.5 rounded-xl text-sky-300 hover:text-white hover:bg-sky-500/20 transition-colors cursor-pointer"
+            className="p-2 rounded-lg text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A] transition-colors cursor-pointer"
           >
             <Layers className="w-4 h-4" />
           </button>
@@ -133,35 +133,33 @@ export default function ViewportToolbar({
       </div>
 
       {/* 3. Top-Right Dynamic Colorbar Legend */}
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-3.5 right-3.5 z-20">
         <div 
           onClick={onOpenColorbarSettings}
           title="Click to customize palette, bounds, log scale, or vertical depth exaggeration"
-          className="glass-panel px-4 py-2.5 rounded-2xl border border-sky-500/30 shadow-cockpit min-w-[250px] cursor-pointer hover:border-cyan-400/60 hover:scale-[1.02] transition-all group"
+          className="bg-[#0D202B] px-3.5 py-2 rounded-xl border border-[#193544] hover:border-[#214555] shadow-sm min-w-[240px] cursor-pointer transition-colors group"
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-200 mb-1.5">
+          <div className="flex items-center justify-between text-xs font-semibold text-[#CCD0CF] mb-1.5">
             <div className="flex items-center gap-1.5">
               <span>{t(`parameters.${currentParam.id}`, currentParam.name)}</span>
               {isLogScale && (
-                <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">log₁₀</span>
+                <span className="text-[9px] px-1 py-0.2 rounded bg-[#142D3A] text-[#6BA3BE] font-mono">log₁₀</span>
               )}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-cyan-300 text-[11px]">({currentParam.unit})</span>
-              <div className="p-1 rounded bg-sky-500/10 text-cyan-400 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-colors">
-                <Sliders className="w-3.5 h-3.5" />
-              </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-mono text-[#6BA3BE] text-[10px]">({currentParam.unit})</span>
+              <Sliders className="w-3 h-3 text-[#637C87] group-hover:text-[#0C969C] transition-colors" />
             </div>
           </div>
 
           {/* Continuous gradient strip */}
           <div
-            className="h-2.5 w-full rounded-md shadow-inner border border-white/20 mb-1"
+            className="h-2 w-full rounded border border-[#193544] mb-1"
             style={{ background: activeGradient }}
           />
 
           {/* Scale tick numbers */}
-          <div className="flex justify-between text-[10px] font-mono text-sky-200/90 font-medium">
+          <div className="flex justify-between text-[9px] font-mono text-[#8FA8B2] font-medium">
             {ticks.map((val, idx) => (
               <span key={idx}>{val}</span>
             ))}
@@ -170,8 +168,8 @@ export default function ViewportToolbar({
       </div>
 
       {/* 4. Center-Bottom 3D View Mode Selector Bar */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-        <div className="glass-panel p-1.5 rounded-2xl flex items-center gap-1 border border-sky-500/30 shadow-cockpit">
+      <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20">
+        <div className="bg-[#0D202B] p-1 rounded-xl flex items-center gap-1 border border-[#193544] shadow-sm">
           {VIEW_MODES.map((mode) => {
             const Icon = modeIcons[mode.id] || Layers;
             const isActive = viewMode === mode.id;
@@ -180,13 +178,13 @@ export default function ViewportToolbar({
               <button
                 key={mode.id}
                 onClick={() => setViewMode(mode.id)}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-glow-cyan border border-cyan-300/40'
-                    : 'text-slate-300 hover:text-white hover:bg-sky-500/10'
+                    ? 'bg-[#0C969C]/15 text-[#CCD0CF] font-semibold border border-[#0C969C]/45'
+                    : 'text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A] border border-transparent'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#0C969C]' : 'text-[#8FA8B2]'}`} />
                 <span>{t(`viewModes.${mode.id}`, mode.label)}</span>
               </button>
             );
