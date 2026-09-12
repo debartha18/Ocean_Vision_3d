@@ -102,16 +102,16 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
           <div className="flex items-center justify-between mb-3 border-b border-sky-500/20 pb-2">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300">
               <Calculator className="w-4 h-4 text-cyan-400" />
-              <span>Interactive Hydrostatic Pressure & Seawater Density Calculator</span>
+              <span>{t('about.teosTitle', 'Interactive Hydrostatic Pressure & Seawater Density Calculator')}</span>
             </div>
             <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-              TEOS-10 Formulation
+              {t('about.teosBadge', 'TEOS-10 Formulation')}
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-1">Depth: <b className="text-white">{calcDepth}m</b></label>
+              <label className="text-[10px] font-mono text-slate-400 block mb-1">{t('about.depth', 'Depth')}: <b className="text-white">{calcDepth}m</b></label>
               <input
                 type="range"
                 min="0"
@@ -123,7 +123,7 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-1">Latitude: <b className="text-white">{calcLat}° N</b></label>
+              <label className="text-[10px] font-mono text-slate-400 block mb-1">{t('about.latitude', 'Latitude')}: <b className="text-white">{calcLat}° N</b></label>
               <input
                 type="range"
                 min="0"
@@ -135,7 +135,7 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-1">Surface Temp: <b className="text-white">{calcSst}°C</b></label>
+              <label className="text-[10px] font-mono text-slate-400 block mb-1">{t('about.surfaceTemp', 'Surface Temp')}: <b className="text-white">{calcSst}°C</b></label>
               <input
                 type="range"
                 min="2"
@@ -147,7 +147,7 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
               />
             </div>
             <div>
-              <label className="text-[10px] font-mono text-slate-400 block mb-1">Salinity: <b className="text-white">{calcSal} PSU</b></label>
+              <label className="text-[10px] font-mono text-slate-400 block mb-1">{t('about.salinity', 'Salinity')}: <b className="text-white">{calcSal} PSU</b></label>
               <input
                 type="range"
                 min="30"
@@ -163,22 +163,22 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
           {/* Computed Results Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
             <div className="bg-[#030919] p-2.5 rounded-xl border border-sky-500/20">
-              <span className="text-[9px] text-slate-400 block uppercase">Hydrostatic Pressure</span>
+              <span className="text-[9px] text-slate-400 block uppercase">{t('about.hydrostaticPressure', 'Hydrostatic Pressure')}</span>
               <span className="text-sm font-bold text-amber-300">{livePressure.dbar} dbar</span>
               <span className="text-[9px] text-slate-500 block">({livePressure.atm} atm)</span>
             </div>
             <div className="bg-[#030919] p-2.5 rounded-xl border border-sky-500/20">
-              <span className="text-[9px] text-slate-400 block uppercase">Seawater Density</span>
+              <span className="text-[9px] text-slate-400 block uppercase">{t('about.seawaterDensity', 'Seawater Density')}</span>
               <span className="text-sm font-bold text-cyan-300">{livePressure.density} kg/m³</span>
               <span className="text-[9px] text-slate-500 block">With compressibility</span>
             </div>
             <div className="bg-[#030919] p-2.5 rounded-xl border border-sky-500/20">
-              <span className="text-[9px] text-slate-400 block uppercase">Local Gravity g(φ)</span>
+              <span className="text-[9px] text-slate-400 block uppercase">{t('about.localGravity', 'Local Gravity g(φ)')}</span>
               <span className="text-sm font-bold text-emerald-300">{livePressure.gravity} m/s²</span>
               <span className="text-[9px] text-slate-500 block">Somigliana Equation</span>
             </div>
             <div className="bg-[#030919] p-2.5 rounded-xl border border-sky-500/20">
-              <span className="text-[9px] text-slate-400 block uppercase">Depth Regime</span>
+              <span className="text-[9px] text-slate-400 block uppercase">{t('about.depthRegime', 'Depth Regime')}</span>
               <span className="text-[11px] font-bold text-sky-200 truncate block">{livePressure.benchmark}</span>
               <span className="text-[9px] text-slate-500 block">Zonal Layer</span>
             </div>
@@ -189,17 +189,17 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
         <div className="glass-panel rounded-3xl p-6 border border-sky-500/25 bg-[#051336]/60">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300 mb-3">
             <BookOpen className="w-4 h-4 text-cyan-400" />
-            <span>Scientific & Physical Formulations</span>
+            <span>{t('about.scientificTitle', 'Scientific & Physical Formulations')}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
             <div className="p-4 rounded-2xl bg-[#030c22] border border-sky-500/15">
               <h3 className="font-bold text-white text-sm mb-1.5 flex items-center gap-1.5">
                 <Waves className="w-4 h-4 text-cyan-400" />
-                <span>Multi-Octave Gerstner Waves</span>
+                <span>{t('about.gerstnerTitle', 'Multi-Octave Gerstner Waves')}</span>
               </h3>
               <p className="leading-relaxed text-slate-300">
-                Non-linear surface gravity waves modeled using multi-frequency Gerstner wave displacement equations. The vertex shader evaluates horizontal drift and steep cusping with dynamic trochoidal steepness and wave-crest foam decay.
+                {t('about.gerstnerDesc', 'Non-linear surface gravity waves modeled using multi-frequency Gerstner wave displacement equations. The vertex shader evaluates horizontal drift and steep cusping with dynamic trochoidal steepness and wave-crest foam decay.')}
               </p>
             </div>
 
@@ -209,27 +209,27 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
                 <span>UNESCO & TEOS-10 Hydrostatics</span>
               </h3>
               <p className="leading-relaxed text-slate-300">
-                Hydrostatic pressure computed continuously from sea surface to hadal depths using Somigliana latitude-dependent gravity <code className="text-cyan-300 font-mono">g(φ)</code> and Millero seawater density equations with depth compressibility corrections.
+                {t('about.teosDesc', 'Hydrostatic pressure computed continuously from sea surface to hadal depths using Somigliana latitude-dependent gravity g(φ) and Millero seawater density equations with depth compressibility corrections.')}
               </p>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#030c22] border border-sky-500/15">
               <h3 className="font-bold text-white text-sm mb-1.5 flex items-center gap-1.5">
                 <Cpu className="w-4 h-4 text-emerald-400" />
-                <span>In-Situ Buoy Physics & Bobbing</span>
+                <span>{t('about.buoyPhysicsTitle', 'In-Situ Buoy Physics & Bobbing')}</span>
               </h3>
               <p className="leading-relaxed text-slate-300">
-                Floating telemetry stations evaluate analytical wave surface equations at their exact coordinates, producing realistic Archimedean buoyant heave, pitch, and roll response aligned with wave gradients.
+                {t('about.buoyPhysicsDesc', 'Floating telemetry stations evaluate analytical wave surface equations at their exact coordinates, producing realistic Archimedean buoyant heave, pitch, and roll response aligned with wave gradients.')}
               </p>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#030c22] border border-sky-500/15">
               <h3 className="font-bold text-white text-sm mb-1.5 flex items-center gap-1.5">
                 <Globe2 className="w-4 h-4 text-sky-400" />
-                <span>High-Precision Coastal Radar</span>
+                <span>{t('about.coastalRadarTitle', 'High-Precision Coastal Radar')}</span>
               </h3>
               <p className="leading-relaxed text-slate-300">
-                Dynamic Haversine distance engine linking deep ocean conditions to coastal beach destinations worldwide (Puri, Goa, Miami, Da Nang, etc.) with real-time precipitation accumulation, wave breakers, and safety flags.
+                {t('about.coastalRadarDesc', 'Dynamic Haversine distance engine linking deep ocean conditions to coastal beach destinations worldwide (Puri, Goa, Miami, Da Nang, etc.) with real-time precipitation accumulation, wave breakers, and safety flags.')}
               </p>
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function AboutView({ onNavigateTab, onOpenAnalyticReport }) {
         <div className="glass-panel rounded-3xl p-6 border border-sky-500/25 bg-[#051336]/60">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-300 mb-3">
             <Code className="w-4 h-4 text-cyan-400" />
-            <span>Architecture & Modern Web Stack</span>
+            <span>{t('about.techStackTitle', 'Architecture & Modern Web Stack')}</span>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs font-mono">

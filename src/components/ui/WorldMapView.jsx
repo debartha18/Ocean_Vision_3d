@@ -1,4 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Globe, 
   MapPin, 
@@ -25,6 +26,7 @@ export default function WorldMapView({
   onCustomCoords, 
   onBackTo3D 
 }) {
+  const { t } = useTranslation();
   const [pinnedLocation, setPinnedLocation] = useState(null);
   const [mapLayer, setMapLayer] = useState('Currents'); // 'Currents', 'SST', 'Waves', 'Salinity', 'Active Cyclones', 'Sensor Fleet'
   const [zoom, setZoom] = useState(1);
@@ -488,13 +490,13 @@ export default function WorldMapView({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-xs font-semibold text-cyan-300 border border-sky-500/20 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to 3D Twin</span>
+            <span>{t('mapView.backTo3D', 'Back to 3D Twin')}</span>
           </button>
           <div className="h-4 w-px bg-sky-500/20" />
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-cyan-400" />
             <h2 className="text-xs md:text-sm font-bold text-white hidden sm:block">
-              Global Ocean Digital Twin Map & Beach Radar
+              {t('mapView.title', 'Global Oceanographic Satellite Altimetry & Current Map')}
             </h2>
           </div>
         </div>
@@ -505,7 +507,7 @@ export default function WorldMapView({
             <Search className="w-3.5 h-3.5 text-cyan-400" />
             <input
               type="text"
-              placeholder="Search ocean or beach..."
+              placeholder={t('mapView.searchPlaceholder', 'Search ocean or beach...')}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               className="bg-transparent border-none outline-none text-white text-xs w-full placeholder-slate-400 font-normal"
@@ -541,17 +543,24 @@ export default function WorldMapView({
         {/* Right: Layer Pills & Zoom Tools */}
         <div className="flex items-center gap-2">
           <div className="hidden xl:flex items-center gap-1 bg-[#09183d] p-1 rounded-xl border border-sky-500/20">
-            {['Currents', 'SST', 'Waves', 'Salinity', 'Active Cyclones', 'Sensor Fleet'].map((layer) => (
+            {[
+              { id: 'Currents', label: t('mapView.currents', 'Currents') },
+              { id: 'SST', label: t('mapView.sst', 'SST') },
+              { id: 'Waves', label: t('mapView.waves', 'Waves') },
+              { id: 'Salinity', label: t('mapView.salinity', 'Salinity') },
+              { id: 'Active Cyclones', label: t('mapView.cyclones', 'Active Cyclones') },
+              { id: 'Sensor Fleet', label: t('mapView.fleet', 'Sensor Fleet') }
+            ].map(({ id, label }) => (
               <button
-                key={layer}
-                onClick={() => setMapLayer(layer)}
+                key={id}
+                onClick={() => setMapLayer(id)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  mapLayer === layer
+                  mapLayer === id
                     ? 'bg-cyan-500 text-slate-950 font-bold shadow-glow-cyan'
                     : 'text-slate-300 hover:text-white hover:bg-sky-500/10'
                 }`}
               >
-                {layer}
+                {label}
               </button>
             ))}
           </div>
@@ -559,21 +568,21 @@ export default function WorldMapView({
           <div className="flex items-center gap-1 bg-[#09183d] p-1 rounded-xl border border-sky-500/20">
             <button
               onClick={() => handleZoom(0.3)}
-              title="Zoom In"
+              title={t('mapView.zoomIn', 'Zoom In')}
               className="p-1.5 rounded-lg hover:bg-sky-500/20 text-cyan-300 cursor-pointer"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => handleZoom(-0.3)}
-              title="Zoom Out"
+              title={t('mapView.zoomOut', 'Zoom Out')}
               className="p-1.5 rounded-lg hover:bg-sky-500/20 text-cyan-300 cursor-pointer"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleResetZoom}
-              title="Reset Map"
+              title={t('mapView.resetView', 'Reset Map')}
               className="p-1.5 rounded-lg hover:bg-sky-500/20 text-cyan-300 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -894,7 +903,7 @@ export default function WorldMapView({
           {/* A. LEGEND (Top Right) */}
           <div className="absolute top-4 right-4 bg-[#05112e]/90 backdrop-blur-md p-3.5 rounded-2xl border border-sky-500/30 text-xs shadow-2xl z-30 min-w-[140px]">
             <div className="flex items-center justify-between font-bold text-white tracking-wider text-[11px] mb-2 uppercase border-b border-sky-500/20 pb-1">
-              <span>LEGEND</span>
+              <span>{t('mapView.legend', 'LEGEND')}</span>
               <button 
                 onClick={() => setIsLegendOpen(!isLegendOpen)}
                 className="text-slate-400 hover:text-white text-[10px]"
@@ -907,35 +916,35 @@ export default function WorldMapView({
               <div className="flex flex-col gap-1.5 text-[10px] text-slate-200">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
-                  <span>In-situ Station</span>
+                  <span>{t('mapView.inSitu', 'In-situ Station')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#a855f7]" />
-                  <span>Drifter Buoy</span>
+                  <span>{t('mapView.drifter', 'Drifter Buoy')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" />
-                  <span>Argo Float</span>
+                  <span>{t('mapView.argo', 'Argo Float')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8]" />
-                  <span>Tide Gauge</span>
+                  <span>{t('mapView.tideGauge', 'Tide Gauge')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#f97316]" />
-                  <span>Wave Buoy</span>
+                  <span>{t('mapView.waveBuoy', 'Wave Buoy')}</span>
                 </div>
 
                 <div className="h-px bg-sky-500/20 my-1" />
 
-                <div className="text-[9px] uppercase font-bold text-slate-400">Ocean Currents</div>
+                <div className="text-[9px] uppercase font-bold text-slate-400">{t('mapView.oceanCurrents', 'Ocean Currents')}</div>
                 <div className="flex items-center gap-2">
                   <span className="w-4 h-0.5 border-t-2 border-dashed border-red-500" />
-                  <span>Warm Current</span>
+                  <span>{t('mapView.warmCurrent', 'Warm Current')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-4 h-0.5 border-t-2 border-dashed border-sky-400" />
-                  <span>Cold Current</span>
+                  <span>{t('mapView.coldCurrent', 'Cold Current')}</span>
                 </div>
               </div>
             )}
@@ -946,21 +955,21 @@ export default function WorldMapView({
             <button
               onClick={() => handleZoom(0.3)}
               className="w-8 h-8 rounded-xl bg-[#061438]/90 hover:bg-[#0c2466] border border-sky-500/30 text-white flex items-center justify-center shadow-lg cursor-pointer transition-colors"
-              title="Zoom In"
+              title={t('mapView.zoomIn', 'Zoom In')}
             >
               <Plus className="w-4 h-4 text-cyan-300" />
             </button>
             <button
               onClick={() => handleZoom(-0.3)}
               className="w-8 h-8 rounded-xl bg-[#061438]/90 hover:bg-[#0c2466] border border-sky-500/30 text-white flex items-center justify-center shadow-lg cursor-pointer transition-colors"
-              title="Zoom Out"
+              title={t('mapView.zoomOut', 'Zoom Out')}
             >
               <Minus className="w-4 h-4 text-cyan-300" />
             </button>
             <button
               onClick={() => setIsLegendOpen(!isLegendOpen)}
               className="w-8 h-8 rounded-xl bg-[#061438]/90 hover:bg-[#0c2466] border border-sky-500/30 text-white flex items-center justify-center shadow-lg cursor-pointer transition-colors"
-              title="Toggle Legend"
+              title={t('mapView.legend', 'Toggle Legend')}
             >
               <Layers className="w-4 h-4 text-cyan-300" />
             </button>
@@ -970,17 +979,17 @@ export default function WorldMapView({
           <div className="absolute bottom-4 left-4 bg-[#05112e]/92 backdrop-blur-md p-3.5 rounded-2xl border border-sky-500/30 text-[11px] font-mono shadow-2xl z-30 max-w-sm pointer-events-none">
             <div className="flex items-center gap-1.5 text-cyan-300 font-bold mb-1">
               <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Inspector: {inspectorData.lat}° {inspectorData.latDir || 'N'}, {inspectorData.lon}° {inspectorData.lonDir || 'E'}</span>
+              <span>{t('mapView.inspector', 'Inspector')}: {inspectorData.lat}° {inspectorData.latDir || 'N'}, {inspectorData.lon}° {inspectorData.lonDir || 'E'}</span>
             </div>
             <div className="text-slate-300 leading-snug">
-              <div>Bathymetry: <b className="text-white">{inspectorData.depth}m</b></div>
-              <div>Pressure: <b className="text-amber-300">{inspectorData.pressure}</b></div>
-              <div>Sea Surface Temp: <b className="text-cyan-200">{inspectorData.sst} °C</b></div>
-              <div>Salinity: <b className="text-emerald-300">{inspectorData.salinity} PSU</b></div>
-              <div>Dissolved Oxygen: <b className="text-sky-300">{inspectorData.oxygen} mg/L</b></div>
-              <div>Chlorophyll-a: <b className="text-green-300">{inspectorData.chlorophyll} mg/m³</b></div>
-              <div>Wave Height: <b className="text-white">{inspectorData.waveHeight}m</b></div>
-              <div>Wind Speed: <b className="text-slate-200">{inspectorData.windSpeed} m/s</b></div>
+              <div>{t('mapView.depth', 'Bathymetry')}: <b className="text-white">{inspectorData.depth}m</b></div>
+              <div>{t('mapView.pressure', 'Pressure')}: <b className="text-amber-300">{inspectorData.pressure}</b></div>
+              <div>{t('mapView.seaTemp', 'Sea Surface Temp')}: <b className="text-cyan-200">{inspectorData.sst} °C</b></div>
+              <div>{t('mapView.salinity', 'Salinity')}: <b className="text-emerald-300">{inspectorData.salinity} PSU</b></div>
+              <div>{t('mapView.oxygen', 'Dissolved Oxygen')}: <b className="text-sky-300">{inspectorData.oxygen} mg/L</b></div>
+              <div>{t('mapView.chlorophyll', 'Chlorophyll-a')}: <b className="text-green-300">{inspectorData.chlorophyll} mg/m³</b></div>
+              <div>{t('mapView.waves', 'Wave Height')}: <b className="text-white">{inspectorData.waveHeight}m</b></div>
+              <div>{t('mapView.windSpeed', 'Wind Speed')}: <b className="text-slate-200">{inspectorData.windSpeed} m/s</b></div>
               <div>Wind Direction: <b className="text-slate-200">{inspectorData.windDir}</b></div>
             </div>
           </div>
@@ -1015,7 +1024,7 @@ export default function WorldMapView({
                 </div>
               ) : (
                 <div className="mb-2 text-[10px] text-slate-300 font-mono">
-                  Bathymetry: ~{pinnedLocation.depth || 3200}m • Pressure: ~{pinnedLocation.pressure?.dbar || 3250} dbar
+                  {t('mapView.depth', 'Bathymetry')}: ~{pinnedLocation.depth || 3200}m • {t('mapView.pressure', 'Pressure')}: ~{pinnedLocation.pressure?.dbar || 3250} dbar
                 </div>
               )}
 
@@ -1023,7 +1032,7 @@ export default function WorldMapView({
                 onClick={handleTargetPinned}
                 className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-xs font-bold text-white shadow-glow-cyan flex items-center justify-center gap-1.5 cursor-pointer transition-all"
               >
-                <span>Load 3D Simulation Here</span>
+                <span>{t('mapView.load3d', 'Load 3D Simulation Here')}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -1031,7 +1040,7 @@ export default function WorldMapView({
 
           {/* E. MINI-MAP (Bottom Right inside map container) */}
           <div className="absolute bottom-4 right-4 bg-[#05112e]/90 backdrop-blur-md p-2 rounded-2xl border border-sky-500/30 shadow-2xl z-30 flex flex-col items-center">
-            <span className="text-[9px] font-mono text-slate-400 mb-1">Mini Map</span>
+            <span className="text-[9px] font-mono text-slate-400 mb-1">{t('mapView.miniMap', 'Mini Map')}</span>
             <div className="relative w-28 h-14 rounded-lg overflow-hidden border border-sky-500/20 bg-[#030919]">
               <img 
                 src="/world_map_satellite.jpg" 

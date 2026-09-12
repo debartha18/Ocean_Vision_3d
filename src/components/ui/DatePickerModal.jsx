@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Calendar as CalendarIcon, Check, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { parseDateString, getFormattedCurrentDate } from '../../utils/dateUtils';
 
 export default function DatePickerModal({ isOpen, onClose, currentDate, onSelectDate }) {
+  const { t } = useTranslation();
   const initialParsed = parseDateString(currentDate);
   const [selectedYear, setSelectedYear] = useState(initialParsed.year);
   const [selectedMonth, setSelectedMonth] = useState(initialParsed.month);
@@ -54,14 +56,14 @@ export default function DatePickerModal({ isOpen, onClose, currentDate, onSelect
   const today = new Date();
   const presets = [
     { 
-      label: `Today (${getFormattedCurrentDate(today)}) - Live Satellite Sync`, 
+      label: `${t('datePicker.today', 'Today')} (${getFormattedCurrentDate(today)}) - Live Satellite Sync`, 
       day: today.getDate(), 
       month: today.getMonth(), 
       year: today.getFullYear() 
     },
-    { label: '15 Aug 2026 (Peak Monsoon & Cyclone Remal)', day: 15, month: 7, year: 2026 },
-    { label: '24 May 2026 (Pre-Monsoon Cyclone Mocha)', day: 24, month: 4, year: 2026 },
-    { label: '15 Jan 2026 (Winter Ocean Baseline)', day: 15, month: 0, year: 2026 }
+    { label: `15 Aug 2026 (${t('datePicker.peakMonsoon', 'Peak Monsoon & Cyclone Remal')})`, day: 15, month: 7, year: 2026 },
+    { label: `24 May 2026 (${t('datePicker.preMonsoon', 'Pre-Monsoon Cyclone Mocha')})`, day: 24, month: 4, year: 2026 },
+    { label: `15 Jan 2026 (${t('datePicker.winterBaseline', 'Winter Ocean Baseline')})`, day: 15, month: 0, year: 2026 }
   ];
 
   return (
@@ -82,17 +84,19 @@ export default function DatePickerModal({ isOpen, onClose, currentDate, onSelect
           </div>
           <div>
             <h2 className="text-lg font-black text-white tracking-wide">
-              Temporal Timeline & Observation Date Engine
+              {t('datePicker.title', 'Observation Date & Temporal Simulation Engine')}
             </h2>
             <p className="text-xs text-sky-300/70 font-mono">
-              Select any historical, current, or forecast date to recalculate ocean physics
+              {t('datePicker.subtitle', 'Select historical ocean state or choose extreme meteorological event')}
             </p>
           </div>
         </div>
 
         {/* Quick Presets */}
         <div className="flex flex-col gap-1.5 mb-4">
-          <div className="text-[10px] font-mono uppercase text-slate-400">Quick Simulation Scenarios</div>
+          <div className="text-[10px] font-mono uppercase text-slate-400">
+            {t('datePicker.quickScenarios', 'Quick Simulation Scenarios')}
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {presets.map((p, idx) => (
               <button
@@ -170,21 +174,21 @@ export default function DatePickerModal({ isOpen, onClose, currentDate, onSelect
         {/* Selected Date Summary & Apply */}
         <div className="flex items-center justify-between pt-2 border-t border-sky-500/20">
           <div className="text-xs font-mono text-cyan-300">
-            Selected: <span className="font-bold text-white">{selectedDay} {months[selectedMonth]} {selectedYear}</span>
+            {t('datePicker.selected', 'Selected')}: <span className="font-bold text-white">{selectedDay} {months[selectedMonth]} {selectedYear}</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-xs font-semibold text-slate-300 transition-colors"
             >
-              Cancel
+              {t('datePicker.cancel', 'Cancel')}
             </button>
             <button
               onClick={handleApply}
               className="px-5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-xs font-bold text-white shadow-glow-cyan transition-all flex items-center gap-1.5"
             >
               <Check className="w-4 h-4" />
-              <span>Apply Observation Date</span>
+              <span>{t('datePicker.apply', 'Apply Observation Date')}</span>
             </button>
           </div>
         </div>

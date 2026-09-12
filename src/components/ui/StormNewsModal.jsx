@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   X, 
-  Wind,
+  Wind, 
   Newspaper, 
   Umbrella, 
   CloudRain, 
@@ -18,6 +19,7 @@ export default function StormNewsModal({
   isStormLayerActive, 
   setIsStormLayerActive 
 }) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('beaches'); // 'beaches' or 'news'
 
   if (!isOpen) return null;
@@ -51,14 +53,14 @@ export default function StormNewsModal({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-black text-white tracking-wide">
-                Coastal Weather Forecast & Beach Rain Radar
+                {t('stormModal.title', 'Coastal Weather Forecast & Beach Rain Radar')}
               </h2>
               <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded bg-red-500/30 text-red-200 border border-red-400/40 animate-pulse">
-                {storm?.category || 'Active Weather System'}
+                {storm?.category || t('stormModal.activeSystem', 'Active Weather System')}
               </span>
             </div>
             <p className="text-xs text-sky-300/80 font-mono">
-              Target Maritime Sector: {activeRegion?.name} ({activeRegion?.coords})
+              {t('stormModal.targetSector', 'Target Maritime Sector')}: {activeRegion?.name} ({activeRegion?.coords})
             </p>
           </div>
         </div>
@@ -74,7 +76,7 @@ export default function StormNewsModal({
             }`}
           >
             <Umbrella className="w-3.5 h-3.5 text-amber-300" />
-            <span>Near Sea Beaches & Coastal Rain Forecast ({nearestBeaches.length} Areas)</span>
+            <span>{t('stormModal.beachesTab', 'Near Sea Beaches & Coastal Rain Forecast')} ({nearestBeaches.length})</span>
           </button>
 
           <button
@@ -86,31 +88,31 @@ export default function StormNewsModal({
             }`}
           >
             <Newspaper className="w-3.5 h-3.5 text-red-400" />
-            <span>Marine Meteorological News & Bulletins</span>
+            <span>{t('stormModal.newsTab', 'Marine Meteorological News & Bulletins')}</span>
           </button>
         </div>
 
         {/* Global Storm Metrics Strip */}
         <div className="grid grid-cols-4 gap-2 mb-4">
           <div className="bg-[#19081e] p-2.5 rounded-2xl border border-red-500/30 text-center">
-            <div className="text-[9px] text-slate-400 uppercase font-mono">Storm Risk</div>
+            <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.stormRisk', 'Storm Risk')}</div>
             <div className="text-base font-mono font-black text-red-400 mt-0.5">{stormProb}%</div>
-            <div className="text-[9px] text-red-300/70">Probability</div>
+            <div className="text-[9px] text-red-300/70">{t('stormModal.probability', 'Probability')}</div>
           </div>
           <div className="bg-[#19081e] p-2.5 rounded-2xl border border-red-500/30 text-center">
-            <div className="text-[9px] text-slate-400 uppercase font-mono">Precipitation</div>
+            <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.precipitation', 'Precipitation')}</div>
             <div className="text-base font-mono font-black text-amber-300 mt-0.5">{rainRate} mm/h</div>
-            <div className="text-[9px] text-amber-300/70">Rain Rate</div>
+            <div className="text-[9px] text-amber-300/70">{t('stormModal.rainRate', 'Rain Rate')}</div>
           </div>
           <div className="bg-[#19081e] p-2.5 rounded-2xl border border-red-500/30 text-center">
-            <div className="text-[9px] text-slate-400 uppercase font-mono">Wind Gusts</div>
+            <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.windGusts', 'Wind Gusts')}</div>
             <div className="text-base font-mono font-black text-orange-400 mt-0.5">
               {storm ? storm.windSpeed.split(' ')[0] : '110'} km/h
             </div>
-            <div className="text-[9px] text-orange-300/70">Gale Velocity</div>
+            <div className="text-[9px] text-orange-300/70">{t('stormModal.galeVelocity', 'Gale Velocity')}</div>
           </div>
           <div className="bg-[#19081e] p-2.5 rounded-2xl border border-red-500/30 text-center">
-            <div className="text-[9px] text-slate-400 uppercase font-mono">3D Cyclone</div>
+            <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.cyclone3d', '3D Cyclone')}</div>
             <button
               onClick={() => setIsStormLayerActive(!isStormLayerActive)}
               className={`mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -119,7 +121,7 @@ export default function StormNewsModal({
                   : 'bg-slate-700 text-slate-300'
               }`}
             >
-              {isStormLayerActive ? 'ACTIVE' : 'OFF'}
+              {isStormLayerActive ? t('stormModal.active', 'ACTIVE') : t('stormModal.off', 'OFF')}
             </button>
           </div>
         </div>
@@ -130,10 +132,10 @@ export default function StormNewsModal({
             <div className="flex items-center justify-between px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
                 <Compass className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Nearby Coastal Zones & Beach Rain Predictions (Sorted by Proximity)</span>
+                <span>{t('stormModal.nearbyZones', 'Nearby Coastal Zones & Beach Rain Predictions (Sorted by Proximity)')}</span>
               </span>
               <span className="text-[10px] font-mono text-slate-400">
-                Corrected for Distance & Monsoon Surge
+                {t('stormModal.surgeCorrected', 'Corrected for Distance & Monsoon Surge')}
               </span>
             </div>
 
@@ -161,14 +163,14 @@ export default function StormNewsModal({
                           ? 'bg-amber-500/30 text-amber-300 border border-amber-500/40'
                           : 'bg-emerald-500/30 text-emerald-300 border border-emerald-500/40'
                       }`}>
-                        {b.safetyFlag.split(' ')[0]} Flag
+                        {b.safetyFlag.split(' ')[0]} {t('stormModal.flag', 'Flag')}
                       </span>
                     </div>
 
                     {/* Meteorological Matrix */}
                     <div className="grid grid-cols-3 gap-2 my-2.5 text-center">
                       <div className="bg-[#030d24] p-2 rounded-xl border border-sky-500/15">
-                        <div className="text-[9px] text-slate-400 uppercase font-mono">Rain Chance</div>
+                        <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.rainChance', 'Rain Chance')}</div>
                         <div className="text-sm font-bold font-mono text-amber-300 mt-0.5">
                           {b.rainProbability}%
                         </div>
@@ -176,19 +178,19 @@ export default function StormNewsModal({
                       </div>
 
                       <div className="bg-[#030d24] p-2 rounded-xl border border-sky-500/15">
-                        <div className="text-[9px] text-slate-400 uppercase font-mono">24h Total</div>
+                        <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.total24h', '24h Total')}</div>
                         <div className="text-sm font-bold font-mono text-cyan-300 mt-0.5">
                           {b.total24hPrecipMm} mm
                         </div>
-                        <div className="text-[8px] text-cyan-400/60">Accumulation</div>
+                        <div className="text-[8px] text-cyan-400/60">{t('stormModal.accumulation', 'Accumulation')}</div>
                       </div>
 
                       <div className="bg-[#030d24] p-2 rounded-xl border border-sky-500/15">
-                        <div className="text-[9px] text-slate-400 uppercase font-mono">Breaker Swell</div>
+                        <div className="text-[9px] text-slate-400 uppercase font-mono">{t('stormModal.breakerSwell', 'Breaker Swell')}</div>
                         <div className="text-sm font-bold font-mono text-white mt-0.5">
                           {b.surfWaveHeight} m
                         </div>
-                        <div className="text-[8px] text-slate-400">Wind: {b.beachWindGusts} km/h</div>
+                        <div className="text-[8px] text-slate-400">{t('stormModal.wind', 'Wind')}: {b.beachWindGusts} km/h</div>
                       </div>
                     </div>
 
@@ -226,8 +228,8 @@ export default function StormNewsModal({
                 {storm?.rainfallForecast || 'Heavy squalls, ocean wave height exceeding 3.5m, and gale force winds detected.'}
               </p>
               <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400">
-                <span>Movement: <b className="text-white">{storm?.movement || 'Northwest at 16 km/h'}</b></span>
-                <span>Central Pressure: <b className="text-amber-300">{storm?.pressure || '975 hPa'}</b></span>
+                <span>{t('stormModal.movement', 'Movement')}: <b className="text-white">{storm?.movement || 'Northwest at 16 km/h'}</b></span>
+                <span>{t('stormModal.centralPressure', 'Central Pressure')}: <b className="text-amber-300">{storm?.pressure || '975 hPa'}</b></span>
               </div>
             </div>
 
@@ -263,14 +265,14 @@ export default function StormNewsModal({
         <div className="flex items-center justify-between pt-3 border-t border-sky-500/20 mt-3">
           <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>High-accuracy rain models synchronized with IMD, NOAA, and ECMWF standards</span>
+            <span>{t('stormModal.syncFooter', 'High-accuracy rain models synchronized with IMD, NOAA, and ECMWF standards')}</span>
           </div>
 
           <button
             onClick={onClose}
             className="px-5 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-xs font-semibold text-cyan-300 transition-colors cursor-pointer"
           >
-            Close Weather Radar
+            {t('stormModal.closeRadar', 'Close Weather Radar')}
           </button>
         </div>
       </div>

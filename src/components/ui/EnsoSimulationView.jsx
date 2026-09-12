@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as THREE from 'three';
 import { 
   Play, 
@@ -30,6 +31,7 @@ import {
 import { PARAMETERS } from '../../data/oceanData';
 
 export default function EnsoSimulationView({ onNavigateTab }) {
+  const { t } = useTranslation();
   const [activeSubTab, setActiveSubTab] = useState('Simulation');
   const [scenario, setScenario] = useState('elnino'); // 'normal' | 'elnino' | 'lanina'
   const [intensity, setIntensity] = useState(0.65);
@@ -415,10 +417,10 @@ export default function EnsoSimulationView({ onNavigateTab }) {
             <div className="flex items-center justify-between mb-2 px-1">
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-cyan-300">
                 <Compass className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Position / Coordinates</span>
+                <span>{t('enso.positionCoords', 'Position / Coordinates')}</span>
               </div>
               <button className="text-[10px] font-bold text-cyan-400 hover:text-white bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30 transition-colors">
-                Change Basin
+                {t('enso.changeBasin', 'Change Basin')}
               </button>
             </div>
 
@@ -430,7 +432,7 @@ export default function EnsoSimulationView({ onNavigateTab }) {
             <div className="bg-[#03081a]/90 p-2.5 rounded-xl border border-sky-500/20 flex flex-col gap-2">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <span className="text-[9px] font-mono text-slate-400 block mb-0.5">Lat (°N/S)</span>
+                  <span className="text-[9px] font-mono text-slate-400 block mb-0.5">{t('controls.latitude', 'Lat (°N/S)')}</span>
                   <input
                     type="text"
                     value={latInput}
@@ -439,7 +441,7 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                   />
                 </div>
                 <div>
-                  <span className="text-[9px] font-mono text-slate-400 block mb-0.5">Lon (°E/W)</span>
+                  <span className="text-[9px] font-mono text-slate-400 block mb-0.5">{t('controls.longitude', 'Lon (°E/W)')}</span>
                   <input
                     type="text"
                     value={lonInput}
@@ -449,7 +451,7 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                 </div>
               </div>
               <button className="w-full py-1.5 rounded-lg bg-sky-600/80 hover:bg-cyan-500 hover:text-slate-950 text-white text-[11px] font-bold transition-all flex items-center justify-center gap-1 shadow-glow-cyan">
-                <span>Target Coordinates</span>
+                <span>{t('enso.targetCoords', 'Target Coordinates')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -458,9 +460,9 @@ export default function EnsoSimulationView({ onNavigateTab }) {
           <div className="glass-panel rounded-2xl p-3 border border-sky-500/20 bg-[#061230]/70 flex-1 flex flex-col">
             <div className="flex items-center justify-between mb-2.5 px-1">
               <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
-                Parameters
+                {t('controls.oceanParameters', 'Parameters')}
               </span>
-              <span className="text-[10px] text-sky-400/80 font-mono">8 Variables</span>
+              <span className="text-[10px] text-sky-400/80 font-mono">{t('enso.variablesCount', '8 Variables')}</span>
             </div>
 
             <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto pr-1">
@@ -482,7 +484,9 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                       <div className={`p-1.5 rounded-lg ${isSelected ? 'bg-cyan-400/20 text-cyan-300' : 'bg-sky-500/10 text-sky-400'}`}>
                         <Icon className="w-4 h-4" />
                       </div>
-                      <div className="text-xs font-semibold leading-tight">{param.name}</div>
+                      <div className="text-xs font-semibold leading-tight">
+                        {t('parameters.' + param.id, param.name)}
+                      </div>
                     </div>
                     <span className={`text-[11px] font-mono px-1.5 py-0.5 rounded ${isSelected ? 'text-cyan-200 bg-sky-900/50' : 'text-slate-400'}`}>
                       {param.unit}
@@ -503,7 +507,7 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                   <div className={`p-1.5 rounded-lg ${selectedParam === 'density' ? 'bg-cyan-400/20 text-cyan-300' : 'bg-sky-500/10 text-sky-400'}`}>
                     <Layers className="w-4 h-4" />
                   </div>
-                  <div className="text-xs font-semibold leading-tight">Ocean Density</div>
+                  <div className="text-xs font-semibold leading-tight">{t('enso.oceanDensity', 'Ocean Density')}</div>
                 </div>
                 <span className="text-[11px] font-mono text-slate-400">kg/m³</span>
               </button>
@@ -520,7 +524,7 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                   <div className={`p-1.5 rounded-lg ${selectedParam === 'ph' ? 'bg-cyan-400/20 text-cyan-300' : 'bg-sky-500/10 text-sky-400'}`}>
                     <Sparkles className="w-4 h-4" />
                   </div>
-                  <div className="text-xs font-semibold leading-tight">Ocean Acidification (pH)</div>
+                  <div className="text-xs font-semibold leading-tight">{t('enso.oceanAcidification', 'Ocean Acidification (pH)')}</div>
                 </div>
                 <span className="text-[11px] font-mono text-slate-400">pH</span>
               </button>
@@ -539,25 +543,30 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                   <Thermometer className="w-3.5 h-3.5 animate-pulse" />
                 </div>
                 <h2 className="text-xs font-black tracking-wide text-white whitespace-nowrap">
-                  ENSO / El Niño Simulation
+                  {t('navbar.ensoSimulation', 'ENSO / El Niño Simulation')}
                 </h2>
               </div>
 
               {/* Sub-Tabs */}
               <div className="flex items-center gap-1 bg-[#020817]/70 p-0.5 rounded-xl border border-white/10 shrink-0">
-                {['Simulation', 'Prediction', 'ENSO Index', 'Impact Analysis'].map((tab) => {
-                  const isActive = activeSubTab === tab;
+                {[
+                  { key: 'simulation', label: 'Simulation' },
+                  { key: 'prediction', label: 'Prediction' },
+                  { key: 'ensoIndex', label: 'ENSO Index' },
+                  { key: 'impactAnalysis', label: 'Impact Analysis' }
+                ].map(({ key, label }) => {
+                  const isActive = activeSubTab === label;
                   return (
                     <button
-                      key={tab}
-                      onClick={() => setActiveSubTab(tab)}
+                      key={key}
+                      onClick={() => setActiveSubTab(label)}
                       className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition-all whitespace-nowrap ${
                         isActive
                           ? 'bg-sky-600 text-white shadow-glow-cyan'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      {tab}
+                      {t(`enso.subTabs.${key}`, label)}
                     </button>
                   );
                 })}
@@ -568,12 +577,12 @@ export default function EnsoSimulationView({ onNavigateTab }) {
             <div className="flex items-center gap-2.5">
               {/* Scenario selector */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Scenario</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">{t('enso.phaseState', 'Scenario')}</span>
                 <div className="flex items-center gap-0.5 bg-[#020817] p-0.5 rounded-xl border border-white/10">
                   {[
-                    { id: 'normal', label: 'Normal' },
-                    { id: 'elnino', label: 'El Niño' },
-                    { id: 'lanina', label: 'La Niña' }
+                    { id: 'normal', label: t('enso.normal', 'Normal') },
+                    { id: 'elnino', label: t('enso.elnino', 'El Niño') },
+                    { id: 'lanina', label: t('enso.lanina', 'La Niña') }
                   ].map((sc) => {
                     const isCur = scenario === sc.id;
                     return (
@@ -599,9 +608,9 @@ export default function EnsoSimulationView({ onNavigateTab }) {
 
               {/* Intensity Slider */}
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Intensity</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">{t('enso.intensityLabel', 'Intensity')}</span>
                 <div className="flex items-center gap-1 bg-[#020817] px-2 py-0.5 rounded-xl border border-white/10">
-                  <span className="text-[8.5px] font-mono text-slate-400">Weak</span>
+                  <span className="text-[8.5px] font-mono text-slate-400">{t('enso.weak', 'Weak')}</span>
                   <input
                     type="range"
                     min="0.2"
@@ -612,9 +621,9 @@ export default function EnsoSimulationView({ onNavigateTab }) {
                     className="w-14 h-1.5 bg-sky-950 rounded-lg appearance-none cursor-pointer accent-orange-500"
                   />
                   <span className="text-[10px] font-mono font-bold text-amber-300 min-w-[48px] text-center">
-                    {intensityLabel}
+                    {intensity <= 0.35 ? t('enso.weak', 'Weak') : intensity <= 0.7 ? t('enso.moderate', 'Moderate') : t('enso.strong', 'Strong')}
                   </span>
-                  <span className="text-[8.5px] font-mono text-slate-400">Strong</span>
+                  <span className="text-[8.5px] font-mono text-slate-400">{t('enso.strong', 'Strong')}</span>
                 </div>
               </div>
 

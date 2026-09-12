@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Compass, Navigation, Globe, Check, Search, ArrowRight } from 'lucide-react';
 import { REGIONS } from '../../data/oceanData';
 
 export default function LocationModal({ isOpen, onClose, activeRegion, onSelectRegion, onCustomCoords }) {
+  const { t } = useTranslation();
   const [customLat, setCustomLat] = useState('15.297');
   const [customLon, setCustomLon] = useState('87.860');
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,10 +93,10 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
           </div>
           <div>
             <h2 className="text-lg font-black text-white tracking-wide">
-              Global Ocean Basin & Coordinate Navigator
+              {t('locationModal.title', 'Global Ocean Basin & Coordinate Navigator')}
             </h2>
             <p className="text-xs text-sky-300/70 font-mono">
-              Select ocean basin or enter exact Latitude & Longitude coordinates
+              {t('locationModal.subtitle', 'Select ocean basin or enter exact Latitude & Longitude coordinates')}
             </p>
           </div>
         </div>
@@ -103,13 +105,13 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
         <form onSubmit={handleApplyCustom} className="bg-[#071536]/90 p-3.5 rounded-2xl border border-sky-500/25 mb-4">
           <div className="text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2 flex items-center gap-2">
             <Navigation className="w-3.5 h-3.5" />
-            <span>Target Custom Coordinates</span>
+            <span>{t('locationModal.targetCustom', 'Target Custom Coordinates')}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
               <label className="text-[10px] font-mono text-slate-400 block mb-1">
-                Latitude (-90.0° to +90.0°)
+                {t('locationModal.latitudePrompt', 'Latitude (-90.0° to +90.0°)')}
               </label>
               <input
                 type="number"
@@ -124,7 +126,7 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
             </div>
             <div>
               <label className="text-[10px] font-mono text-slate-400 block mb-1">
-                Longitude (-180.0° to +180.0°)
+                {t('locationModal.longitudePrompt', 'Longitude (-180.0° to +180.0°)')}
               </label>
               <input
                 type="number"
@@ -143,7 +145,7 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
             type="submit"
             className="w-full py-2 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-xs font-bold text-white shadow-glow-cyan flex items-center justify-center gap-2 transition-all"
           >
-            <span>Fly Camera to Coordinates</span>
+            <span>{t('locationModal.flyCamera', 'Fly Camera to Coordinates')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
@@ -151,9 +153,9 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
         {/* Ocean Basin Directory */}
         <div className="flex items-center justify-between mb-2 px-1">
           <span className="text-xs font-bold uppercase tracking-wider text-sky-200">
-            Major Ocean Basins & Seas
+            {t('locationModal.majorBasins', 'Major Ocean Basins & Seas')}
           </span>
-          <span className="text-[10px] font-mono text-cyan-400">6 Global Basins</span>
+          <span className="text-[10px] font-mono text-cyan-400">{t('locationModal.globalBasins', '6 Global Basins')}</span>
         </div>
 
         {/* Search filter */}
@@ -161,7 +163,7 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
             type="text"
-            placeholder="Search sea or coordinates..."
+            placeholder={t('locationModal.searchPlaceholder', 'Search sea or coordinates...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#05102a] border border-sky-500/20 text-xs text-slate-200 focus:outline-none focus:border-cyan-400"
@@ -199,7 +201,7 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
                       )}
                     </div>
                     <div className="text-[11px] font-mono text-sky-300/80 mt-0.5">
-                      {region.coords} • SST: {region.sst}°C • Storm Risk: {region.stormProbability}%
+                      {region.coords} • SST: {region.sst}°C • {t('stormModal.stormRisk', 'Storm Risk')}: {region.stormProbability}%
                     </div>
                   </div>
                 </div>

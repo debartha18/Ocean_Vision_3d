@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Play, 
   Pause, 
@@ -17,6 +18,7 @@ export default function EnsoSimulationDock({
   onFocusPacific,
   isPacificBasin
 }) {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
 
@@ -86,10 +88,10 @@ export default function EnsoSimulationDock({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-black tracking-wider uppercase text-white">
-                  ENSO Simulation
+                  {t('enso.dockTitle', 'ENSO Simulation')}
                 </span>
                 <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${metrics.badgeBg}`}>
-                  {currentPhase === 'elnino' ? 'El Niño' : currentPhase === 'lanina' ? 'La Niña' : 'Normal'} ({displayAnomaly})
+                  {currentPhase === 'elnino' ? t('enso.elnino', 'El Niño') : currentPhase === 'lanina' ? t('enso.lanina', 'La Niña') : t('enso.normal', 'Normal')} ({displayAnomaly})
                 </span>
               </div>
             </div>
@@ -104,7 +106,7 @@ export default function EnsoSimulationDock({
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/35 text-[11px] font-bold text-cyan-300 border border-cyan-400/40 transition-all cursor-pointer shadow-glow-cyan"
               >
                 <span>🌊</span>
-                <span>PACIFIC</span>
+                <span>{t('enso.pacificBtn', 'PACIFIC')}</span>
               </button>
             )}
 
@@ -133,15 +135,15 @@ export default function EnsoSimulationDock({
             {/* 1. Phase Selection matching wireframe: Normal ● El Niño ○ La Niña */}
             <div>
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-300 mb-1.5 px-1">
-                <span className="uppercase text-slate-400 font-bold">Phase State:</span>
+                <span className="uppercase text-slate-400 font-bold">{t('enso.phaseState', 'Phase State')}:</span>
                 <span className="text-cyan-300 font-semibold">{metrics.label}</span>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { id: 'normal', label: 'Normal' },
-                  { id: 'elnino', label: 'El Niño' },
-                  { id: 'lanina', label: 'La Niña' }
+                  { id: 'normal', label: t('enso.normal', 'Normal') },
+                  { id: 'elnino', label: t('enso.elnino', 'El Niño') },
+                  { id: 'lanina', label: t('enso.lanina', 'La Niña') }
                 ].map((phaseItem) => {
                   const isSelected = currentPhase === phaseItem.id;
                   return (
@@ -171,10 +173,10 @@ export default function EnsoSimulationDock({
             {/* 2. Intensity Slider matching wireframe: Intensity ─────●──── */}
             <div>
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-300 mb-1 px-1">
-                <span className="uppercase text-slate-400 font-bold">Intensity:</span>
+                <span className="uppercase text-slate-400 font-bold">{t('enso.intensityLabel', 'Intensity')}:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-white">
-                    {currentIntensity <= 0.3 ? 'Weak' : currentIntensity <= 0.65 ? 'Moderate' : currentIntensity <= 0.85 ? 'Strong' : 'Very Strong (Super)'}
+                    {currentIntensity <= 0.3 ? t('enso.weak', 'Weak') : currentIntensity <= 0.65 ? t('enso.moderate', 'Moderate') : currentIntensity <= 0.85 ? t('enso.strong', 'Strong') : t('enso.super', 'Very Strong (Super)')}
                   </span>
                   <span className="text-cyan-300 font-bold">({(currentIntensity * 100).toFixed(0)}%)</span>
                 </div>
@@ -193,10 +195,10 @@ export default function EnsoSimulationDock({
               </div>
 
               <div className="flex justify-between text-[9px] font-mono text-slate-400 px-1 mt-1">
-                <span>Weak (0.2)</span>
-                <span>Moderate (0.5)</span>
-                <span>Strong (0.75)</span>
-                <span>Super (1.0)</span>
+                <span>{t('enso.weak', 'Weak')} (0.2)</span>
+                <span>{t('enso.moderate', 'Moderate')} (0.5)</span>
+                <span>{t('enso.strong', 'Strong')} (0.75)</span>
+                <span>{t('enso.super', 'Super')} (1.0)</span>
               </div>
             </div>
 
@@ -232,7 +234,7 @@ export default function EnsoSimulationDock({
                   }`}
                 >
                   {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                  <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+                  <span>{isPlaying ? t('enso.pause', 'PAUSE') : t('enso.play', 'PLAY')}</span>
                 </button>
 
                 <button
@@ -241,7 +243,7 @@ export default function EnsoSimulationDock({
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 transition-all cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>RESET</span>
+                  <span>{t('enso.reset', 'RESET')}</span>
                 </button>
               </div>
             </div>
