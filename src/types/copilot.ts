@@ -5,7 +5,7 @@
 
 export type OceanParameter = 'sst' | 'salinity' | 'currents' | 'wave' | 'chlorophyll' | 'oxygen';
 
-export type OceanViewMode = 'depth_slice' | 'iso_surface' | 'vector_field' | 'volume_render';
+export type OceanViewMode = 'surface' | 'depth_slice' | 'volume' | 'volume_render' | 'isosurface' | 'iso_surface' | 'vector_field';
 
 export type CopilotActionType = 
   | 'SET_BASIN'

@@ -108,9 +108,12 @@ export function executeCopilotActions(actions = [], handlers = {}) {
           if (handlers.setViewMode) {
             handlers.setViewMode(mode);
             const modeLabels = {
+              surface: 'Sea Surface Layer',
               depth_slice: 'Horizontal Depth Slice',
+              isosurface: '3D Isosurface',
               iso_surface: '3D Isosurface',
               vector_field: '3D Vector Field',
+              volume: 'Volumetric Density',
               volume_render: 'Volumetric Density'
             };
             executionResults.push({

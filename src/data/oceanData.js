@@ -745,86 +745,80 @@ export const VALIDATION_TIME_SERIES = getDynamicValidationTimeSeries();
  * matching empirical CTD profiles (thermocline, halocline, oxygen minimum zones)
  */
 export function calculateParameterAtDepth(paramId, depthMeters, region) {
-  if (!region) return 0;
+  if (region == null) return 0;
   const z = Math.max(0, depthMeters);
+
+  // Polymorphic helper: safely extract base surface parameter whether region is an object or a direct number
+  const getSurfaceVal = (key, fallback) => {
+    if (typeof region === 'number') return region;
+    if (typeof region === 'object' && region !== null) {
+      return region[key] ?? fallback;
+    }
+    return fallback;
+  };
 
   switch (paramId) {
     case 'sst': {
       // Thermocline Profile:
-      // Epipelagic mixed layer (0 - 40m): ~constant SST
-      // Main Thermocline (40 - 500m): steep exponential thermal drop
-      // Bathypelagic/Abyssal (500 - 6000m): asymptotically approaches ~1.8 - 2.5°C
-      const surfaceSst = region.sst ?? 29.5;
-      if (z <= 30) return parseFloat(surfaceSst.toFixed(2));
-      if (z <= 100) {
-        const drop = ((z - 30) / 70) * (surfaceSst * 0.22);
-        return parseFloat((surfaceSst - drop).toFixed(2));
-      }
-      if (z <= 500) {
-        const t100 = surfaceSst * 0.78;
-        const drop = ((z - 100) / 400) * (t100 - 10.5);
-        return parseFloat((t100 - drop).toFixed(2));
-      }
-      if (z <= 1500) {
-        const t500 = 10.5;
-        const drop = ((z - 500) / 1000) * (t500 - 4.5);
-        return parseFloat((t500 - drop).toFixed(2));
-      }
-      const deepTemp = 4.5 - ((z - 1500) / 4500) * 2.6;
-      return parseFloat(Math.max(1.8, deepTemp).toFixed(2));
+      // Epipelagic mixed layer (0 - 35m): nearly isothermal
+      // Main Thermocline (35 - 500m): exponential thermal gradient down to ~8-11°C
+      // Bathypelagic & Abyssal (500 - 6000m): asymptotically approaches ~2.0°C deep water
+      const surfaceSst = getSurfaceVal('sst', 29.5);
+      const deepTemp = 2.0;
+      if (z <= 35) return parseFloat(surfaceSst.toFixed(2));
+      // Continuous physically grounded thermocline curve
+      const decay = Math.exp(-(z - 35) / 280);
+      const temp = deepTemp + (surfaceSst - deepTemp) * decay;
+      return parseFloat(Math.max(1.8, temp).toFixed(2));
     }
     case 'salinity': {
       // Halocline Profile:
-      const surfaceSal = region.salinity ?? 34.0;
-      if (z <= 40) return parseFloat(surfaceSal.toFixed(2));
+      // Surface salinity transitions towards universal deep ocean salinity (~34.85 PSU)
+      const surfaceSal = getSurfaceVal('salinity', 34.0);
+      if (z <= 30) return parseFloat(surfaceSal.toFixed(2));
       const deepSal = 34.85;
-      const progress = Math.min(1.0, z / 350);
-      const sal = surfaceSal + (deepSal - surfaceSal) * progress;
+      const decay = Math.exp(-(z - 30) / 220);
+      const sal = deepSal + (surfaceSal - deepSal) * decay;
       return parseFloat(sal.toFixed(2));
     }
     case 'currents': {
       // Current velocity decay with depth (Ekman spiral / geostrophic shear)
-      const surfaceV = region.currentSpeed ?? 0.85;
+      const surfaceV = getSurfaceVal('currentSpeed', 0.85);
       const v = 0.04 + (surfaceV - 0.04) * Math.exp(-z / 160);
       return parseFloat(v.toFixed(2));
     }
     case 'wave': {
       // Wave orbital motion decay with depth: A(z) = H * exp(-2*pi*z / L)
-      const surfaceH = region.waveHeight ?? 1.65;
+      const surfaceH = getSurfaceVal('waveHeight', 1.65);
       if (z === 0) return parseFloat(surfaceH.toFixed(2));
       const waveSub = surfaceH * Math.exp(-z / 22);
       return parseFloat(waveSub.toFixed(2));
     }
     case 'chlorophyll': {
-      // Photic zone profile: Peak at Deep Chlorophyll Maximum (DCM at 30-60m), 0 below 150m
-      const surfaceChl = region.chlorophyll ?? 1.15;
-      if (z <= 15) return parseFloat(surfaceChl.toFixed(2));
-      if (z <= 60) {
-        return parseFloat((surfaceChl * 1.4).toFixed(2));
-      }
-      if (z <= 150) {
-        const decay = (1.0 - (z - 60) / 90) * (surfaceChl * 1.4);
-        return parseFloat(Math.max(0.02, decay).toFixed(2));
-      }
-      return 0.01;
+      // Photic zone bio-optics: Deep Chlorophyll Maximum (DCM at 35-55m), decays to ~0 below 160m
+      const surfaceChl = getSurfaceVal('chlorophyll', 1.15);
+      if (z > 160) return 0.01;
+      const bg = surfaceChl * Math.exp(-z / 80);
+      const dcmPeak = surfaceChl * 0.65 * Math.exp(-Math.pow(z - 45, 2) / 800);
+      return parseFloat(Math.max(0.01, bg + dcmPeak).toFixed(2));
     }
     case 'oxygen': {
       // Dissolved Oxygen:
-      // Surface: High (~6.8 mg/L)
-      // Oxygen Minimum Zone (OMZ) at 150 - 450m: Drops to ~1.8 - 2.6 mg/L
-      // Deep Abyssal water: Recovers to ~3.8 - 4.5 mg/L due to cold polar bottom waters
-      const surfaceO2 = region.oxygen ?? 6.8;
-      if (z <= 50) return parseFloat(surfaceO2.toFixed(2));
+      // Epipelagic (0 - 45m): High surface saturation (~6.5 - 7.2 mg/L)
+      // Mesopelagic (150 - 450m): Oxygen Minimum Zone (OMZ ~1.6 - 2.2 mg/L) due to sinking particulate remineralization
+      // Bathypelagic (>1000m): Deep recovery (~3.8 - 4.2 mg/L) from cold polar deep-water mass ventilation
+      const surfaceO2 = getSurfaceVal('oxygen', 6.8);
+      if (z <= 45) return parseFloat(surfaceO2.toFixed(2));
       if (z <= 300) {
-        const omzO2 = Math.min(2.2, surfaceO2 * 0.35);
-        const progress = (z - 50) / 250;
+        const omzO2 = Math.min(2.1, surfaceO2 * 0.32);
+        const progress = (z - 45) / 255;
         return parseFloat((surfaceO2 - (surfaceO2 - omzO2) * progress).toFixed(2));
       }
-      if (z <= 1000) {
-        const progress = (z - 300) / 700;
-        return parseFloat((2.2 + progress * 2.0).toFixed(2));
+      if (z <= 1200) {
+        const progress = (z - 300) / 900;
+        return parseFloat((2.1 + progress * 1.9).toFixed(2));
       }
-      return 4.2;
+      return 4.15;
     }
     default:
       return 0;

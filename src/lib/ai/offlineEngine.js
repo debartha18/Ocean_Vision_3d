@@ -667,11 +667,14 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
       actions.push({ type: 'SET_PARAMETER', value: 'currents' });
       changes.push(`view mode to **3D Vector Field**`);
     } else if (/volume|3d volume|volumetric/i.test(query)) {
-      actions.push({ type: 'SET_VIEW_MODE', value: 'volume_render' });
+      actions.push({ type: 'SET_VIEW_MODE', value: 'volume' });
       changes.push(`view mode to **Volumetric Density**`);
     } else if (/isosurface|iso surface/i.test(query)) {
-      actions.push({ type: 'SET_VIEW_MODE', value: 'iso_surface' });
+      actions.push({ type: 'SET_VIEW_MODE', value: 'isosurface' });
       changes.push(`view mode to **3D Isosurface**`);
+    } else if (/surface/i.test(query) && !/depth/i.test(query)) {
+      actions.push({ type: 'SET_VIEW_MODE', value: 'surface' });
+      changes.push(`view mode to **Surface**`);
     } else if (/depth slice|horizontal/i.test(query)) {
       actions.push({ type: 'SET_VIEW_MODE', value: 'depth_slice' });
       changes.push(`view mode to **Depth Slice**`);

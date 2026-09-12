@@ -71,8 +71,9 @@ export function normalizeViewMode(mode) {
   if (!mode || typeof mode !== 'string') return 'depth_slice';
   const clean = mode.toLowerCase().trim();
   if (clean.includes('vector') || clean.includes('arrow') || clean.includes('flow')) return 'vector_field';
-  if (clean.includes('iso') || clean.includes('surface')) return 'iso_surface';
-  if (clean.includes('volum') || clean.includes('3d') || clean.includes('mesh')) return 'volume_render';
+  if (clean.includes('iso')) return 'isosurface';
+  if (clean.includes('volum') || clean.includes('3d') || clean.includes('mesh')) return 'volume';
+  if (clean.includes('surface') && !clean.includes('depth') && !clean.includes('slice')) return 'surface';
   return 'depth_slice';
 }
 

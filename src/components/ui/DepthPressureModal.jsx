@@ -169,6 +169,9 @@ export default function DepthPressureModal({
                 <span className="text-slate-400">
                   ρ = {currentPressure.density} kg/m³
                 </span>
+                <span className="text-cyan-400/80 hidden sm:inline">
+                  • c = {currentPressure.soundSpeed} m/s
+                </span>
               </div>
             </div>
 

@@ -38,6 +38,44 @@ export function calculateSeawaterDensity(depth, sst = 28.0, salinity = 34.5) {
 }
 
 /**
+ * Calculates underwater speed of sound in seawater using the Mackenzie (1981) 9-term equation
+ * Valid for T: 2 to 30°C, S: 25 to 40 PSU, Depth: 0 to 8000m
+ * @param {number} depth - Depth in meters
+ * @param {number} temp - Seawater temperature in °C
+ * @param {number} salinity - Salinity in PSU
+ * @returns {number} Sound speed in m/s
+ */
+export function calculateSoundSpeed(depth, temp = 28.0, salinity = 34.5) {
+  const D = Math.max(0, depth);
+  const T = temp;
+  const S = salinity;
+  const c = 1448.96 + 
+    4.591 * T - 
+    5.304e-2 * Math.pow(T, 2) + 
+    2.374e-4 * Math.pow(T, 3) + 
+    1.340 * (S - 35) + 
+    1.630e-2 * D + 
+    1.675e-7 * Math.pow(D, 2) - 
+    1.025e-2 * T * (S - 35) - 
+    7.139e-13 * T * Math.pow(D, 3);
+  return parseFloat(c.toFixed(1));
+}
+
+/**
+ * Calculates SOFAR (Sound Fixing and Ranging) channel axis depth based on latitude
+ * Sound speed reaches minimum at this depth, allowing acoustic waves to propagate thousands of km
+ * @param {number} lat - Latitude in degrees
+ * @returns {number} SOFAR axis depth in meters
+ */
+export function calculateSofarChannelDepth(lat = 15.0) {
+  const absLat = Math.abs(lat);
+  // Polar waters: surface SOFAR channel (~50-150m); Tropical/Equatorial: deep axis (~950-1200m)
+  if (absLat >= 60) return 100;
+  if (absLat >= 45) return 600;
+  return Math.round(1100 - absLat * 8);
+}
+
+/**
  * Calculates complete hydrostatic pressure parameters for a given depth and latitude
  * @param {number} depth - Depth in meters (z >= 0)
  * @param {number} lat - Latitude in degrees (-90 to +90)
@@ -54,13 +92,19 @@ export function calculateHydrostaticPressure(depth, lat = 15.0, sst = 28.0, sali
   const gaugePressurePa = density * g * depth;
   const totalPressurePa = atmosphericPressurePa + gaugePressurePa;
 
-  // Conversions
-  const pressureDbar = (totalPressurePa / 10000); // 1 dbar = 10,000 Pa
-  const gaugeDbar = (gaugePressurePa / 10000);
-  const pressureAtm = (totalPressurePa / 101325); // 1 atm = 101,325 Pa
-  const pressureBar = (totalPressurePa / 100000); // 1 bar = 100,000 Pa
-  const pressureMpa = (totalPressurePa / 1000000); // 1 MPa = 1,000,000 Pa
-  const pressurePsi = (totalPressurePa / 6894.757); // 1 PSI = 6894.76 Pa
+  // Oceanographic standard (UNESCO / IOC / TEOS-10):
+  // CTD instrument pressure (dbar) is defined as gauge pressure (0 dbar at the sea surface).
+  // 1 dbar = 10,000 Pa (~1 meter of seawater column).
+  const gaugeDbar = gaugePressurePa / 10000;
+  const totalDbar = totalPressurePa / 10000;
+  const pressureAtm = totalPressurePa / 101325; // 1 atm = 101,325 Pa
+  const pressureBar = totalPressurePa / 100000; // 1 bar = 100,000 Pa
+  const pressureMpa = totalPressurePa / 1000000; // 1 MPa = 1,000,000 Pa
+  const pressurePsi = totalPressurePa / 6894.757; // 1 PSI = 6894.76 Pa
+
+  // Underwater acoustic sound speed at this depth
+  const soundSpeed = calculateSoundSpeed(depth, sst, salinity);
+  const sofarDepth = calculateSofarChannelDepth(lat);
 
   // Water column mass over 1 square meter: Mass = rho_mean * depth
   const columnMassKgPerM2 = density * depth;
@@ -107,12 +151,15 @@ export function calculateHydrostaticPressure(depth, lat = 15.0, sst = 28.0, sali
     density,
     totalPa: Math.round(totalPressurePa),
     gaugePa: Math.round(gaugePressurePa),
-    dbar: parseFloat(pressureDbar.toFixed(2)),
+    dbar: parseFloat(gaugeDbar.toFixed(2)),
+    totalDbar: parseFloat(totalDbar.toFixed(2)),
     gaugeDbar: parseFloat(gaugeDbar.toFixed(2)),
     atm: parseFloat(pressureAtm.toFixed(2)),
     bar: parseFloat(pressureBar.toFixed(2)),
     mpa: parseFloat(pressureMpa.toFixed(3)),
     psi: parseFloat(pressurePsi.toFixed(1)),
+    soundSpeed,
+    sofarDepth,
     columnMassKgPerM2: Math.round(columnMassKgPerM2),
     benchmark,
     benchmarkKey

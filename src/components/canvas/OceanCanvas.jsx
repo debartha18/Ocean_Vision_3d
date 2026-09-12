@@ -942,7 +942,7 @@ export default function OceanCanvas({
     if (depthWallUniformsRef.current.uParamType) depthWallUniformsRef.current.uParamType.value = pIdx;
     if (uniformsRef.current.uDepth) uniformsRef.current.uDepth.value = depth;
 
-    const modeIndices = { surface: 0, depth_slice: 1, volume: 2, isosurface: 3, vector_field: 4 };
+    const modeIndices = { surface: 0, depth_slice: 1, volume: 2, volume_render: 2, isosurface: 3, iso_surface: 3, vector_field: 4 };
     if (uniformsRef.current.uMode) uniformsRef.current.uMode.value = modeIndices[viewMode] ?? 1;
   }, [selectedParam, depth, viewMode]);
 

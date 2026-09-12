@@ -147,7 +147,7 @@ export default function ScrollOceanExperience({
     {
       id: 'salinity',
       title: t('parameters.salinity', 'Salinity'),
-      badge: `${calculateParameterAtDepth('salinity', 50, activeRegion?.salinity ?? 33.2)} PSU`,
+      badge: `${calculateParameterAtDepth('salinity', 50, activeRegion)} PSU`,
       depthTarget: 50,
       icon: Droplets,
       gradient: 'from-[#0D202B] to-[#0A1720]',

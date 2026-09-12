@@ -68,12 +68,14 @@ export function calculateScientificWeather(lat, lon, dateObj = new Date(), input
   const rainProbability = Math.round(Math.max(5, Math.min(95, baseRainProb + lonVar)));
 
   // 4. Realistic Instantaneous Rain Rate (mm/h)
-  // Most days at sea are either dry or light rain. Extreme downpour (>25 mm/h) only occurs during cyclones!
+  // Most days at sea are either dry or light rain. Extreme downpour (>25 mm/h) occurs during convective squalls/cyclones.
+  // Deterministic micro-convective fluctuation based on geospatial harmonics (no non-deterministic randomness)
+  const convectiveVariance = Math.abs(Math.sin(lat * 3.7 + lon * 2.1)) * 1.4;
   let rainRate = 0.0;
   if (rainProbability > 70) {
-    rainRate = parseFloat((3.0 + (rainProbability - 70) * 0.45 + Math.random() * 2.0).toFixed(1));
+    rainRate = parseFloat((3.0 + (rainProbability - 70) * 0.45 + convectiveVariance).toFixed(1));
   } else if (rainProbability > 45) {
-    rainRate = parseFloat((0.8 + (rainProbability - 45) * 0.12).toFixed(1));
+    rainRate = parseFloat((0.8 + (rainProbability - 45) * 0.12 + convectiveVariance * 0.25).toFixed(1));
   } else if (rainProbability > 25) {
     rainRate = parseFloat((0.1 + (rainProbability - 25) * 0.03).toFixed(1));
   } else {
