@@ -367,5 +367,24 @@
     "hadal_entry": "হেদাল খাত প্রবেশ",
     "puerto_rico": "পুয়ের্তো রিকো পরিখা গভীরতা",
     "challenger": "চ্যালেঞ্জার ডিপ সর্বোচ্চ গভীরতা"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "Explore, visualize and understand our oceans through interactive 3D data.",
+    "scrollToExplore": "↓ SCROLL TO EXPLORE",
+    "exploreNow": "Explore Now",
+    "workstationMode": "Launch Workstation",
+    "workstationActive": "Workstation Mode",
+    "workstation": "Workstation",
+    "storyMode": "Story Experience",
+    "overview": "Overview",
+    "explore": "Explore",
+    "oceanData": "Ocean Data",
+    "aiAnalysis": "AI Analysis",
+    "insights": "Insights",
+    "controls": "Controls",
+    "aiAnalysisTitle": "What is happening in this region?",
+    "aiAnalysisSub": "AI Ocean Analysis",
+    "insightsTitle": "Ocean Insights"
   }
 }

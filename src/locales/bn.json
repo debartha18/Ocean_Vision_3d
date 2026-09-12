@@ -367,5 +367,24 @@
     "coastalRadarTitle": "উচ্চ-নির্ভুল উপকূলীয় রাডার",
     "coastalRadarDesc": "গভীর সমুদ্রের শর্তাবলীর সাথে উপকূলীয় সৈকত গন্তব্যগুলোর বাস্তব সময়ের আবহাওয়া সংযোজক ইঞ্জিন।",
     "techStackTitle": "স্থাপত্য ও আধুনিক ওয়েব স্ট্যাক"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "ইন্টারেক্টিভ 3D ডেটার মাধ্যমে আমাদের মহাসাগরগুলো অন্বেষণ করুন, ভিজ্যুয়ালাইজ করুন এবং বুঝুন।",
+    "scrollToExplore": "↓ অন্বেষণ করতে স্ক্রোল করুন",
+    "exploreNow": "এখনই অন্বেষণ করুন",
+    "workstationMode": "ওয়ার্কস্টেশন চালু করুন",
+    "workstationActive": "ওয়ার্কস্টেশন মোড",
+    "workstation": "ওয়ার্কস্টেশন",
+    "storyMode": "অভিজ্ঞতার গল্প",
+    "overview": "একনজরে",
+    "explore": "অন্বেষণ",
+    "oceanData": "সমুদ্রের উপাত্ত",
+    "aiAnalysis": "AI বিশ্লেষণ",
+    "insights": "অন্তর্দৃষ্টি",
+    "controls": "নিয়ন্ত্রণ",
+    "aiAnalysisTitle": "এই অঞ্চলে কী ঘটছে?",
+    "aiAnalysisSub": "AI মহাসাগর বিশ্লেষণ",
+    "insightsTitle": "মহাসাগরীয় অন্তর্দৃষ্টি"
   }
 }

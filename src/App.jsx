@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/ui/Header';
+import ScrollOceanExperience from './components/ui/ScrollOceanExperience';
+import AdvancedControlsDrawer from './components/ui/AdvancedControlsDrawer';
 import LeftControlPanel from './components/ui/LeftControlPanel';
 import ViewportToolbar from './components/ui/ViewportToolbar';
 import RightAnalyticsPanel from './components/ui/RightAnalyticsPanel';
@@ -27,7 +29,8 @@ import { getFormattedCurrentDate, getCurrentUtcTimeHour } from './utils/dateUtil
 import { getAccurateMeteorology } from './utils/weatherService';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('3D View');
+  // Default to clean modern scroll-driven story experience
+  const [activeTab, setActiveTab] = useState('Story View');
   const [selectedParam, setSelectedParam] = useState('sst');
   const [depth, setDepth] = useState(50);
   const [viewMode, setViewMode] = useState('depth_slice');
@@ -37,6 +40,7 @@ export default function App() {
   const [selectedBuoy, setSelectedBuoy] = useState(null);
   const [copilotExternalPrompt, setCopilotExternalPrompt] = useState(null);
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [isControlsDrawerOpen, setIsControlsDrawerOpen] = useState(false);
 
   // Dynamic Colorbar, Palette, Layer Opacity & 3D Vertical Exaggeration State
   const [palette, setPalette] = useState('turbo');
@@ -154,16 +158,9 @@ export default function App() {
     }
   };
 
-  const handleFocusPacific = () => {
-    if (REGIONS.equatorial_pacific) {
-      setActiveRegion(REGIONS.equatorial_pacific);
-      setActiveTab('3D View');
-    }
-  };
-
   return (
     <div className="relative w-screen h-screen bg-[#030712] text-slate-100 flex flex-col overflow-hidden select-none">
-      {/* 1. Top Header Bar */}
+      {/* 1. Top Lightweight Header Bar */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -178,10 +175,75 @@ export default function App() {
         onOpenDepthPressure={() => setIsDepthPressureOpen(true)}
         onOpenNetcdfIngestion={() => setIsNetcdfIngestionOpen(true)}
         onOpenCopilot={() => setIsCopilotOpen(true)}
+        onOpenControls={() => setIsControlsDrawerOpen(true)}
       />
 
-      {/* 2. Main Central Workstation or Tabbed Views */}
-      {activeTab === 'Dashboard' ? (
+      {/* 2. Main Central Workstation or Views */}
+      {activeTab === 'Story View' ? (
+        /* CLEAN, MODERN SCROLL-DRIVEN 3D OCEAN EXPERIENCE */
+        <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col">
+          {/* A. Fixed 3D Ocean Digital Twin Background */}
+          <div className="absolute inset-0 z-0 bg-[#030712]">
+            <OceanCanvas
+              selectedParam={selectedParam}
+              depth={depth}
+              viewMode={viewMode}
+              activeRegion={activeRegion}
+              isStormLayerActive={isStormLayerActive}
+              onSelectBuoy={(buoy) => setSelectedBuoy(buoy)}
+              selectedBuoy={selectedBuoy}
+              isPlaying={isPlaying}
+              simSpeed={simSpeed}
+              ensoState={ensoState}
+              palette={palette}
+              layerOpacity={layerOpacity}
+              verticalExaggeration={verticalExaggeration}
+              isLogScale={isLogScale}
+            />
+            {/* Soft vertical gradient for content legibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/70 via-transparent to-[#030712]/85 pointer-events-none" />
+          </div>
+
+          {/* B. Scroll-driven Progressive Story Overlay */}
+          <div className="relative z-10 flex-1 overflow-y-auto custom-scrollbar">
+            <ScrollOceanExperience
+              activeRegion={activeRegion}
+              setActiveRegion={setActiveRegion}
+              selectedParam={selectedParam}
+              setSelectedParam={setSelectedParam}
+              depth={depth}
+              setDepth={setDepth}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              timeHour={timeHour}
+              selectedDate={selectedDate}
+              isStormLayerActive={isStormLayerActive}
+              setIsStormLayerActive={setIsStormLayerActive}
+              onOpenControls={() => setIsControlsDrawerOpen(true)}
+              onOpenCopilot={() => setIsCopilotOpen(true)}
+              onOpenLocationModal={() => setIsLocationModalOpen(true)}
+              onOpenStormNews={() => setIsStormNewsModalOpen(true)}
+              onOpenFleetModal={() => setIsFleetModalOpen(true)}
+              onOpenAlerts={() => setIsAnomalyModalOpen(true)}
+              onOpenAnalyticReport={() => setIsAnalyticReportOpen(true)}
+              onOpenDepthPressure={() => setIsDepthPressureOpen(true)}
+              onSwitchToWorkstation={() => setActiveTab('3D View')}
+            />
+          </div>
+
+          {/* C. Floating ⚙ Controls Trigger at Bottom Left */}
+          <div className="fixed bottom-6 left-6 z-30">
+            <button
+              onClick={() => setIsControlsDrawerOpen(true)}
+              title="Open Advanced Controls Drawer"
+              className="px-4 py-2.5 rounded-2xl bg-[#06112c]/90 hover:bg-[#0c235a] border border-cyan-400/40 text-cyan-200 text-xs font-bold shadow-[0_0_20px_rgba(6,182,212,0.3)] backdrop-blur-md transition-all cursor-pointer flex items-center gap-2 group"
+            >
+              <span className="group-hover:rotate-45 transition-transform">⚙</span>
+              <span>Controls</span>
+            </button>
+          </div>
+        </div>
+      ) : activeTab === 'Dashboard' ? (
         <DashboardView
           onSelectRegion={(reg) => {
             setActiveRegion(reg);
@@ -199,20 +261,20 @@ export default function App() {
             activeRegion={activeRegion}
             onSelectRegion={(reg) => {
               setActiveRegion(reg);
-              setActiveTab('3D View');
+              setActiveTab('Story View');
             }}
             onCustomCoords={(coordsObj) => {
               handleCustomCoords(coordsObj);
-              setActiveTab('3D View');
+              setActiveTab('Story View');
             }}
-            onBackTo3D={() => setActiveTab('3D View')}
+            onBackTo3D={() => setActiveTab('Story View')}
           />
         </div>
       ) : activeTab === 'Data Explorer' ? (
         <DataExplorerView
           onSelectRegion={(reg) => {
             setActiveRegion(reg);
-            setActiveTab('3D View');
+            setActiveTab('Story View');
           }}
           onNavigateTab={(tab) => setActiveTab(tab)}
           onOpenNetcdfIngestion={() => setIsNetcdfIngestionOpen(true)}
@@ -227,6 +289,7 @@ export default function App() {
           onNavigateTab={(tab) => setActiveTab(tab)}
         />
       ) : (
+        /* Classic Multi-Panel Workstation View (for power users) */
         <div className="relative flex-1 flex overflow-hidden">
           {/* Left Parameter, Location, Depth & Time Control Cockpit */}
           <LeftControlPanel
@@ -307,7 +370,7 @@ export default function App() {
         </div>
       )}
 
-      {/* 3. Bottom 6-Parameter Strip (rendered on 3D View and Map View matching reference screenshot) */}
+      {/* 3. Bottom 6-Parameter Strip (rendered on 3D Workstation and Map View) */}
       {(activeTab === '3D View' || activeTab === 'Map View') && (
         <BottomParameterStrip
           selectedParam={selectedParam}
@@ -318,7 +381,46 @@ export default function App() {
         />
       )}
 
-      {/* 4. Interactive Modals */}
+      {/* 4. Advanced Controls Slide-Over Drawer */}
+      <AdvancedControlsDrawer
+        isOpen={isControlsDrawerOpen}
+        onClose={() => setIsControlsDrawerOpen(false)}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        depth={depth}
+        setDepth={setDepth}
+        selectedParam={selectedParam}
+        setSelectedParam={setSelectedParam}
+        palette={palette}
+        setPalette={setPalette}
+        layerOpacity={layerOpacity}
+        setLayerOpacity={setLayerOpacity}
+        verticalExaggeration={verticalExaggeration}
+        setVerticalExaggeration={setVerticalExaggeration}
+        isLogScale={isLogScale}
+        setIsLogScale={setIsLogScale}
+        timeHour={timeHour}
+        setTimeHour={setTimeHour}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        simSpeed={simSpeed}
+        setSimSpeed={setSimSpeed}
+        selectedDate={selectedDate}
+        onOpenDatePicker={() => setIsDatePickerModalOpen(true)}
+        activeRegion={activeRegion}
+        onCustomCoords={handleCustomCoords}
+        isStormLayerActive={isStormLayerActive}
+        setIsStormLayerActive={setIsStormLayerActive}
+        onOpenStormNews={() => setIsStormNewsModalOpen(true)}
+        onOpenFleetModal={() => setIsFleetModalOpen(true)}
+        onOpenAlerts={() => setIsAnomalyModalOpen(true)}
+        onOpenDepthPressure={() => setIsDepthPressureOpen(true)}
+        onOpenNetcdfIngestion={() => setIsNetcdfIngestionOpen(true)}
+        onOpenAnalyticReport={() => setIsAnalyticReportOpen(true)}
+        onOpenLocationModal={() => setIsLocationModalOpen(true)}
+      />
+
+      {/* 5. Interactive Modals (100% Preserved) */}
       <LocationModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}
@@ -403,7 +505,7 @@ export default function App() {
         }}
       />
 
-      {/* 5. AI Ocean Copilot Floating Intelligence Dock & Drawer */}
+      {/* 6. AI Ocean Copilot Floating Intelligence Dock & Drawer */}
       <OceanCopilot
         activeRegion={activeRegion}
         selectedParam={selectedParam}

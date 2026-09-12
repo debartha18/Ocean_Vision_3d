@@ -367,5 +367,24 @@
     "coastalRadarTitle": "ચોકસાઈભર્યું દરિયાકાંઠા રડાર",
     "coastalRadarDesc": "ઊંડા સમુદ્રથી દરિયાકાંઠાના બીચ સુધી વાસ્તવિક સમયમાં વરસાદ અને મોજાંને જોડતું એન્જિન.",
     "techStackTitle": "આર્કિટેક્ચર અને આધુનિક વેબ સ્ટેક"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "Explore, visualize and understand our oceans through interactive 3D data.",
+    "scrollToExplore": "↓ SCROLL TO EXPLORE",
+    "exploreNow": "Explore Now",
+    "workstationMode": "Launch Workstation",
+    "workstationActive": "Workstation Mode",
+    "workstation": "Workstation",
+    "storyMode": "Story Experience",
+    "overview": "Overview",
+    "explore": "Explore",
+    "oceanData": "Ocean Data",
+    "aiAnalysis": "AI Analysis",
+    "insights": "Insights",
+    "controls": "Controls",
+    "aiAnalysisTitle": "What is happening in this region?",
+    "aiAnalysisSub": "AI Ocean Analysis",
+    "insightsTitle": "Ocean Insights"
   }
 }

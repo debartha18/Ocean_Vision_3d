@@ -367,5 +367,24 @@
     "coastalRadarTitle": "उच्च-सटीक तटीय रडार",
     "coastalRadarDesc": "गहरे समुद्र से तटीय समुद्र तटों तक वर्षा और लहरों को जोड़ने वाला वास्तविक समय का इंजन।",
     "techStackTitle": "आर्किटेक्चर और आधुनिक वेब स्टैक"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "इंटरैक्टिव 3D डेटा के माध्यम से हमारे महासागरों का अन्वेषण, विज़ुअलाइज़ेशन और समझें।",
+    "scrollToExplore": "↓ अन्वेषण के लिए स्क्रॉल करें",
+    "exploreNow": "अभी अन्वेषण करें",
+    "workstationMode": "वर्कस्टेशन शुरू करें",
+    "workstationActive": "वर्कस्टेशन मोड",
+    "workstation": "वर्कस्टेशन",
+    "storyMode": "कहानी का अनुभव",
+    "overview": "सिंहावलोकन",
+    "explore": "अन्वेषण",
+    "oceanData": "महासागरीय डेटा",
+    "aiAnalysis": "AI विश्लेषण",
+    "insights": "मुख्य अंतर्दृष्टि",
+    "controls": "नियंत्रण",
+    "aiAnalysisTitle": "इस क्षेत्र में क्या हो रहा है?",
+    "aiAnalysisSub": "AI महासागर विश्लेषण",
+    "insightsTitle": "महासागरीय अंतर्दृष्टि"
   }
 }

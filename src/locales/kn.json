@@ -367,5 +367,24 @@
     "coastalRadarTitle": "ಉನ್ನತ ನಿಖರತೆಯ ಕರಾವಳಿ ರಾಡಾರ್",
     "coastalRadarDesc": "ಆಳ ಸಮುದ್ರದಿಂದ ಕರಾವಳಿ ಬೀಚ್‌ಗಳವರೆಗೆ ನೈಜ ಸಮಯದ ಮಳೆ ಮತ್ತು ಅಲೆಗಳನ್ನು ಸಂಪರ್ಕಿಸುವ ಎಂಜಿನ್.",
     "techStackTitle": "ವಾಸ್ತುಶಿಲ್ಪ ಮತ್ತು ಆಧುನಿಕ ವೆಬ್ ಸ್ಟ್ಯಾಕ್"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "Explore, visualize and understand our oceans through interactive 3D data.",
+    "scrollToExplore": "↓ SCROLL TO EXPLORE",
+    "exploreNow": "Explore Now",
+    "workstationMode": "Launch Workstation",
+    "workstationActive": "Workstation Mode",
+    "workstation": "Workstation",
+    "storyMode": "Story Experience",
+    "overview": "Overview",
+    "explore": "Explore",
+    "oceanData": "Ocean Data",
+    "aiAnalysis": "AI Analysis",
+    "insights": "Insights",
+    "controls": "Controls",
+    "aiAnalysisTitle": "What is happening in this region?",
+    "aiAnalysisSub": "AI Ocean Analysis",
+    "insightsTitle": "Ocean Insights"
   }
 }

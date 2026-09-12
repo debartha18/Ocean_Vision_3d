@@ -367,5 +367,24 @@
     "coastalRadarTitle": "തീരദേശ റഡാർ",
     "coastalRadarDesc": "ആഴക്കടലിൽ നിന്ന് തീരദേശങ്ങളിലേക്ക് തത്സമയ മഴയും തിരമാലകളും ബന്ധിപ്പിക്കുന്ന എഞ്ചിൻ.",
     "techStackTitle": "ആർക്കിടെക്ചറും ആധുനിക വെബ് സാങ്കേതികവിദ്യയും"
+  },
+  "story": {
+    "heroTitle": "Ocean Vision 3D",
+    "heroSubtitle": "Explore, visualize and understand our oceans through interactive 3D data.",
+    "scrollToExplore": "↓ SCROLL TO EXPLORE",
+    "exploreNow": "Explore Now",
+    "workstationMode": "Launch Workstation",
+    "workstationActive": "Workstation Mode",
+    "workstation": "Workstation",
+    "storyMode": "Story Experience",
+    "overview": "Overview",
+    "explore": "Explore",
+    "oceanData": "Ocean Data",
+    "aiAnalysis": "AI Analysis",
+    "insights": "Insights",
+    "controls": "Controls",
+    "aiAnalysisTitle": "What is happening in this region?",
+    "aiAnalysisSub": "AI Ocean Analysis",
+    "insightsTitle": "Ocean Insights"
   }
 }
