@@ -141,8 +141,8 @@ export default function ScrollOceanExperience({
       gradient: 'from-[#0D202B] to-[#0A1720]',
       border: 'border-[#193544]',
       textColor: 'text-amber-400',
-      summary: 'Sea Surface Temperature governs tropical atmospheric squalls, monsoon rainfall dynamics, and thermal expansion.',
-      details: 'Upper-layer warmth fuels low-pressure disturbances and cyclone genesis. Below the mixed layer, temperature decays through the thermocline down to 4°C in the deep abyss.'
+      summary: t('story.sstSummary', 'Sea Surface Temperature governs tropical atmospheric squalls, monsoon rainfall dynamics, and thermal expansion.'),
+      details: t('story.sstDetails', 'Upper-layer warmth fuels low-pressure disturbances and cyclone genesis. Below the mixed layer, temperature decays through the thermocline down to 4°C in the deep abyss.')
     },
     {
       id: 'salinity',
@@ -153,8 +153,8 @@ export default function ScrollOceanExperience({
       gradient: 'from-[#0D202B] to-[#0A1720]',
       border: 'border-[#193544]',
       textColor: 'text-[#0C969C]',
-      summary: 'Salinity governs seawater density alongside temperature, modulating vertical mixing and circulation.',
-      details: 'Colossal river discharge in northern basins creates a buoyant freshwater lens, forming a persistent barrier layer that traps solar heat and limits nutrient upwelling.'
+      summary: t('story.salinitySummary', 'Salinity governs seawater density alongside temperature, modulating vertical mixing and circulation.'),
+      details: t('story.salinityDetails', 'Colossal river discharge in northern basins creates a buoyant freshwater lens, forming a persistent barrier layer that traps solar heat and limits nutrient upwelling.')
     },
     {
       id: 'currents',
@@ -165,8 +165,8 @@ export default function ScrollOceanExperience({
       gradient: 'from-[#0D202B] to-[#0A1720]',
       border: 'border-[#193544]',
       textColor: 'text-[#6BA3BE]',
-      summary: 'Wind-stress curl and Coriolis forcing propel geostrophic boundary currents and Ekman transport.',
-      details: 'Major circulation features redistribute heat, dissolved gases, and biological nutrients across global ocean basins, dictating regional marine ecosystems and fisheries.'
+      summary: t('story.currentsSummary', 'Wind-stress curl and Coriolis forcing propel geostrophic boundary currents and Ekman transport.'),
+      details: t('story.currentsDetails', 'Major circulation features redistribute heat, dissolved gases, and biological nutrients across global ocean basins, dictating regional marine ecosystems and fisheries.')
     },
     {
       id: 'depth',
@@ -177,8 +177,8 @@ export default function ScrollOceanExperience({
       gradient: 'from-[#0D202B] to-[#0A1720]',
       border: 'border-[#193544]',
       textColor: 'text-[#8FA8B2]',
-      summary: 'The water column transitions from the sunlit photic zone into the dark bathypelagic abyss.',
-      details: 'Pycnocline stratification defines distinct ecological realms: the Epipelagic zone (0–200m), Twilight Mesopelagic zone (200–1000m), and the cold, high-pressure Bathypelagic realm (>1000m).'
+      summary: t('story.depthSummary', 'The water column transitions from the sunlit photic zone into the dark bathypelagic abyss.'),
+      details: t('story.depthDetails', 'Pycnocline stratification defines distinct ecological realms: the Epipelagic zone (0–200m), Twilight Mesopelagic zone (200–1000m), and the cold, high-pressure Bathypelagic realm (>1000m).')
     }
   ];
 
@@ -186,15 +186,15 @@ export default function ScrollOceanExperience({
     <div className="relative w-full text-[#CCD0CF] select-none overflow-x-hidden">
       {/* Floating Section Progress Dots (Desktop) */}
       <nav 
-        aria-label="Story sections"
+        aria-label={t('story.storyExperience', 'Story sections')}
         className="fixed right-5 top-1/2 -translate-y-1/2 z-40 hidden lg:flex flex-col items-center gap-3 bg-[#0A1720]/90 backdrop-blur-md p-2 rounded-full border border-[#193544] shadow-lg"
       >
         {[
-          { id: 'section-hero', label: 'Overview', active: activeStorySection === 'hero' },
-          { id: 'section-explore', label: 'Explore', active: activeStorySection === 'explore' },
-          { id: 'section-parameters', label: 'Parameters', active: activeStorySection === 'parameters' },
-          { id: 'section-ai', label: 'AI Analysis', active: activeStorySection === 'ai' },
-          { id: 'section-insights', label: 'Insights', active: activeStorySection === 'insights' }
+          { id: 'section-hero', label: t('story.overview', 'Overview'), active: activeStorySection === 'hero' },
+          { id: 'section-explore', label: t('story.explore', 'Explore'), active: activeStorySection === 'explore' },
+          { id: 'section-parameters', label: t('story.oceanData', 'Ocean Data'), active: activeStorySection === 'parameters' },
+          { id: 'section-ai', label: t('story.aiAnalysis', 'AI Analysis'), active: activeStorySection === 'ai' },
+          { id: 'section-insights', label: t('story.insights', 'Insights'), active: activeStorySection === 'insights' }
         ].map((dot) => (
           <button
             key={dot.id}
@@ -307,13 +307,13 @@ export default function ScrollOceanExperience({
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#0C969C] uppercase tracking-widest mb-1">
                   <Compass className="w-4 h-4" />
-                  <span>STEP 1 • DISCOVERY</span>
+                  <span>{t('story.step1', 'STEP 1 • DISCOVERY')}</span>
                 </div>
                 <h2 className="text-2xl sm:text-4xl font-black text-[#CCD0CF]">
-                  Explore the Ocean
+                  {t('story.exploreTitle', 'Explore the Ocean')}
                 </h2>
                 <p className="text-sm sm:text-base text-[#8FA8B2] mt-1 max-w-2xl">
-                  Select a regional basin or enter custom coordinates. The 3D digital-twin in the background responds in real-time.
+                  {t('story.exploreSubtitle', 'Select a regional basin or enter custom coordinates. The 3D digital-twin in the background responds in real-time.')}
                 </p>
               </div>
 
@@ -322,9 +322,9 @@ export default function ScrollOceanExperience({
                 onClick={onOpenLocationModal}
                 className="px-4 py-2.5 rounded-xl bg-[#0D202B] hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] text-left transition-all cursor-pointer group shrink-0"
               >
-                <div className="text-[10px] text-[#637C87] uppercase font-bold">Current Basin</div>
+                <div className="text-[10px] text-[#637C87] uppercase font-bold">{t('story.currentBasin', 'Current Basin')}</div>
                 <div className="text-sm font-bold text-[#CCD0CF] group-hover:text-white flex items-center gap-1.5">
-                  <span>{activeRegion?.name || 'Bay of Bengal'}</span>
+                  <span>{activeRegion?.name ? t(`regions.${activeRegion.id}`, activeRegion.name) : 'Bay of Bengal'}</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#0C969C]" />
                 </div>
                 <div className="text-[10px] font-mono text-[#8FA8B2] mt-0.5">
@@ -336,7 +336,7 @@ export default function ScrollOceanExperience({
             {/* Quick Basin Selector Chips */}
             <div className="pt-2 border-t border-[#193544]">
               <span className="text-[11px] font-bold text-[#637C87] uppercase tracking-wider block mb-2">
-                Quick Regional Basins:
+                {t('story.quickBasins', 'Quick Regional Basins:')}
               </span>
               <div className="flex flex-wrap gap-2">
                 {[
@@ -357,7 +357,7 @@ export default function ScrollOceanExperience({
                           : 'bg-[#0D202B] text-[#8FA8B2] hover:text-[#CCD0CF] hover:bg-[#142D3A] border-[#193544]'
                       }`}
                     >
-                      {b.name}
+                      {t(`regions.${b.id}`, b.name)}
                     </button>
                   );
                 })}
@@ -367,43 +367,43 @@ export default function ScrollOceanExperience({
             {/* Live Meteorological & Ocean State Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
               <div className="p-3 rounded-xl bg-[#0D202B] border border-[#193544]">
-                <span className="text-[10px] text-[#637C87] font-medium">Sea Surface Temp</span>
+                <span className="text-[10px] text-[#637C87] font-medium">{t('parameters.sst', 'Sea Surface Temp')}</span>
                 <div className="text-base font-bold text-amber-400">{activeRegion?.sst ?? 29.5} °C</div>
-                <span className="text-[9px] text-[#8FA8B2]">Live Satellite Ingestion</span>
+                <span className="text-[9px] text-[#8FA8B2]">{t('story.liveSatellite', 'Live Satellite Ingestion')}</span>
               </div>
               <div className="p-3 rounded-xl bg-[#0D202B] border border-[#193544]">
-                <span className="text-[10px] text-[#637C87] font-medium">Significant Wave Swell</span>
+                <span className="text-[10px] text-[#637C87] font-medium">{t('story.significantWaveSwell', 'Significant Wave Swell')}</span>
                 <div className="text-base font-bold text-[#6BA3BE]">{activeRegion?.waveHeight ?? 1.65} m</div>
-                <span className="text-[9px] text-[#8FA8B2]">Monsoonal Swell</span>
+                <span className="text-[9px] text-[#8FA8B2]">{t('story.monsoonalSwell', 'Monsoonal Swell')}</span>
               </div>
               <div className="p-3 rounded-xl bg-[#0D202B] border border-[#193544]">
-                <span className="text-[10px] text-[#637C87] font-medium">Surface Wind Speed</span>
+                <span className="text-[10px] text-[#637C87] font-medium">{t('parameters.windSpeed', 'Surface Wind Speed')}</span>
                 <div className="text-base font-bold text-[#CCD0CF]">{activeRegion?.windSpeedKmH ?? 24} km/h</div>
-                <span className="text-[9px] text-[#8FA8B2]">Atmospheric Forcing</span>
+                <span className="text-[9px] text-[#8FA8B2]">{t('story.atmosphericForcing', 'Atmospheric Forcing')}</span>
               </div>
               <div className="p-3 rounded-xl bg-[#0D202B] border border-[#193544] flex flex-col justify-between">
-                <span className="text-[10px] text-[#637C87] font-medium">Storm Threat Layer</span>
+                <span className="text-[10px] text-[#637C87] font-medium">{t('story.stormThreatLayer', 'Storm Threat Layer')}</span>
                 <div className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${isStormLayerActive ? 'bg-amber-400 animate-ping' : 'bg-[#637C87]'}`} />
-                  <span className="text-xs font-bold text-[#CCD0CF]">{isStormLayerActive ? 'Active' : 'Standby'}</span>
+                  <span className="text-xs font-bold text-[#CCD0CF]">{isStormLayerActive ? t('story.active', 'Active') : t('story.standby', 'Standby')}</span>
                 </div>
                 <button
                   onClick={() => setIsStormLayerActive(!isStormLayerActive)}
                   className="text-[10px] text-[#0C969C] hover:underline text-left cursor-pointer"
                 >
-                  {isStormLayerActive ? 'Turn Off' : 'Toggle 3D Storm'}
+                  {isStormLayerActive ? t('story.turnOff', 'Turn Off') : t('story.toggleStorm', 'Toggle 3D Storm')}
                 </button>
               </div>
             </div>
 
             {/* Orbit & Zoom Hint */}
             <div className="flex items-center justify-between text-[11px] text-[#8FA8B2] pt-1">
-              <span>💡 <strong>Tip:</strong> Drag the background 3D ocean to rotate • Scroll to zoom • Right-click to pan</span>
+              <span>💡 <strong>{t('common.tip', 'Tip')}:</strong> {t('story.tipRotate', 'Drag the background 3D ocean to rotate • Scroll to zoom • Right-click to pan')}</span>
               <button
                 onClick={onOpenControls}
                 className="text-[#0C969C] hover:text-[#168FA0] font-semibold cursor-pointer"
               >
-                More Controls ⚙
+                {t('story.moreControls', 'More Controls ⚙')}
               </button>
             </div>
           </div>
@@ -421,13 +421,13 @@ export default function ScrollOceanExperience({
           <div className="text-center space-y-2 mb-6">
             <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0C969C] uppercase tracking-widest">
               <Activity className="w-4 h-4" />
-              <span>STEP 2 • OCEAN DATA</span>
+              <span>{t('story.step2', 'STEP 2 • OCEAN DATA')}</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-[#CCD0CF]">
-              Discover Ocean Parameters
+              {t('story.discoverParams', 'Discover Ocean Parameters')}
             </h2>
             <p className="text-sm sm:text-base text-[#8FA8B2] max-w-2xl mx-auto">
-              Select any parameter below. The 3D digital-twin will dynamically transition its volumetric field, depth cutaway, and color gradients.
+              {t('story.discoverParamsSub', 'Select any parameter below. The 3D digital-twin will dynamically transition its volumetric field, depth cutaway, and color gradients.')}
             </p>
           </div>
 
@@ -477,7 +477,7 @@ export default function ScrollOceanExperience({
 
                   <div className="flex items-center justify-between pt-4 mt-3 border-t border-[#193544]">
                     <span className="text-[10px] text-[#6BA3BE] font-mono">
-                      Target Depth: {param.depthTarget}m
+                      {t('story.targetDepth', 'Target Depth: {{depth}}m', { depth: param.depthTarget })}
                     </span>
                     <button
                       className={`text-xs font-bold px-3 py-1 rounded-xl transition-all cursor-pointer flex items-center gap-1 ${
@@ -486,7 +486,7 @@ export default function ScrollOceanExperience({
                           : 'bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-[#8FA8B2] hover:text-[#CCD0CF]'
                       }`}
                     >
-                      <span>{isSelected ? 'Active in 3D' : 'Inspect in 3D'}</span>
+                      <span>{isSelected ? t('story.activeIn3D', 'Active in 3D') : t('story.inspectIn3D', 'Inspect in 3D')}</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -519,7 +519,7 @@ export default function ScrollOceanExperience({
                       {t('story.aiAnalysisSub', 'AI Ocean Analysis')}
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#142D3A] text-[#0C969C] border border-[#214555]">
-                      Nerida Copilot
+                      {t('copilot.title', 'Nerida Copilot')}
                     </span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-[#CCD0CF]">
@@ -533,7 +533,7 @@ export default function ScrollOceanExperience({
                 onClick={onOpenCopilot}
                 className="px-4 py-2 rounded-xl bg-[#0C969C] hover:bg-[#168FA0] text-[#06141B] font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-2 shrink-0 self-start sm:self-auto"
               >
-                <span>Open Full Copilot</span>
+                <span>{t('story.openFullCopilot', 'Open Full Copilot')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -541,22 +541,22 @@ export default function ScrollOceanExperience({
             {/* Quick Prompt Chips */}
             <div>
               <span className="text-[11px] font-bold text-[#637C87] uppercase tracking-wider block mb-2">
-                Ask Nerida Instantly:
+                {t('story.askNeridaInstantly', 'Ask Nerida Instantly:')}
               </span>
               <div className="flex flex-wrap gap-2">
                 {[
-                  'Explain temperature and salinity balance',
-                  'What marine life is found in this basin?',
-                  'Check for marine heatwaves & anomalies',
-                  'Why does upwelling occur here?'
-                ].map((prompt, i) => (
+                  { text: t('story.prompt1', 'Explain temperature and salinity balance') },
+                  { text: t('story.prompt2', 'What marine life is found in this basin?') },
+                  { text: t('story.prompt3', 'Check for marine heatwaves & anomalies') },
+                  { text: t('story.prompt4', 'Why does upwelling occur here?') }
+                ].map((item, i) => (
                   <button
                     key={i}
                     disabled={aiLoading}
-                    onClick={() => handleAskAiInline(prompt)}
+                    onClick={() => handleAskAiInline(item.text)}
                     className="px-3 py-1.5 rounded-xl bg-[#0D202B] hover:bg-[#142D3A] border border-[#193544] text-xs text-[#8FA8B2] hover:text-[#CCD0CF] transition-all cursor-pointer font-medium disabled:opacity-50"
                   >
-                    💬 {prompt}
+                    💬 {item.text}
                   </button>
                 ))}
               </div>
@@ -567,18 +567,18 @@ export default function ScrollOceanExperience({
               {aiLoading ? (
                 <div className="flex items-center gap-2 text-[#0C969C] text-xs font-semibold py-6">
                   <span className="w-2 h-2 rounded-full bg-[#0C969C] animate-ping" />
-                  <span>Nerida is thinking... synthesizing oceanographic telemetry</span>
+                  <span>{t('story.neridaThinking', 'Nerida is thinking... synthesizing oceanographic telemetry')}</span>
                 </div>
               ) : (
                 <div className="text-xs sm:text-sm text-[#CCD0CF] leading-relaxed whitespace-pre-wrap font-sans">
-                  {aiResponse || 'Ask Nerida about regional marine life, current velocity, or physical stratification.'}
+                  {aiResponse || t('story.neridaDefault', 'Ask Nerida about regional marine life, current velocity, or physical stratification.')}
                 </div>
               )}
 
               {/* In-situ Provenance Stamp */}
               <div className="pt-3 mt-3 border-t border-[#193544] flex items-center justify-between text-[10px] text-[#637C87]">
-                <span>Provenance: TEOS-10 Thermodynamic Formulae • PIRATA / INCOIS In-Situ Buoys</span>
-                <span className="text-[#0C969C] font-mono">QC Passed (99.4%)</span>
+                <span>{t('story.provenance', 'Provenance: TEOS-10 Thermodynamic Formulae • PIRATA / INCOIS In-Situ Buoys')}</span>
+                <span className="text-[#0C969C] font-mono">{t('story.qcPassed', 'QC Passed (99.4%)')}</span>
               </div>
             </div>
 
@@ -594,7 +594,7 @@ export default function ScrollOceanExperience({
                 type="text"
                 value={aiCustomInput}
                 onChange={(e) => setAiCustomInput(e.target.value)}
-                placeholder="Ask any ocean question (e.g., 'What lives at 500m?', 'Show salinity profile')..."
+                placeholder={t('story.askPlaceholder', "Ask any ocean question (e.g., 'What lives at 500m?', 'Show salinity profile')...")}
                 className="flex-1 px-4 py-2.5 rounded-xl bg-[#06141B] border border-[#193544] text-xs text-[#CCD0CF] placeholder-[#637C87] focus:outline-none focus:border-[#0C969C]"
               />
               <button
@@ -603,7 +603,7 @@ export default function ScrollOceanExperience({
                 className="px-4 py-2.5 rounded-xl bg-[#0C969C] hover:bg-[#168FA0] disabled:opacity-40 text-[#06141B] font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Ask</span>
+                <span className="hidden sm:inline">{t('story.askButton', 'Ask')}</span>
               </button>
             </form>
           </div>
@@ -627,7 +627,7 @@ export default function ScrollOceanExperience({
               {t('story.insightsTitle', 'Ocean Insights')}
             </h2>
             <p className="text-sm sm:text-base text-[#8FA8B2] max-w-2xl mx-auto">
-              Empirical in-situ validation, storm threat bulletins, observing fleet telemetry, and thermodynamic calculations.
+              {t('story.insightsSubtitle', 'Empirical in-situ validation, storm threat bulletins, observing fleet telemetry, and thermodynamic calculations.')}
             </p>
           </div>
 
@@ -638,26 +638,26 @@ export default function ScrollOceanExperience({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <h3 className="font-bold text-[#CCD0CF] text-sm">Model vs Observed Telemetry</h3>
+                    <h3 className="font-bold text-[#CCD0CF] text-sm">{t('story.modelVsObserved', 'Model vs Observed Telemetry')}</h3>
                   </div>
                   <span className="text-xs font-mono font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30">
-                    99.4% QC Assimilation
+                    {t('story.qcAssimilation', '99.4% QC Assimilation')}
                   </span>
                 </div>
                 <p className="text-xs text-[#8FA8B2] leading-relaxed">
-                  Continuous validation against moored buoys and autonomous Argo profilers. 
-                  RMSE: <strong className="text-[#CCD0CF]">{VALIDATION_METRICS.rmse}</strong> • Correlation: <strong className="text-[#CCD0CF]">{VALIDATION_METRICS.correlation}</strong>.
+                  {t('story.continuousValidation', 'Continuous validation against moored buoys and autonomous Argo profilers.')}{' '}
+                  {t('analytics.rmse', 'RMSE')}: <strong className="text-[#CCD0CF]">{VALIDATION_METRICS.rmse}</strong> • {t('report.pearsonCorr', 'Correlation')}: <strong className="text-[#CCD0CF]">{VALIDATION_METRICS.correlation}</strong>.
                 </p>
               </div>
 
               <div className="pt-4 mt-3 border-t border-[#193544] flex items-center justify-between">
-                <span className="text-[10px] text-[#637C87]">INCOIS & NOAA Assimilation</span>
+                <span className="text-[10px] text-[#637C87]">{t('story.incoisAssimilation', 'INCOIS & NOAA Assimilation')}</span>
                 <button
                   onClick={onOpenAnalyticReport}
                   className="px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-[#CCD0CF] font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <FileText className="w-3.5 h-3.5 text-[#0C969C]" />
-                  <span>Full Report</span>
+                  <span>{t('story.fullReport', 'Full Report')}</span>
                 </button>
               </div>
             </div>
@@ -668,27 +668,27 @@ export default function ScrollOceanExperience({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-amber-400" />
-                    <h3 className="font-bold text-[#CCD0CF] text-sm">Active Storm & Rain Threat</h3>
+                    <h3 className="font-bold text-[#CCD0CF] text-sm">{t('story.activeStormThreat', 'Active Storm & Rain Threat')}</h3>
                   </div>
                   <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-500/15 border border-amber-500/30">
                     {activeRegion?.activeStorm?.category || 'Maritime Warning'}
                   </span>
                 </div>
                 <p className="text-xs text-[#8FA8B2] leading-relaxed">
-                  Wind Speed: <strong className="text-[#CCD0CF]">{activeRegion?.activeStorm?.windSpeed || '55 km/h'}</strong> • 
-                  Rain Probability: <strong className="text-[#CCD0CF]">{activeRegion?.rainProbability ?? 40}%</strong> • 
-                  Pressure: <strong className="text-[#CCD0CF]">{activeRegion?.pressure || 1008} hPa</strong>.
+                  {t('parameters.windSpeed', 'Wind Speed')}: <strong className="text-[#CCD0CF]">{activeRegion?.activeStorm?.windSpeed || '55 km/h'}</strong> • 
+                  {t('story.rainProbability', 'Rain Probability')}: <strong className="text-[#CCD0CF]">{activeRegion?.rainProbability ?? 40}%</strong> • 
+                  {t('story.pressure', 'Pressure')}: <strong className="text-[#CCD0CF]">{activeRegion?.pressure || 1008} hPa</strong>.
                 </p>
               </div>
 
               <div className="pt-4 mt-3 border-t border-[#193544] flex items-center justify-between">
-                <span className="text-[10px] text-[#637C87]">IMD & JTWC Bulletins</span>
+                <span className="text-[10px] text-[#637C87]">{t('story.imdBulletins', 'IMD & JTWC Bulletins')}</span>
                 <button
                   onClick={onOpenStormNews}
                   className="px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-[#CCD0CF] font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Storm Tracks</span>
+                  <span>{t('story.stormTracks', 'Storm Tracks')}</span>
                 </button>
               </div>
             </div>
@@ -699,25 +699,25 @@ export default function ScrollOceanExperience({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Radio className="w-4 h-4 text-[#0C969C]" />
-                    <h3 className="font-bold text-[#CCD0CF] text-sm">Global Observing Fleet</h3>
+                    <h3 className="font-bold text-[#CCD0CF] text-sm">{t('story.globalObservingFleet', 'Global Observing Fleet')}</h3>
                   </div>
                   <span className="text-xs font-mono font-bold text-[#0C969C] px-2 py-0.5 rounded bg-[#142D3A] border border-[#214555]">
-                    49 In-Situ Platforms
+                    {t('story.inSituPlatforms', '49 In-Situ Platforms')}
                   </span>
                 </div>
                 <p className="text-xs text-[#8FA8B2] leading-relaxed">
-                  24 Moored Ocean Buoys • 18 Core & BGC Argo Floats • 7 Autonomous Slocum Gliders sampling the global ocean.
+                  {t('story.fleetDesc', '24 Moored Ocean Buoys • 18 Core & BGC Argo Floats • 7 Autonomous Slocum Gliders sampling the global ocean.')}
                 </p>
               </div>
 
               <div className="pt-4 mt-3 border-t border-[#193544] flex items-center justify-between">
-                <span className="text-[10px] text-[#637C87]">Real-Time Instrument Health</span>
+                <span className="text-[10px] text-[#637C87]">{t('story.instrumentHealth', 'Real-Time Instrument Health')}</span>
                 <button
                   onClick={onOpenFleetModal}
                   className="px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-[#CCD0CF] font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <Radio className="w-3.5 h-3.5 text-[#0C969C]" />
-                  <span>Inspect Fleet</span>
+                  <span>{t('story.inspectFleet', 'Inspect Fleet')}</span>
                 </button>
               </div>
             </div>
@@ -728,25 +728,25 @@ export default function ScrollOceanExperience({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Gauge className="w-4 h-4 text-[#6BA3BE]" />
-                    <h3 className="font-bold text-[#CCD0CF] text-sm">Hydrostatic Pressure Engine</h3>
+                    <h3 className="font-bold text-[#CCD0CF] text-sm">{t('story.hydroPressureEngine', 'Hydrostatic Pressure Engine')}</h3>
                   </div>
                   <span className="text-xs font-mono font-bold text-[#6BA3BE] px-2 py-0.5 rounded bg-[#142D3A] border border-[#214555]">
-                    TEOS-10 Standard
+                    {t('story.teosStandard', 'TEOS-10 Standard')}
                   </span>
                 </div>
                 <p className="text-xs text-[#8FA8B2] leading-relaxed">
-                  Computes depth-dependent pressure, in-situ density, and acoustic speed of sound based on international seawater physics.
+                  {t('story.pressureDesc', 'Computes depth-dependent pressure, in-situ density, and acoustic speed of sound based on international seawater physics.')}
                 </p>
               </div>
 
               <div className="pt-4 mt-3 border-t border-[#193544] flex items-center justify-between">
-                <span className="text-[10px] text-[#637C87]">Atmospheric & Hydrostatic Gradients</span>
+                <span className="text-[10px] text-[#637C87]">{t('story.atmosphericGradients', 'Atmospheric & Hydrostatic Gradients')}</span>
                 <button
                   onClick={onOpenDepthPressure}
                   className="px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-[#CCD0CF] font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <Gauge className="w-3.5 h-3.5 text-[#6BA3BE]" />
-                  <span>Calculate Pressure</span>
+                  <span>{t('story.calculatePressure', 'Calculate Pressure')}</span>
                 </button>
               </div>
             </div>
@@ -755,10 +755,10 @@ export default function ScrollOceanExperience({
           {/* Bottom Callout: Switch to Full Workstation */}
           <div className="p-6 rounded-2xl bg-[#0A1720] border border-[#193544] text-center space-y-3">
             <h3 className="text-lg font-bold text-[#CCD0CF]">
-              Ready for Deep Engineering & Modeling?
+              {t('story.readyForDeep', 'Ready for Deep Engineering & Modeling?')}
             </h3>
             <p className="text-xs text-[#8FA8B2] max-w-xl mx-auto">
-              Open the full multi-panel engineering cockpit with simultaneous control panels, telemetry validation curves, and depth sliders.
+              {t('story.readyForDeepDesc', 'Open the full multi-panel engineering cockpit with simultaneous control panels, telemetry validation curves, and depth sliders.')}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <button
@@ -766,13 +766,13 @@ export default function ScrollOceanExperience({
                 className="px-5 py-2.5 rounded-xl bg-[#0C969C] hover:bg-[#168FA0] text-[#06141B] font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <Maximize2 className="w-4 h-4" />
-                <span>Switch to Full Workstation</span>
+                <span>{t('story.switchToFullWorkstation', 'Switch to Full Workstation')}</span>
               </button>
               <button
                 onClick={onOpenControls}
                 className="px-4 py-2.5 rounded-xl bg-[#0D202B] hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] text-[#CCD0CF] text-xs font-semibold transition-all cursor-pointer"
               >
-                Open Advanced Controls ⚙
+                {t('story.openAdvancedControls', 'Open Advanced Controls ⚙')}
               </button>
             </div>
           </div>

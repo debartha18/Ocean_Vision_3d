@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, X } from 'lucide-react';
 
 export default function MermaidMascot({
@@ -7,6 +8,7 @@ export default function MermaidMascot({
   activeRegionName = 'Bay of Bengal',
   activeSst = '29.85'
 }) {
+  const { t } = useTranslation();
   const [showBubble, setShowBubble] = useState(true);
   const [isWaving, setIsWaving] = useState(false);
 
@@ -34,7 +36,7 @@ export default function MermaidMascot({
               <span className="text-[11px] font-bold text-cyan-300 flex items-center gap-1">
                 <span>🧜‍♀️ Nerida</span>
                 <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/30 font-mono">
-                  AI Copilot
+                  {t('mascot.aiCopilot', 'AI Copilot')}
                 </span>
               </span>
               <button
@@ -43,19 +45,19 @@ export default function MermaidMascot({
                   setShowBubble(false);
                 }}
                 className="text-slate-400 hover:text-white p-0.5 rounded transition-colors"
-                title="Dismiss tip"
+                title={t('mascot.dismissTip', 'Dismiss tip')}
               >
                 <X className="w-3 h-3" />
               </button>
             </div>
 
             <p className="text-[11px] leading-tight text-slate-200 font-medium">
-              Click me to explore <span className="text-cyan-300 font-bold">{activeRegionName}</span> or ask anything! 🌊
+              {t('mascot.explorePrompt', 'Click me to explore {{region}} or ask anything! 🌊', { region: activeRegionName })}
             </p>
 
             <div className="mt-1.5 flex items-center justify-between text-[9px] font-mono text-cyan-400/90 pt-1 border-t border-cyan-500/20">
               <span>SST: {activeSst}°C</span>
-              <span className="text-sky-300 underline font-bold group-hover:text-white">Ask AI ↵</span>
+              <span className="text-sky-300 underline font-bold group-hover:text-white">{t('mascot.askAi', 'Ask AI ↵')}</span>
             </div>
           </div>
 
@@ -68,7 +70,7 @@ export default function MermaidMascot({
       <div 
         onClick={onClick}
         className="relative group cursor-pointer"
-        title="Open AI Ocean Copilot (Ctrl+K)"
+        title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Ctrl+K)')}
       >
         {/* Bioluminescent Ocean Ripple Glow Rings */}
         <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl group-hover:bg-cyan-400/35 animate-pulse transition-all"></div>

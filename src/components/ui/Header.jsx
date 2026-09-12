@@ -148,11 +148,11 @@ export default function Header({
         {onOpenControls && (
           <button
             onClick={onOpenControls}
-            title="Open Advanced 3D & Data Controls Drawer"
+            title={t('story.controls', 'Controls')}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-xs text-[#CCD0CF] transition-all cursor-pointer shrink-0"
           >
             <Sliders className="w-3.5 h-3.5 text-[#0C969C]" />
-            <span className="font-medium text-[11px] hidden sm:inline">Controls</span>
+            <span className="font-medium text-[11px] hidden sm:inline">{t('story.controls', 'Controls')}</span>
           </button>
         )}
 
@@ -162,13 +162,13 @@ export default function Header({
         {/* Active Location & Coordinates Selector Badge */}
         <button
           onClick={onOpenLocationModal}
-          title="Change Location or Enter Custom Lat/Lon Coordinates"
+          title={t('locationModal.title', 'Change Location or Enter Custom Lat/Lon Coordinates')}
           className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0D202B] hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] text-xs text-[#CCD0CF] transition-all cursor-pointer shrink-0"
         >
           <Compass className="w-3.5 h-3.5 text-[#0C969C]" />
           <div className="text-left leading-none">
             <div className="font-semibold text-[#CCD0CF] text-[11px] truncate max-w-[100px] xl:max-w-[120px]">
-              {activeRegion?.name || 'Bay of Bengal'}
+              {activeRegion?.name ? t(`regions.${activeRegion.id}`, activeRegion.name) : 'Bay of Bengal'}
             </div>
             <div className="text-[9px] font-mono text-[#6BA3BE] mt-0.5 hidden 2xl:block">
               {activeRegion?.coords || '15.297° N, 87.860° E'}
@@ -180,11 +180,11 @@ export default function Header({
         {onOpenCopilot && (
           <button
             onClick={onOpenCopilot}
-            title="Open AI Ocean Copilot (Nerida)"
+            title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Nerida)')}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-xs text-[#CCD0CF] transition-all cursor-pointer shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#0C969C]" />
-            <span className="font-semibold hidden sm:inline text-[11px]">AI Copilot</span>
+            <span className="font-semibold hidden sm:inline text-[11px]">{t('copilot.title', 'AI Copilot')}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#0C969C]" />
           </button>
         )}
@@ -193,11 +193,11 @@ export default function Header({
         <div className="relative">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            title="More Views & Dashboards"
+            title={t('navbar.views', 'Views')}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] text-xs text-[#CCD0CF] transition-all cursor-pointer"
           >
             <Menu className="w-4 h-4 text-[#8FA8B2]" />
-            <span className="hidden xl:inline text-[11px] font-medium">Views</span>
+            <span className="hidden xl:inline text-[11px] font-medium">{t('navbar.views', 'Views')}</span>
           </button>
 
           {/* Views Dropdown */}
@@ -207,7 +207,7 @@ export default function Header({
               className="absolute right-0 mt-2 w-52 rounded-xl bg-[#0A1720] border border-[#193544] shadow-2xl backdrop-blur-xl z-50 p-1.5 space-y-0.5 animate-in fade-in zoom-in-95 duration-150 text-xs"
             >
               <div className="px-2 py-1 text-[10px] font-bold text-[#637C87] uppercase tracking-wider">
-                Workspaces & Views
+                {t('navbar.workspacesViews', 'Workspaces & Views')}
               </div>
               {tabs.map((tab) => (
                 <button
@@ -233,14 +233,14 @@ export default function Header({
                   className="w-full text-left px-2.5 py-1.5 rounded-lg text-[#8FA8B2] hover:bg-[#142D3A] hover:text-[#CCD0CF] flex items-center gap-2"
                 >
                   <FileText className="w-3.5 h-3.5 text-[#0C969C]" />
-                  <span>Validation Report</span>
+                  <span>{t('analytics.reportModalTitle', 'Validation Report')}</span>
                 </button>
                 <button
                   onClick={onOpenStormNews}
                   className="w-full text-left px-2.5 py-1.5 rounded-lg text-[#8FA8B2] hover:bg-[#142D3A] hover:text-[#CCD0CF] flex items-center gap-2"
                 >
                   <Bell className="w-3.5 h-3.5 text-[#D6A84F]" />
-                  <span>Storm Radar</span>
+                  <span>{t('navbar.stormRadar', 'Storm Radar')}</span>
                 </button>
               </div>
             </div>
