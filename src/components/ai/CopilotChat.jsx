@@ -47,7 +47,7 @@ export default function CopilotChat({
       )}
 
       {messages.map((msg, idx) => (
-        <ChatMessageItem key={idx} message={msg} onSuggestionClick={onSuggestionClick} />
+        <ChatMessageItem key={msg.id || idx} message={msg} onSuggestionClick={onSuggestionClick} />
       ))}
 
       {isLoading && (
@@ -59,10 +59,11 @@ export default function CopilotChat({
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
             <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse delay-100"></span>
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse delay-200"></span>
-            <span className="text-[10px] text-slate-400 font-mono ml-1">Nerida ● Executing digital-twin reasoning...</span>
+            <span className="text-[10px] text-slate-400 font-mono ml-1">Nerida is thinking...</span>
           </div>
         </div>
       )}
+
     </div>
   );
 }

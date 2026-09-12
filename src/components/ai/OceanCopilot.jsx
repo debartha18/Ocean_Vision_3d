@@ -91,7 +91,12 @@ export default function OceanCopilot({
     if (!query || !query.trim() || isLoading) return;
 
     const trimmedQuery = query.trim();
+    const requestId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
+      ? crypto.randomUUID().slice(0, 8) 
+      : Math.random().toString(36).substring(2, 10);
+
     const userMsg = {
+      id: `user-${requestId}`,
       role: 'user',
       content: trimmedQuery,
       timestamp: new Date().toLocaleTimeString()
@@ -117,7 +122,8 @@ export default function OceanCopilot({
           longitude: activeRegion?.longitude,
           rawRegion: activeRegion
         },
-        language: currentLang
+        language: currentLang,
+        requestId
       });
 
       setEngineSource(result.source || 'offline');
@@ -131,6 +137,7 @@ export default function OceanCopilot({
       }
 
       const assistantMsg = {
+        id: `asst-${requestId}`,
         role: 'assistant',
         content: result.message || result.response,
         actions: result.actions || [],
@@ -147,6 +154,7 @@ export default function OceanCopilot({
       setMessages((prev) => [
         ...prev,
         {
+          id: `err-${requestId}`,
           role: 'assistant',
           content: `⚠️ Encountered an error analyzing the ocean digital twin: ${err.message}`,
           provenance: [{ type: 'AI-DERIVED', label: 'Local System Error Handler' }],
@@ -158,6 +166,7 @@ export default function OceanCopilot({
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [inputText, isLoading, messages, oceanContext, activeRegion, depth, selectedParam, viewMode, currentLang]);
+
 
 
   // Handle external prompts (e.g. from "Explain this" buttons on other panels)

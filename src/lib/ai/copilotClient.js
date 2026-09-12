@@ -4,7 +4,7 @@
  * and delegates seamlessly to the dynamic reasoning engine if offline.
  */
 
-import { executeNeridaReasoning } from './offlineEngine';
+import { executeNeridaReasoning } from './offlineEngine.js';
 
 export async function sendCopilotMessage({
   message,
@@ -12,8 +12,10 @@ export async function sendCopilotMessage({
   oceanState,
   oceanContext, // backwards compatibility
   conversationHistory = [],
-  language = 'en'
+  language = 'en',
+  requestId = null
 }) {
+  const reqId = requestId || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : Math.random().toString(36).substring(2, 10));
   const query = message || prompt || '';
   const state = oceanState || (oceanContext ? {
     basin: oceanContext.activeBasin?.name,
@@ -37,7 +39,8 @@ export async function sendCopilotMessage({
         message: query,
         oceanState: state,
         conversationHistory,
-        language
+        language,
+        requestId: reqId
       }),
       signal: controller.signal
     });
@@ -48,6 +51,7 @@ export async function sendCopilotMessage({
       const data = await response.json();
       if (data && !data.fallback && (data.message || data.response)) {
         return {
+          requestId: reqId,
           message: data.message || data.response,
           actions: data.actions || [],
           toolResults: data.toolResults || [],
@@ -64,6 +68,7 @@ export async function sendCopilotMessage({
   }
 
   // Dynamic local reasoning engine (zero hardcoded responses, real tool execution)
-  const result = executeNeridaReasoning(query, state, conversationHistory);
+  const result = executeNeridaReasoning(query, state, conversationHistory, reqId);
   return result;
 }
+
