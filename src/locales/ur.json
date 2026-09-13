@@ -25,7 +25,10 @@
     "tools": "سمندری سائنسی ٹولز",
     "views": "مناظر",
     "workspacesViews": "ورک اسپیسز اور مناظر",
-    "stormRadar": "طوفان کا ریڈار"
+    "stormRadar": "طوفان کا ریڈار",
+    "alertsTitle": "سمندری خطرات اور انتباہات",
+    "oceanAlerts": "سمندری خطرات کے الرٹس",
+    "liveActive": "2 فعال"
   },
   "controls": {
     "positionCoords": "مقام / نقاط",
@@ -298,7 +301,8 @@
     "closeRadar": "موسمی راڈار بند کریں",
     "movement": "حرکت",
     "centralPressure": "مرکزی دباؤ",
-    "weatherOverview": "موسمی جائزہ:"
+    "weatherOverview": "موسمی جائزہ:",
+    "openRadar": "ساحلی بیچ اور طوفان کا رڈار کھولیں"
   },
   "anomalyModal": {
     "title": "AI تشخیص: ذیلی سطحی تھرمل بے ضابطگی",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA بوائے BD08 اور INCOIS آرگو فلوٹ سے تصدیق شدہ",
     "qcPassed": "QC: کامیاب",
     "dismiss": "مسترد کریں",
-    "generateReport": "سمندری انتباہی رپورٹ بنائیں"
+    "generateReport": "سمندری انتباہی رپورٹ بنائیں",
+    "openDiagnostics": "AI بے ضابطگی کی تشخیص دیکھیں"
   },
   "locationModal": {
     "title": "عالمی سمندری طاس اور کوآرڈینیٹ نیویگیٹر",

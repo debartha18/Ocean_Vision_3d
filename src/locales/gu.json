@@ -25,7 +25,10 @@
     "tools": "મહાસાગર વિજ્ઞાન ટૂલ્સ",
     "views": "દૃશ્યો",
     "workspacesViews": "વર્કસ્પેસ અને દૃશ્યો",
-    "stormRadar": "વાવાઝોડું રડાર"
+    "stormRadar": "વાવાઝોડું રડાર",
+    "alertsTitle": "સમુદ્રી જોખમો અને ચેતવણીઓ",
+    "oceanAlerts": "સમુદ્રી સંકટ એલર્ટ",
+    "liveActive": "૨ સક્રિય"
   },
   "controls": {
     "positionCoords": "સ્થિતિ / કોઓર્ડિનેટ્સ",
@@ -298,7 +301,8 @@
     "closeRadar": "હવામાન રડાર બંધ કરો",
     "movement": "ગતિ",
     "centralPressure": "કેન્દ્રીય દબાણ",
-    "weatherOverview": "હવામાન વિહંગાવલોકન:"
+    "weatherOverview": "હવામાન વિહંગાવલોકન:",
+    "openRadar": "તટીય બીચ અને તોફાન રડાર ખોલો"
   },
   "anomalyModal": {
     "title": "AI નિદાન: ઉપસપાટી થર્મલ વિસંગતતા",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA બોય BD08 અને INCOIS આર્ગો ફ્લોટ દ્વારા ચકાસાયેલ",
     "qcPassed": "QC: પાસ",
     "dismiss": "રદ કરો",
-    "generateReport": "મહાસાગર ચેતવણી અહેવાલ બનાવો"
+    "generateReport": "મહાસાગર ચેતવણી અહેવાલ બનાવો",
+    "openDiagnostics": "AI વિસંગતતા નિદાન જુઓ"
   },
   "locationModal": {
     "title": "વૈશ્વિક મહાસાગર બેસિન અને કોઓર્ડિનેટ નેવિગેટર",

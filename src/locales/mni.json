@@ -25,7 +25,10 @@
     "tools": "সমুদ্র বিজ্ঞানগী তুলশিং",
     "views": "মিৎয়েংশিং",
     "workspacesViews": "ৱার্কস্পেস অমসুং মিৎয়েংশিং",
-    "stormRadar": "নোংলৈ রাডার"
+    "stormRadar": "নোংলৈ রাডার",
+    "alertsTitle": "সমুদ্রগী খুদোংথীবা অমসুং চেকশিনৱা",
+    "oceanAlerts": "সমুদ্রগী খুদোংথীবা এলার্ট",
+    "liveActive": "২ চত্থরিবা"
   },
   "controls": {
     "positionCoords": "অবস্থান / স্থানাঙ্ক",
@@ -158,7 +161,8 @@
     "closeRadar": "আবহাওয়া রাডার বন্ধ করুন",
     "movement": "গতিপথ",
     "centralPressure": "কেন্দ্রীয় চাপ",
-    "weatherOverview": "আবহাওয়া পর্যালোচনা:"
+    "weatherOverview": "আবহাওয়া পর্যালোচনা:",
+    "openRadar": "সমুদ্র তোর্বান অমসুং নোংলৈ রাডার হাংদোকউ"
   },
   "anomalyModal": {
     "title": "এআই নির্ণয়: উপপৃষ্ঠীয় তাপীয় অসঙ্গতি",
@@ -173,7 +177,8 @@
     "validatedBy": "RAMA মুরিং বয় BD08 এবং INCOIS আর্গো ফ্লোট দ্বারা যাচাইকৃত",
     "qcPassed": "QC: উত্তীর্ণ",
     "dismiss": "খারিজ করুন",
-    "generateReport": "মহাসাগর সতর্কতা প্রতিবেদন তৈরি করুন"
+    "generateReport": "মহাসাগর সতর্কতা প্রতিবেদন তৈরি করুন",
+    "openDiagnostics": "AI ওনবা চাং য়েংউ"
   },
   "locationModal": {
     "title": "বৈশ্বিক মহাসাগর অববাহিকা ও স্থানাঙ্ক নেভিগেটর",

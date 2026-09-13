@@ -25,7 +25,10 @@
     "tools": "ಸಾಗರವಿಜ್ಞಾನ ಪರಿಕರಗಳು",
     "views": "ವೀಕ್ಷಣೆಗಳು",
     "workspacesViews": "ಕಾರ್ಯಕ್ಷೇತ್ರಗಳು & ವೀಕ್ಷಣೆಗಳು",
-    "stormRadar": "ಚಂಡಮಾರುತ ರೇಡಾರ್"
+    "stormRadar": "ಚಂಡಮಾರುತ ರೇಡಾರ್",
+    "alertsTitle": "ಸಾಗರ ಬೆದರಿಕೆಗಳು ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು",
+    "oceanAlerts": "ಸಾಗರ ಬೆದರಿಕೆ ಎಚ್ಚರಿಕೆಗಳು",
+    "liveActive": "2 ಸಕ್ರಿಯ"
   },
   "controls": {
     "positionCoords": "ಸ್ಥಳ / ನಿರ್ದೇಶಾಂಕಗಳು",
@@ -298,7 +301,8 @@
     "closeRadar": "ಹವಾಮಾನ ರಾಡಾರ್ ಮುಚ್ಚಿ",
     "movement": "ಚಲನೆ",
     "centralPressure": "ಕೇಂದ್ರ ಒತ್ತಡ",
-    "weatherOverview": "ಹವಾಮಾನ ಅವಲೋಕನ:"
+    "weatherOverview": "ಹವಾಮಾನ ಅವಲೋಕನ:",
+    "openRadar": "ಕರಾವಳಿ ಬೀಚ್ & ಚಂಡಮಾರುತ ರೇಡಾರ್ ತೆರೆಯಿರಿ"
   },
   "anomalyModal": {
     "title": "AI ರೋಗನಿರ್ಣಯ: ಉಪಮೇಲ್ಮೈ ಉಷ್ಣ ಅಸಂಗತತೆ",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA ಮೂರಿಂಗ್ ಬೋಯಿ BD08 ಮತ್ತು INCOIS ಆರ್ಗೋ ಫ್ಲೋಟ್ ಮೂಲಕ ದೃಢೀಕರಿಸಲಾಗಿದೆ",
     "qcPassed": "QC: ಉತ್ತೀರ್ಣ",
     "dismiss": "ತಿರಸ್ಕರಿಸಿ",
-    "generateReport": "ಸಾಗರ ಎಚ್ಚರಿಕೆ ವರದಿ ರಚಿಸಿ"
+    "generateReport": "ಸಾಗರ ಎಚ್ಚರಿಕೆ ವರದಿ ರಚಿಸಿ",
+    "openDiagnostics": "AI ಅಸಂಗತತೆಯ ವಿಶ್ಲೇಷಣೆ ನೋಡಿ"
   },
   "locationModal": {
     "title": "ಜಾಗತಿಕ ಸಾಗರ ಜಲಾನಯನ ಪ್ರದೇಶ & ನಿರ್ದೇಶಾಂಕ ನ್ಯಾವಿಗೇಟರ್",

@@ -25,7 +25,10 @@
     "tools": "সাগৰ বিজ্ঞান সঁজুলি",
     "views": "দৃশ্যসমূহ",
     "workspacesViews": "ৱৰ্কস্পেচ আৰু দৃশ্যসমূহ",
-    "stormRadar": "ধুমুহা ৰাডাৰ"
+    "stormRadar": "ধুমুহা ৰাডাৰ",
+    "alertsTitle": "সামুদ্ৰিক বিপদ আৰু সতৰ্কবাৰ্তা",
+    "oceanAlerts": "মহাসাগৰীয় সতৰ্কবাৰ্তা",
+    "liveActive": "২টা সক্ৰিয়"
   },
   "controls": {
     "positionCoords": "অৱস্থান / স্থানাংক",
@@ -298,7 +301,8 @@
     "closeRadar": "বতৰ ৰাডাৰ বন্ধ কৰক",
     "movement": "গতি",
     "centralPressure": "কেন্দ্ৰীয় চাপ",
-    "weatherOverview": "বতৰৰ চমু আভাস:"
+    "weatherOverview": "বতৰৰ চমু আভাস:",
+    "openRadar": "উপকূলীয় বিল ও ধুমুহা ৰাডাৰ খোলক"
   },
   "anomalyModal": {
     "title": "AI নিদান: উপপৃষ্ঠীয় তাপীয় বিচ্যুতি",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA বয়া BD08 আৰু INCOIS আৰ্গো ফ্ল'ট দ্বাৰা প্ৰমাণিত",
     "qcPassed": "QC: উত্তীৰ্ণ",
     "dismiss": "বাতিল কৰক",
-    "generateReport": "মহাসাগৰ সতৰ্কতা প্ৰতিবেদন প্ৰস্তুত কৰক"
+    "generateReport": "মহাসাগৰ সতৰ্কতা প্ৰতিবেদন প্ৰস্তুত কৰক",
+    "openDiagnostics": "AI বিসংগতি বিশ্লেষণ চাওক"
   },
   "locationModal": {
     "title": "গোলকীয় মহাসাগৰীয় বেচিন আৰু স্থানাংক দিশনিৰ্ণয়ক",

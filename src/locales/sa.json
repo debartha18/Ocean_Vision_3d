@@ -25,7 +25,10 @@
     "tools": "सागरीयोपकरणसङ्ग्रहः",
     "views": "दृश्यानि",
     "workspacesViews": "कार्यक्षेत्राणि दृश्यानि च",
-    "stormRadar": "वात्याराडार्"
+    "stormRadar": "वात्याराडार्",
+    "alertsTitle": "साामुद्रिक सङ्कटाः तथा सूचनाः",
+    "oceanAlerts": "साामुद्रिक विपत्ति सूचनाः",
+    "liveActive": "२ सक्रिये"
   },
   "controls": {
     "positionCoords": "स्थिति / निर्देशांक",
@@ -158,7 +161,8 @@
     "closeRadar": "मौसम रडार बंद करें",
     "movement": "गति",
     "centralPressure": "केंद्रीय दबाव",
-    "weatherOverview": "मौसम अवलोकन:"
+    "weatherOverview": "मौसम अवलोकन:",
+    "openRadar": "तटीय सैकत तथा चक्रवात रडार उद्घाटयतु"
   },
   "anomalyModal": {
     "title": "एआई निदान: उपसतह थर्मल विसंगति",
@@ -173,7 +177,8 @@
     "validatedBy": "RAMA मूरिंग बॉय BD08 और INCOIS आर्गो फ्लोट द्वारा सत्यापित",
     "qcPassed": "QC: उत्तीर्ण",
     "dismiss": "खारिज करें",
-    "generateReport": "महासागर चेतावनी रिपोर्ट बनाएं"
+    "generateReport": "महासागर चेतावनी रिपोर्ट बनाएं",
+    "openDiagnostics": "AI विसङ्गति निदानं पश्यतु"
   },
   "locationModal": {
     "title": "वैश्विक महासागर बेसिन और निर्देशांक नेविगेटर",

@@ -25,7 +25,10 @@
     "tools": "ਸਮੁੰਦਰੀ ਵਿਗਿਆਨ ਟੂਲ",
     "views": "ਦ੍ਰਿਸ਼",
     "workspacesViews": "ਵਰਕਸਪੇਸ ਅਤੇ ਦ੍ਰਿਸ਼",
-    "stormRadar": "ਤੂਫਾਨ ਰਾਡਾਰ"
+    "stormRadar": "ਤੂਫਾਨ ਰਾਡਾਰ",
+    "alertsTitle": "ਸਮੁੰਦਰੀ ਖ਼ਤਰੇ ਅਤੇ ਚਿਤਾਵਨੀਆਂ",
+    "oceanAlerts": "ਸਮੁੰਦਰੀ ਖ਼ਤਰਾ ਅਲਰਟ",
+    "liveActive": "2 ਸਰਗਰਮ"
   },
   "controls": {
     "positionCoords": "ਸਥਿਤੀ / ਨਿਰਦੇਸ਼ਾਂਕ",
@@ -298,7 +301,8 @@
     "closeRadar": "ਮੌਸਮ ਰਾਡਾਰ ਬੰਦ ਕਰੋ",
     "movement": "ਚਾਲ",
     "centralPressure": "ਕੇਂਦਰੀ ਦਬਾਅ",
-    "weatherOverview": "ਮੌਸਮ ਦਾ ਜਾਇਜ਼ਾ:"
+    "weatherOverview": "ਮੌਸਮ ਦਾ ਜਾਇਜ਼ਾ:",
+    "openRadar": "ਤੱਟਵਰਤੀ ਬੀਚ ਅਤੇ ਤੂਫਾਨ ਰਾਡਾਰ ਖੋਲ੍ਹੋ"
   },
   "anomalyModal": {
     "title": "AI ਨਿਦਾਨ: ਉਪ-ਸਤ੍ਹਾ ਥਰਮਲ ਵਿਗਾੜ",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA ਬੋਆਏ BD08 ਅਤੇ INCOIS ਆਰਗੋ ਫਲੋਟ ਦੁਆਰਾ ਪ੍ਰਮਾਣਿਤ",
     "qcPassed": "QC: ਪਾਸ",
     "dismiss": "ਰੱਦ ਕਰੋ",
-    "generateReport": "ਸਮੁੰਦਰੀ ਚੇਤਾਵਨੀ ਰਿਪੋਰਟ ਤਿਆਰ ਕਰੋ"
+    "generateReport": "ਸਮੁੰਦਰੀ ਚੇਤਾਵਨੀ ਰਿਪੋਰਟ ਤਿਆਰ ਕਰੋ",
+    "openDiagnostics": "AI ਵਿਗਾੜ ਵਿਸ਼ਲੇਸ਼ਣ ਵੇਖੋ"
   },
   "locationModal": {
     "title": "ਗਲੋਬਲ ਸਮੁੰਦਰੀ ਬੇਸਿਨ ਅਤੇ ਨਿਰਦੇਸ਼ਾਂਕ ਨੇਵੀਗੇਟਰ",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Calendar, 
@@ -14,10 +14,16 @@ import {
   Sparkles,
   Menu,
   X,
-  ChevronDown
+  ChevronDown,
+  CloudRain,
+  AlertTriangle,
+  Zap,
+  ShieldAlert,
+  Radio
 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { getFormattedCurrentDate } from '../../utils/dateUtils';
+import { AI_ANOMALY, MARINE_NEWS_BULLETINS } from '../../data/oceanData';
 
 export default function Header({
   activeTab,
@@ -37,6 +43,24 @@ export default function Header({
 }) {
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [alertsOpen, setAlertsOpen] = useState(false);
+  const alertsRef = useRef(null);
+  const viewsRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (alertsRef.current && !alertsRef.current.contains(e.target)) {
+        setAlertsOpen(false);
+      }
+      if (viewsRef.current && !viewsRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    if (alertsOpen || mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [alertsOpen, mobileMenuOpen]);
 
   const tabs = [
     { id: 'Story View', label: t('story.storyMode', 'Story Experience') },
@@ -176,21 +200,152 @@ export default function Header({
           </div>
         </button>
 
-        {/* AI Ocean Copilot (Nerida) Trigger */}
-        {onOpenCopilot && (
+        {/* Real-Time Oceanographic Threat & Storm Alerts Section */}
+        <div className="relative" ref={alertsRef}>
           <button
-            onClick={onOpenCopilot}
-            title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Nerida)')}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#142D3A] hover:bg-[#183746] border border-[#214555] hover:border-[#0C969C] text-xs text-[#CCD0CF] transition-all cursor-pointer shrink-0"
+            onClick={() => {
+              setAlertsOpen(!alertsOpen);
+              setMobileMenuOpen(false);
+            }}
+            title={t('navbar.alertsTitle', 'Oceanographic Threat & Marine Alerts')}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs transition-all cursor-pointer shrink-0 ${
+              alertsOpen
+                ? 'bg-[#183746] border-[#D6A84F] text-amber-300 shadow-glow-amber'
+                : 'bg-[#142D3A] hover:bg-[#183746] border-[#214555] hover:border-[#D6A84F]/60 text-[#CCD0CF]'
+            }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#0C969C]" />
-            <span className="font-semibold hidden sm:inline text-[11px]">{t('copilot.title', 'AI Copilot')}</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0C969C]" />
+            <div className="relative flex items-center">
+              <Bell className="w-3.5 h-3.5 text-[#D6A84F]" />
+              <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              </span>
+            </div>
+            <span className="font-semibold text-[11px]">{t('navbar.alerts', 'Alerts')}</span>
+            <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-mono font-bold">
+              {activeRegion?.stormProbability ? `${activeRegion.stormProbability}%` : 'LIVE'}
+            </span>
           </button>
-        )}
+
+          {/* Alerts Dropdown Drawer */}
+          {alertsOpen && (
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[#0A1720]/95 border border-[#193544] shadow-2xl backdrop-blur-2xl z-50 p-3 space-y-2.5 animate-in fade-in zoom-in-95 duration-150 text-xs">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-[#193544]">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <ShieldAlert className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#CCD0CF] text-xs flex items-center gap-1.5">
+                      <span>{t('navbar.oceanAlerts', 'Oceanographic Threat Alerts')}</span>
+                      <span className="px-1.5 py-0.2 rounded text-[9px] bg-red-500/20 text-red-300 border border-red-500/30 font-mono font-bold">
+                        {t('navbar.liveActive', '2 ACTIVE')}
+                      </span>
+                    </div>
+                    <div className="text-[10px] text-[#637C87] font-mono">
+                      {activeRegion?.name} • {activeRegion?.coords || '15.297° N, 87.860° E'}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setAlertsOpen(false)}
+                  className="p-1 rounded-lg hover:bg-[#142D3A] text-[#8FA8B2] hover:text-[#CCD0CF] transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Alert Card 1: Active Storm & Convective Threat */}
+              <div className="bg-[#0D202B] rounded-xl p-2.5 border border-[#193544] hover:border-amber-500/40 transition-colors">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <CloudRain className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="font-bold text-xs text-amber-300">
+                      {activeRegion?.activeStorm?.category || 'Tropical Weather System'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-amber-400 font-bold">
+                    {activeRegion?.stormProbability ?? 35}% {t('controls.stormRisk', 'Risk')}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#8FA8B2] leading-tight mb-2">
+                  {activeRegion?.activeStorm?.name || 'Monsoon Convective Squall Line'}: {activeRegion?.activeStorm?.rainfallForecast || 'Squally showers with elevated sea state.'}
+                </p>
+                <div className="grid grid-cols-3 gap-1.5 py-1.5 px-2 rounded-lg bg-[#06141B] border border-[#142D3A] text-[10px] font-mono mb-2">
+                  <div>
+                    <span className="text-[#637C87] block text-[9px]">WIND</span>
+                    <span className="text-[#CCD0CF] font-bold">{activeRegion?.activeStorm?.windSpeed || `${activeRegion?.windSpeedKmH || 26} km/h`}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#637C87] block text-[9px]">SWELL</span>
+                    <span className="text-[#CCD0CF] font-bold">{activeRegion?.waveHeight ?? 1.65}m</span>
+                  </div>
+                  <div>
+                    <span className="text-[#637C87] block text-[9px]">RAIN CHANCE</span>
+                    <span className="text-cyan-400 font-bold">{activeRegion?.rainProbability ?? 42}%</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setAlertsOpen(false);
+                    onOpenStormNews?.();
+                  }}
+                  className="w-full py-1.5 px-2 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 font-semibold text-[10px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Zap className="w-3 h-3" />
+                  <span>{t('stormModal.openRadar', 'Open Coastal Beach & Storm Radar')}</span>
+                </button>
+              </div>
+
+              {/* Alert Card 2: Subsurface Thermal Anomaly & Marine Heatwave */}
+              <div className="bg-[#0D202B] rounded-xl p-2.5 border border-[#193544] hover:border-red-500/40 transition-colors">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                    <span className="font-bold text-xs text-rose-300">
+                      {AI_ANOMALY.anomalyType}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-rose-400 font-bold">
+                    +2.45 °C
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#8FA8B2] leading-tight mb-2">
+                  {AI_ANOMALY.headline}
+                </p>
+                <div className="flex items-center justify-between text-[10px] font-mono text-[#637C87] mb-2 px-1">
+                  <span>Layer: <strong className="text-[#CCD0CF]">{AI_ANOMALY.depthRange}</strong></span>
+                  <span>QC: <strong className="text-emerald-400">{AI_ANOMALY.confidence} Validated</strong></span>
+                </div>
+                <button
+                  onClick={() => {
+                    setAlertsOpen(false);
+                    onOpenAlerts?.();
+                  }}
+                  className="w-full py-1.5 px-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-rose-300 font-semibold text-[10px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <ShieldAlert className="w-3 h-3" />
+                  <span>{t('anomalyModal.openDiagnostics', 'View AI Anomaly Diagnostics')}</span>
+                </button>
+              </div>
+
+              {/* Card 3: In-Situ Marine Sensor Bulletin */}
+              {MARINE_NEWS_BULLETINS?.[0] && (
+                <div className="p-2 rounded-xl bg-[#06141B] border border-[#142D3A] flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1 shrink-0" />
+                  <div className="text-[10px] leading-tight">
+                    <div className="font-semibold text-[#CCD0CF]">{MARINE_NEWS_BULLETINS[0].title}</div>
+                    <div className="text-[#637C87] mt-0.5">{MARINE_NEWS_BULLETINS[0].source} • {MARINE_NEWS_BULLETINS[0].time}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Quick App Views Menu (Dashboard, Map, El Niño, About) */}
-        <div className="relative">
+        <div className="relative" ref={viewsRef}>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             title={t('navbar.views', 'Views')}

@@ -25,7 +25,10 @@
     "tools": "سامونڊي سائنس اوزار",
     "views": "منظر",
     "workspacesViews": "ورڪ اسپيس ۽ منظر",
-    "stormRadar": "طوفان راڊار"
+    "stormRadar": "طوفان راڊار",
+    "alertsTitle": "سامونڊي خطرا ۽ الرٽ",
+    "oceanAlerts": "سامونڊي خطري جا الرٽ",
+    "liveActive": "2 فعال"
   },
   "controls": {
     "positionCoords": "مقام / نقاط",
@@ -158,7 +161,8 @@
     "closeRadar": "موسمی راڈار بند کریں",
     "movement": "حرکت",
     "centralPressure": "مرکزی دباؤ",
-    "weatherOverview": "موسمی جائزہ:"
+    "weatherOverview": "موسمی جائزہ:",
+    "openRadar": "ساحلي سامونڊي ڪناري ۽ طوفان رڊار کوليو"
   },
   "anomalyModal": {
     "title": "AI تشخیص: ذیلی سطحی تھرمل بے ضابطگی",
@@ -173,7 +177,8 @@
     "validatedBy": "RAMA بوائے BD08 اور INCOIS آرگو فلوٹ سے تصدیق شدہ",
     "qcPassed": "QC: کامیاب",
     "dismiss": "مسترد کریں",
-    "generateReport": "سمندری انتباہی رپورٹ بنائیں"
+    "generateReport": "سمندری انتباہی رپورٹ بنائیں",
+    "openDiagnostics": "AI فرق جي تشخيص ڏسو"
   },
   "locationModal": {
     "title": "عالمی سمندری طاس اور کوآرڈینیٹ نیویگیٹر",

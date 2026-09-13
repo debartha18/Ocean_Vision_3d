@@ -25,7 +25,10 @@
     "tools": "महासागरीय साधने संच",
     "views": "दृश्ये",
     "workspacesViews": "वर्कस्पेस आणि दृश्ये",
-    "stormRadar": "वादळ रडार"
+    "stormRadar": "वादळ रडार",
+    "alertsTitle": "सागरी धोके आणि सतर्कता सूचना",
+    "oceanAlerts": "महासागरीय धोक्याचे अलर्ट",
+    "liveActive": "२ सक्रिय"
   },
   "controls": {
     "positionCoords": "स्थान / निर्देशांक",
@@ -298,7 +301,8 @@
     "closeRadar": "हवामान रडार बंद करा",
     "movement": "हालचाल",
     "centralPressure": "केंद्रीत दाब",
-    "weatherOverview": "हवामान आढावा:"
+    "weatherOverview": "हवामान आढावा:",
+    "openRadar": "किनारपट्टी बीच व वादळ रडार उघडा"
   },
   "anomalyModal": {
     "title": "एआय निदान: उपपृष्ठभागीय औष्णिक विसंगती",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA मूरिंग बॉय BD08 आणि INCOIS आर्गो फ्लोट द्वारे प्रमाणित",
     "qcPassed": "QC: उत्तीर्ण",
     "dismiss": "नाकारा",
-    "generateReport": "महासागर इशारा अहवाल तयार करा"
+    "generateReport": "महासागर इशारा अहवाल तयार करा",
+    "openDiagnostics": "AI विसंगती विश्लेषण पहा"
   },
   "locationModal": {
     "title": "जागतिक महासागर बेसिन आणि निर्देशांक नेव्हिगेटर",

@@ -25,7 +25,10 @@
     "tools": "ସାମୁଦ୍ରିକ ଉପକରଣ ସୁଇଟ୍",
     "views": "ଦୃଶ୍ୟ",
     "workspacesViews": "ୱାର୍କସ୍କ୍ୱେୟାର ଏବଂ ଦୃଶ୍ୟ",
-    "stormRadar": "ଝଡ଼ ରାଡାର୍"
+    "stormRadar": "ଝଡ଼ ରାଡାର୍",
+    "alertsTitle": "ସାମୁଦ୍ରିକ ବିପଦ ଏବଂ ସତର୍କତା",
+    "oceanAlerts": "ସାମୁଦ୍ରିକ ବିପଦ ସତର୍କତା",
+    "liveActive": "୨ଟି ସକ୍ରିୟ"
   },
   "controls": {
     "positionCoords": "ସ୍ଥିତି / ନିର୍ଦ୍ଦେଶାଙ୍କ",
@@ -298,7 +301,8 @@
     "closeRadar": "ପାଣିପାଗ ରାଡାର ବନ୍ଦ କରନ୍ତୁ",
     "movement": "ଗତି",
     "centralPressure": "କେନ୍ଦ୍ରୀୟ ଚାପ",
-    "weatherOverview": "ପାଣିପାଗ ସମୀକ୍ଷା:"
+    "weatherOverview": "ପାଣିପାଗ ସମୀକ୍ଷା:",
+    "openRadar": "ଉପକୂଳବର୍ତ୍ତୀ ବେଳାଭୂମି ଓ ଝଡ଼ ରାଡାର ଖୋଲନ୍ତୁ"
   },
   "anomalyModal": {
     "title": "AI ନିଦାନ: ଅନ୍ତର୍ପୃଷ୍ଠ ତାପଜ ବିସଙ୍ଗତି",
@@ -313,7 +317,8 @@
     "validatedBy": "RAMA ବୋୟା BD08 ଏବଂ INCOIS ଆର୍ଗୋ ଫ୍ଲୋଟ୍ ଦ୍ୱାରା ପ୍ରମାଣିତ",
     "qcPassed": "QC: ଉତ୍ତୀର୍ଣ୍ଣ",
     "dismiss": "ଖାରଜ କରନ୍ତୁ",
-    "generateReport": "ମହାସାଗର ଚେତାବନୀ ରିପୋର୍ଟ ପ୍ରସ୍ତୁତ କରନ୍ତୁ"
+    "generateReport": "ମହାସାଗର ଚେତାବନୀ ରିପୋର୍ଟ ପ୍ରସ୍ତୁତ କରନ୍ତୁ",
+    "openDiagnostics": "AI ବିସଙ୍ଗତି ବିଶ୍ଳେଷଣ ଦେଖନ୍ତୁ"
   },
   "locationModal": {
     "title": "ବିଶ୍ୱ ମହାସାଗର ବେସିନ୍ ଏବଂ ନିର୍ଦ୍ଦେଶାଙ୍କ ନାଭିଗେଟର୍",

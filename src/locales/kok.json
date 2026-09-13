@@ -25,7 +25,10 @@
     "tools": "दर्या विज्ञान साधनां",
     "views": "दृश्यां",
     "workspacesViews": "वर्कस्पेसेस आनी दृश्यां",
-    "stormRadar": "वादळ रडार"
+    "stormRadar": "वादळ रडार",
+    "alertsTitle": "दर्याचे धोके आनी सुचोवणी",
+    "oceanAlerts": "दर्या धोको अलर्ट",
+    "liveActive": "२ सक्रीय"
   },
   "controls": {
     "positionCoords": "स्थिति / निर्देशांक",
@@ -158,7 +161,8 @@
     "closeRadar": "मौसम रडार बंद करें",
     "movement": "गति",
     "centralPressure": "केंद्रीय दबाव",
-    "weatherOverview": "मौसम अवलोकन:"
+    "weatherOverview": "मौसम अवलोकन:",
+    "openRadar": "वेळेचो दर्या आनी वादळ रडार उगडा"
   },
   "anomalyModal": {
     "title": "एआई निदान: उपसतह थर्मल विसंगति",
@@ -173,7 +177,8 @@
     "validatedBy": "RAMA मूरिंग बॉय BD08 और INCOIS आर्गो फ्लोट द्वारा सत्यापित",
     "qcPassed": "QC: उत्तीर्ण",
     "dismiss": "खारिज करें",
-    "generateReport": "महासागर चेतावनी रिपोर्ट बनाएं"
+    "generateReport": "महासागर चेतावनी रिपोर्ट बनाएं",
+    "openDiagnostics": "AI विसंगती निदान पळेयात"
   },
   "locationModal": {
     "title": "वैश्विक महासागर बेसिन और निर्देशांक नेविगेटर",

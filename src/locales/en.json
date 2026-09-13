@@ -25,7 +25,10 @@
     "tools": "Oceanographic Tool Suites",
     "views": "Views",
     "workspacesViews": "Workspaces & Views",
-    "stormRadar": "Storm Radar"
+    "stormRadar": "Storm Radar",
+    "alertsTitle": "Oceanographic Threat & Marine Alerts",
+    "oceanAlerts": "Oceanographic Threat Alerts",
+    "liveActive": "2 ACTIVE"
   },
   "controls": {
     "positionCoords": "Position / Coordinates",
@@ -295,7 +298,8 @@
     "closeRadar": "Close Weather Radar",
     "movement": "Movement",
     "centralPressure": "Central Pressure",
-    "weatherOverview": "Weather Overview:"
+    "weatherOverview": "Weather Overview:",
+    "openRadar": "Open Coastal Beach & Storm Radar"
   },
   "anomalyModal": {
     "title": "AI Diagnostics: Subsurface Thermal Anomaly",
@@ -310,7 +314,8 @@
     "validatedBy": "Validated by RAMA Moored Buoy BD08 and INCOIS Argo Float #2902184",
     "qcPassed": "QC: PASSED",
     "dismiss": "Dismiss",
-    "generateReport": "Generate Ocean Alert Report"
+    "generateReport": "Generate Ocean Alert Report",
+    "openDiagnostics": "View AI Anomaly Diagnostics"
   },
   "locationModal": {
     "title": "Global Ocean Basin & Coordinate Navigator",

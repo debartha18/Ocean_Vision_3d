@@ -25,7 +25,10 @@
     "tools": "ᱫᱚᱨᱭᱟ ᱥᱟᱬᱮᱥ ᱥᱟᱢᱟᱱ",
     "views": "ᱧᱮᱞ ᱠᱚ",
     "workspacesViews": "ᱠᱟᱹᱢᱤᱦᱚᱨᱟ ᱟᱨ ᱧᱮᱞ",
-    "stormRadar": "ᱛᱩᱯᱷᱟᱱ ᱨᱟᱰᱟᱨ"
+    "stormRadar": "ᱛᱩᱯᱷᱟᱱ ᱨᱟᱰᱟᱨ",
+    "alertsTitle": "ᱫᱚᱨᱭᱟ ᱵᱚᱛᱚᱨ ᱟᱨ ᱦᱩᱥᱤᱭᱟᱹᱨ",
+    "oceanAlerts": "ᱥᱟᱹᱢᱩᱫᱽ ᱵᱚᱛᱚᱨ ᱮᱞᱟᱨᱴ",
+    "liveActive": "᱒ ᱪᱟᱹᱞᱩ"
   },
   "controls": {
     "positionCoords": "ᱴᱷᱟᱶ / ᱠᱳ-ᱚᱨᱰᱤᱱᱮᱴᱥ",
@@ -295,7 +298,8 @@
     "closeRadar": "ᱦᱚᱭ-ᱫᱟᱜ ᱨᱟᱰᱟᱨ ᱵᱚᱸᱫᱽ",
     "movement": "ᱪᱟᱞᱟᱣ ᱰᱟᱦᱟᱨ",
     "centralPressure": "ᱛᱟᱞᱟ ᱪᱟᱯ",
-    "weatherOverview": "ᱦᱚᱭ-ᱫᱟᱜ ᱵᱤᱪᱟᱹᱨ:"
+    "weatherOverview": "ᱦᱚᱭ-ᱫᱟᱜ ᱵᱤᱪᱟᱹᱨ:",
+    "openRadar": "ᱫᱚᱨᱭᱟ ᱰᱷᱤᱯ ᱟᱨ ᱛᱩᱯᱷᱟᱱ ᱨᱟᱰᱟᱨ ᱡᱷᱤᱡᱽ ᱢᱮ"
   },
   "anomalyModal": {
     "title": "AI ᱵᱤᱪᱟᱹᱨ: ᱫᱟᱜ ᱞᱟᱛᱟᱨ ᱞᱚᱞᱚ ᱚᱥᱚᱢᱟᱱ",
@@ -310,7 +314,8 @@
     "validatedBy": "RAMA ᱵᱩᱭᱟ BD08 ᱟᱨ INCOIS ᱟᱨᱜᱳ ᱯᱷᱞᱳᱴ ᱛᱮ ᱯᱚᱨᱢᱟᱱ",
     "qcPassed": "QC: ᱯᱟᱥ",
     "dismiss": "ᱵᱟᱹᱜᱤ",
-    "generateReport": "ᱫᱚᱨᱭᱟ ᱦᱩᱥᱤᱭᱟᱹᱨ ᱨᱤᱯᱳᱨᱴ ᱵᱮᱱᱟᱣ"
+    "generateReport": "ᱫᱚᱨᱭᱟ ᱦᱩᱥᱤᱭᱟᱹᱨ ᱨᱤᱯᱳᱨᱴ ᱵᱮᱱᱟᱣ",
+    "openDiagnostics": "AI ᱵᱮ-ᱵᱟᱹᱲᱤᱡ ᱧᱮᱞ ᱢᱮ"
   },
   "locationModal": {
     "title": "ᱫᱷᱟᱹᱨᱛᱤ ᱫᱚᱨᱭᱟ ᱵᱮᱥᱤᱱ ᱟᱨ ᱠᱳ-ᱚᱨᱰᱤᱱᱮᱴ ᱱᱮᱵᱷᱤᱜᱮᱴᱚᱨ",
