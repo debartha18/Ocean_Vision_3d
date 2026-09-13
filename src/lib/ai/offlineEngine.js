@@ -139,22 +139,22 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   // 3. Extract Parameter from current prompt
   let paramSpecified = false;
   let targetParam = contextParam;
-  if (/\b(sst|temp|temperature|thermal|warm|cold|heat|তাপমাত্রা|तापमान)\b/i.test(q)) {
+  if (/\b(sst|temp|temperature|thermal|warm|cold|heat)\b/i.test(q) || /(তাপমাত্রা|তাপ|तापमान|तापीय|வெப்பநிலை|உஷ்ணம்|ఉష్ణోగ్రత|ತಾಪಮಾನ|താപനില|તાપમાન|ତାପମାତ୍ରା|ਤਾਪਮਾਨ|درجہ حرارت)/u.test(q)) {
     targetParam = 'sst';
     paramSpecified = true;
-  } else if (/\b(sal|salin|salinity|salt|psu|halocline|লবণাক্ততা|लवणता)\b/i.test(q)) {
+  } else if (/\b(sal|salin|salinity|salt|psu|halocline)\b/i.test(q) || /(লবণাক্ততা|লবণ|लवणता|உப்புத்தன்மை|ఉప్పుదனம்|ಉಪ್ಪಿನಂಶ|ലവണാംശം|ખારાશ|લવણતા|ଲବଣାକ୍ତତା|ਖਾਰਾਪਣ|نمکیات)/u.test(q)) {
     targetParam = 'salinity';
     paramSpecified = true;
-  } else if (/\b(currents|velocity|flow|shear|vector|vectors|স্রোত|ধারা)\b/i.test(q) || (/\bcurrent\b/i.test(q) && !/\bcurrent\s*(?:condition|conditions|situation|status|state|weather|overview)\b/i.test(q))) {
+  } else if (/\b(currents|velocity|flow|shear|vector|vectors)\b/i.test(q) || (/\bcurrent\b/i.test(q) && !/\bcurrent\s*(?:condition|conditions|situation|status|state|weather|overview)\b/i.test(q)) || /(স্রোত|ধারা|धारा|प्रवाह|நீரோட்டம்|ప్రవాహం|ಪ್ರವಾಹ|പ്രവാഹം|પ્રવાહ|ପ୍ରବାହ|ਲਹਿਰ|رو)/u.test(q)) {
     targetParam = 'currents';
     paramSpecified = true;
-  } else if (/\b(wave|waves|swell|surge|breaker|sea state|ঢেউ|तरंग)\b/i.test(q)) {
+  } else if (/\b(wave|waves|swell|surge|breaker|sea state)\b/i.test(q) || /(ঢেউ|তরঙ্গ|लहर|तरंग|அலை|తరంగం|ಅಲೆ|തിരമാല|મોજું|ତରଙ୍ਗ|ਛੱਲਾਂ|موج)/u.test(q)) {
     targetParam = 'wave';
     paramSpecified = true;
-  } else if (/\b(chlor|chlorophyll|chlorophyll-a|phytoplankton|bloom|algae|biomass|ক্লোরোফিল)\b/i.test(q)) {
+  } else if (/\b(chlor|chlorophyll|chlorophyll-a|phytoplankton|bloom|algae|biomass)\b/i.test(q) || /(ক্লোরোফিল|क्लोरोफिल|குளோரோபில்|క్లోరోఫిల్|ಕ್ಲೋರೊಫಿಲ್|ക്ലോറോഫിൽ|ક્લોરોફિલ|କ୍ଲୋରୋଫିଲ୍|ਕਲੋਰੋਫਿਲ)/u.test(q)) {
     targetParam = 'chlorophyll';
     paramSpecified = true;
-  } else if (/\b(oxygen|dissolved oxygen|hypoxia|omz|o2|অক্সিজেন)\b/i.test(q)) {
+  } else if (/\b(oxygen|dissolved oxygen|hypoxia|omz|o2)\b/i.test(q) || /(অক্সিজেন|ऑक्सीजन|ஆக்ஸிஜன்|ఆక్సిజన్|ಆಮ್ಲಜನಕ|ഓക്സിജൻ|ઓક્સિજન|ଅମ୍ଳଜାନ|ਆਕਸੀਜਨ)/u.test(q)) {
     targetParam = 'oxygen';
     paramSpecified = true;
   }
@@ -174,10 +174,10 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       targetDepth = parsed;
       depthSpecified = true;
     }
-  } else if (/\b(surface|top|upper|0\s*m|0\s*meter|0\s*metre|পৃষ্ঠ|सतह)\b/i.test(q)) {
+  } else if (/\b(surface|top|upper|0\s*m|0\s*meter|0\s*metre)\b/i.test(q) || /(পৃষ্ঠ|सतह|மேற்பரப்பு|ఉపరితలం|ಮೇಲ್ಮೈ|ഉപരിതലം|સપાટી|ପୃଷ୍ଠ|ਸਤ੍ਹਾ|سطح)/u.test(q)) {
     targetDepth = 0;
     depthSpecified = true;
-  } else if (/\b(deeper|deep water|further down|আরও গভীরে|और गहरा)\b/i.test(q)) {
+  } else if (/\b(deeper|deep water|further down)\b/i.test(q) || /(আরও গভীরে|और गहरा|ஆழமான|మరింత లోతుగా|ಇನ್ನಷ್ಟು ಆಳ|കൂടുതൽ ആഴത്തിൽ|વધુ ઊંડું|ଅଧିକ ଗଭୀର|ਹੋਰ ਡੂੰਘਾ|مزید گہرا)/u.test(q)) {
     targetDepth = Math.min(6000, (contextDepth === 0 ? 50 : contextDepth * 2));
     depthSpecified = true;
   } else if (/\b(shallower|higher up|less deep)\b/i.test(q)) {
@@ -201,7 +201,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     targetCoords = locMatch.coords;
   }
 
-  if (/(arabian|arabian sea|আরব সাগর|अरब सागर)/i.test(q)) {
+  if (/(arabian|arabian sea|arab sea|আরব|অ্যারাবিয়ান|अरब|अरेबियन|அரபி|அரேபி|అరేబి|ಅರಬ್ಬಿ|അറബി|અરબી|ଆରବ|ਅਰਬ|عرب)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'arabian_sea') {
       secondBasin = 'arabian_sea';
     } else {
@@ -209,7 +209,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(bengal|bay of bengal|bob|বঙ্গোপসাগর|बंगाल की खाड़ी)/i.test(q)) {
+  if (/(bengal|bay of bengal|bob|bengali|bengoli|bangal|বঙ্গ|বংগ|বেঙ্গ|বেংগ|বেগল|বেগলী|বেঙ্গল|বেঙ্গলি|বে অফ|বে অব|बंगाल|வங்காள|బంగాళ|ಬಂಗಾಳ|ബംഗാൾ|બંગાળ|ବଙ୍ଗ|بنگال)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'bay_of_bengal') {
       secondBasin = 'bay_of_bengal';
     } else {
@@ -217,7 +217,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(south china|china sea|দক্ষিণ চীন সাগর|दक्षिण चीन सागर)/i.test(q)) {
+  if (/(south china|china sea|দক্ষিণ চীন|दक्षिण चीन|தென் சீன|దక్షిణ చైనా|ದಕ್ಷಿಣ ಚೀನಾ|തെക്കൻ ചൈന|દક્ષિણ ચીન|ଦକ୍ଷିଣ ଚୀନ|ਦੱਖਣੀ ਚੀਨ|جنوبی چین)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'south_china_sea') {
       secondBasin = 'south_china_sea';
     } else {
@@ -225,7 +225,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(pacific|equatorial pacific|el nino basin|প্রশান্ত মহাসাগর|प्रशांत महासागर)/i.test(q)) {
+  if (/(pacific|equatorial pacific|el nino basin|প্রশান্ত|प्रशांत|பசிபிக்|పసిఫిക്|ಪೆಸಿಫಿಕ್|പസഫിക്|પેસિફિક|ପ୍ରଶାନ୍ତ|ਪ੍ਰਸ਼ਾਂਤ|بحر الکاہل)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'equatorial_pacific') {
       secondBasin = 'equatorial_pacific';
     } else {
@@ -233,7 +233,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(atlantic|north atlantic|আটলান্টিক|अटलांटिक)/i.test(q)) {
+  if (/(atlantic|north atlantic|আটলান্টিক|अटलांटिक|அட்லாண்டிக்|అట్లాంటిక్|ಅಟ್ಲಾಂಟಿಕ್|അറ്റ്ലാന്റിക്|એટલાન્ટિક|ଆଟଲାଣ୍ଟିକ|ਅਟਲਾਂਟਿਕ|بحر اوقیانوس)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'north_atlantic') {
       secondBasin = 'north_atlantic';
     } else {
@@ -241,7 +241,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(gulf of mexico|mexico|মেক্সিকো উপসাগর|मैक्सिको की खाड़ी)/i.test(q)) {
+  if (/(gulf of mexico|mexico|মেক্সিকো|मैक्सिको|மெக்சிகோ|మెక్సికో|ಮೆಕ್ಸಿಕೊ|മെക്സിക്കോ|મેક્સિકો|ମେକ୍ସିକୋ|ਮੈਕਸੀਕੋ|میکسیکو)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'gulf_of_mexico') {
       secondBasin = 'gulf_of_mexico';
     } else {

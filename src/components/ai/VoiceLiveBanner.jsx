@@ -22,6 +22,10 @@ export default function VoiceLiveBanner({
   const voiceConfig = getVoiceConfigForLanguage(language);
   const langDisplay = voiceConfig.displayName || language.toUpperCase();
 
+  if (audioState === AudioState.IDLE) {
+    return null;
+  }
+
   if (!isListening && !isTranscribing && !isError && !currentText) {
     return null;
   }

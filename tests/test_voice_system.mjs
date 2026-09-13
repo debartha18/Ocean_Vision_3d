@@ -10,6 +10,8 @@ import {
 import { SUPPORTED_LANGUAGES } from '../src/i18n/languages.js';
 import { cleanTextForSpeech } from '../src/lib/ai/voice/ttsProvider.js';
 import { AudioState, SpeechErrorCode } from '../src/lib/ai/voice/speechProvider.js';
+import { extractIntentAndEntities, executeNeridaReasoning } from '../src/lib/ai/offlineEngine.js';
+import { resolveLocation } from '../src/lib/ai/oceanTools.js';
 
 console.log('=== TEST 1: 23-Language Voice Registry Coverage ===');
 assert.strictEqual(SUPPORTED_LANGUAGES.length, 23, 'Must have exactly 23 supported languages');
@@ -35,6 +37,8 @@ assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('Bay of Bengal'));
 assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('Sea Surface Temperature'));
 assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('Thermocline'));
 assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('Cyclone'));
+assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('বঙ্গোপসাগর'));
+assert.ok(OCEAN_SCIENTIFIC_PHRASE_HINTS.includes('বে অফ বেঙ্গলি'));
 console.log('✓ Phrase hints verified (' + OCEAN_SCIENTIFIC_PHRASE_HINTS.length + ' domain keywords)');
 
 console.log('\n=== TEST 3: TTS Text Cleaner for Spoken Speech ===');
@@ -69,5 +73,30 @@ assert.strictEqual(AudioState.ERROR, 'ERROR');
 assert.strictEqual(SpeechErrorCode.NOT_ALLOWED, 'NOT_ALLOWED');
 assert.strictEqual(SpeechErrorCode.NO_SPEECH, 'NO_SPEECH');
 console.log('✓ Enums verified');
+
+console.log('\n=== TEST 5: Bengali Bay of Bengal Spelling Tolerance & Intent Extraction ===');
+const bengaliQueries = [
+  'তাপমাত্রা কি বে অফ বেঙ্গলি',
+  'বে অফ বেঙ্গলি এর তাপমাত্রা কত',
+  'বে অব বেঙ্গল এর লবণাক্ততা',
+  'বঙ্গোপসাগরের পৃষ্ঠের তাপমাত্রা',
+  'বংগোপসাগর এর স্রোত কত',
+  'বেঙ্গল এ তাপমাত্রা কি'
+];
+
+for (const query of bengaliQueries) {
+  const intent = extractIntentAndEntities(query, { basin: 'Bay of Bengal', basinId: 'bay_of_bengal', language: 'bn' });
+  assert.strictEqual(intent.category, 'OCEAN_QUERY', `Query "${query}" should resolve to OCEAN_QUERY, got ${intent.category}`);
+  assert.ok(intent.paramSpecified, `Query "${query}" should extract parameter`);
+  assert.strictEqual(intent.basin, 'bay_of_bengal', `Query "${query}" should resolve to bay_of_bengal`);
+  console.log(`✓ Resolved "${query}" -> Intent: ${intent.category}, Param: ${intent.param}, Basin: ${intent.basin}`);
+}
+
+// Verify end-to-end reasoning response
+const result = executeNeridaReasoning('তাপমাত্রা কি বে অফ বেঙ্গলি', { basin: 'Bay of Bengal', basinId: 'bay_of_bengal', language: 'bn' });
+assert.ok(result.message.includes('29.85'), 'Must contain actual digital-twin SST temperature');
+assert.strictEqual(result.actions[0].type, 'SET_BASIN');
+assert.strictEqual(result.actions[0].value, 'bay_of_bengal');
+console.log('✓ End-to-end reasoning returned real ocean data and actions for Bengali voice query');
 
 console.log('\nALL 23-LANGUAGE VOICE TESTS PASSED! 🎉');

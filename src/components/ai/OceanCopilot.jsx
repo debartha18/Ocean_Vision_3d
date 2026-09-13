@@ -55,6 +55,7 @@ export default function OceanCopilot({
   const [isLoading, setIsLoading] = useState(false);
   const [engineSource, setEngineSource] = useState('offline');
   const inputRef = useRef(null);
+  const voiceRef = useRef(null);
 
   // Group UI state handlers for safe allowlisted action execution via ref to avoid churn
   const handlersRef = useRef({});
@@ -97,8 +98,9 @@ export default function OceanCopilot({
     const query = typeof textToSend === 'string' ? textToSend : inputText;
     if (!query || !query.trim() || isLoading) return;
 
-    // Barge-in: Halt any TTS speech when a message is sent
+    // Barge-in: Halt any TTS speech and dismiss voice prompt banner when a message is sent
     stopSpeaking();
+    voiceRef.current?.cancelListening();
 
     const trimmedQuery = query.trim();
     const requestId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
@@ -193,6 +195,7 @@ export default function OceanCopilot({
       handleSendMessage(transcript, options);
     }
   });
+  voiceRef.current = voice;
 
   // Handle external prompts (e.g. from "Explain this" buttons on other panels)
   useEffect(() => {

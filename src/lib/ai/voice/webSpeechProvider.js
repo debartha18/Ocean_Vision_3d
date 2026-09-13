@@ -168,13 +168,20 @@ export class WebSpeechProvider extends SpeechToTextProvider {
       this.recognition.onend = () => {
         this._cleanupAudioAnalysis();
 
+        if (this.isAborted) {
+          if (this.options?.onStateChange) {
+            this.options.onStateChange(AudioState.IDLE);
+          }
+          return;
+        }
+
         // If stopped gracefully or user finished speaking
-        if (this.options.onStateChange) {
+        if (this.options?.onStateChange) {
           this.options.onStateChange(AudioState.READY_TO_SEND);
         }
 
         const resultText = this.finalTranscript.trim();
-        if (this.options.onFinal) {
+        if (this.options?.onFinal) {
           this.options.onFinal(resultText, 0.95);
         }
       };
@@ -294,10 +301,12 @@ export class WebSpeechProvider extends SpeechToTextProvider {
   }
 
   abort() {
+    this.isAborted = true;
     this.isStopping = true;
     this._cleanupAudioAnalysis();
     if (this.recognition) {
       try {
+        this.recognition.onend = null;
         this.recognition.abort();
       } catch (_) {}
     }
