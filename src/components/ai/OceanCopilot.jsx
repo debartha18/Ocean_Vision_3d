@@ -6,6 +6,10 @@ import CopilotContextCard from './CopilotContextCard';
 import CopilotQuickActions from './CopilotQuickActions';
 import CopilotChat from './CopilotChat';
 import MermaidMascot from './MermaidMascot';
+import VoiceInputButton from './VoiceInputButton';
+import VoiceLiveBanner from './VoiceLiveBanner';
+import { useVoiceInput } from '../../hooks/useVoiceInput';
+import { stopSpeaking } from '../../lib/ai/voice/ttsProvider';
 import { buildOceanContext } from '../../lib/ai/oceanContext';
 import { executeCopilotActions, executeToolCalls } from '../../lib/ai/toolRegistry';
 import { sendCopilotMessage } from '../../lib/ai/copilotClient';
@@ -89,19 +93,26 @@ export default function OceanCopilot({
   const L = getCopilotLexicon(currentLang);
   const isRtl = ['ur', 'sd', 'ks'].includes(currentLang);
 
-  const handleSendMessage = useCallback(async (textToSend) => {
+  const handleSendMessage = useCallback(async (textToSend, options = {}) => {
     const query = typeof textToSend === 'string' ? textToSend : inputText;
     if (!query || !query.trim() || isLoading) return;
+
+    // Barge-in: Halt any TTS speech when a message is sent
+    stopSpeaking();
 
     const trimmedQuery = query.trim();
     const requestId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
       ? crypto.randomUUID().slice(0, 8) 
       : Math.random().toString(36).substring(2, 10);
 
+    const inputMode = options.inputMode || 'text';
+    const voiceConfidence = options.confidence ?? null;
+
     const userMsg = {
       id: `user-${requestId}`,
       role: 'user',
       content: trimmedQuery,
+      inputMode,
       timestamp: new Date().toLocaleTimeString()
     };
 
@@ -127,6 +138,8 @@ export default function OceanCopilot({
           language: currentLang
         },
         language: currentLang,
+        inputMode,
+        voiceConfidence,
         requestId
       });
 
@@ -172,6 +185,14 @@ export default function OceanCopilot({
   }, [inputText, isLoading, messages, oceanContext, activeRegion, depth, selectedParam, viewMode, currentLang]);
 
 
+
+  // Voice input hook coordinating 23-language speech recognition
+  const voice = useVoiceInput({
+    language: currentLang,
+    onTranscriptReady: (transcript, options) => {
+      handleSendMessage(transcript, options);
+    }
+  });
 
   // Handle external prompts (e.g. from "Explain this" buttons on other panels)
   useEffect(() => {
@@ -229,7 +250,11 @@ export default function OceanCopilot({
           <CopilotHeader
             isExpanded={isExpanded}
             onToggleExpand={() => setIsExpanded(!isExpanded)}
-            onClose={() => setIsOpen(false)}
+            onClose={() => {
+              setIsOpen(false);
+              voice.cancelListening();
+              stopSpeaking();
+            }}
             onClearHistory={() => setMessages([])}
             engineSource={engineSource}
             activeBasinName={activeRegion?.name}
@@ -251,8 +276,25 @@ export default function OceanCopilot({
             onSelectPrompt={(prompt) => handleSendMessage(prompt)}
           />
 
-          {/* Bottom Chat Input Form with Shift+Enter Support */}
+          {/* Bottom Chat Input Form with Shift+Enter and Voice Input Support */}
           <div className="p-3 border-t border-[#00E5FF]/15 bg-[#091824]/95">
+            {/* Live Interim Voice Banner */}
+            <VoiceLiveBanner
+              audioState={voice.audioState}
+              interimTranscript={voice.interimTranscript}
+              finalTranscript={voice.finalTranscript}
+              language={currentLang}
+              audioLevel={voice.audioLevel}
+              errorMessage={voice.errorMessage}
+              onSend={(text) => voice.confirmSend(text)}
+              onEdit={(text) => {
+                setInputText(text);
+                voice.cancelListening();
+                setTimeout(() => inputRef.current?.focus(), 50);
+              }}
+              onCancel={() => voice.cancelListening()}
+            />
+
             <div className="flex items-end gap-2">
               <div className="relative flex-1">
                 <textarea
@@ -272,6 +314,17 @@ export default function OceanCopilot({
                   style={{ minHeight: '38px' }}
                 />
               </div>
+
+              {/* Multilingual Voice Input Microphone Button */}
+              <VoiceInputButton
+                audioState={voice.audioState}
+                audioLevel={voice.audioLevel}
+                language={currentLang}
+                disabled={isLoading}
+                onStartListening={() => voice.startListening()}
+                onStopListening={() => voice.stopListening()}
+                onCancelListening={() => voice.cancelListening()}
+              />
 
               <button
                 type="button"

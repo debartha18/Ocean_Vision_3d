@@ -13,7 +13,9 @@ export async function sendCopilotMessage({
   oceanContext, // backwards compatibility
   conversationHistory = [],
   language = 'en',
-  requestId = null
+  requestId = null,
+  inputMode = 'text',
+  voiceConfidence = null
 }) {
   const reqId = requestId || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID().slice(0, 8) : Math.random().toString(36).substring(2, 10));
   const query = message || prompt || '';
@@ -28,6 +30,8 @@ export async function sendCopilotMessage({
     timestamp: oceanContext.simulationTime
   } : {});
   state.language = language || state.language || 'en';
+  state.inputMode = inputMode;
+  if (voiceConfidence !== null) state.voiceConfidence = voiceConfidence;
 
   try {
     const controller = new AbortController();
@@ -41,6 +45,8 @@ export async function sendCopilotMessage({
         oceanState: state,
         conversationHistory,
         language,
+        inputMode,
+        voiceConfidence,
         requestId: reqId
       }),
       signal: controller.signal

@@ -14,9 +14,13 @@ import {
   ArrowRightLeft, 
   AlertTriangle, 
   Activity,
-  Layers
+  Layers,
+  Volume2,
+  VolumeX,
+  Mic
 } from 'lucide-react';
 import { getCopilotLexicon } from '../../lib/ai/copilotTranslations.js';
+import { speakResponse, stopSpeaking } from '../../lib/ai/voice/ttsProvider.js';
 
 export default function CopilotChat({
   messages = [],
@@ -55,7 +59,12 @@ export default function CopilotChat({
       )}
 
       {messages.map((msg, idx) => (
-        <ChatMessageItem key={msg.id || idx} message={msg} onSuggestionClick={onSuggestionClick} />
+        <ChatMessageItem 
+          key={msg.id || idx} 
+          message={msg} 
+          onSuggestionClick={onSuggestionClick} 
+          currentLang={currentLang}
+        />
       ))}
 
       {isLoading && (
@@ -76,10 +85,32 @@ export default function CopilotChat({
   );
 }
 
-function ChatMessageItem({ message, onSuggestionClick }) {
+function ChatMessageItem({ message, onSuggestionClick, currentLang = 'en' }) {
   const isUser = message.role === 'user';
   const [showWhy, setShowWhy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (isSpeaking) {
+        stopSpeaking();
+      }
+    };
+  }, [isSpeaking]);
+
+  const handleToggleSpeak = () => {
+    if (isSpeaking) {
+      stopSpeaking();
+      setIsSpeaking(false);
+    } else {
+      speakResponse(message.content, currentLang, {
+        onStart: () => setIsSpeaking(true),
+        onEnd: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false)
+      });
+    }
+  };
 
   const handleCopy = () => {
     if (!message.content) return;
@@ -96,6 +127,12 @@ function ChatMessageItem({ message, onSuggestionClick }) {
           <User className="w-3.5 h-3.5" />
         </div>
         <div className="p-3 rounded-2xl rounded-tr-none bg-[#142D3A] border border-[#214555] text-[#CCD0CF] shadow-sm">
+          {message.inputMode === 'voice' && (
+            <div className="flex items-center gap-1 text-[9px] font-mono text-[#00E5FF] mb-1">
+              <Mic className="w-2.5 h-2.5" />
+              <span>Voice Query</span>
+            </div>
+          )}
           <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
         </div>
       </div>
@@ -113,7 +150,7 @@ function ChatMessageItem({ message, onSuggestionClick }) {
         </div>
 
         <div className="flex-1 p-3.5 rounded-2xl rounded-tl-none bg-[#07131B] border border-[#00E5FF]/20 text-[#D4DEE2] shadow-[0_4px_20px_rgba(0,0,0,0.35)] relative group">
-          {/* Top Bar: Provenance Badges + Copy Button */}
+          {/* Top Bar: Provenance Badges + TTS Speaker + Copy Button */}
           <div className="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-[#00E5FF]/15">
             <div className="flex items-center gap-1.5 flex-wrap">
               {provenance && provenance.length > 0 ? (
@@ -144,13 +181,26 @@ function ChatMessageItem({ message, onSuggestionClick }) {
               )}
             </div>
 
-            <button
-              onClick={handleCopy}
-              title="Copy message"
-              className="opacity-60 hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/10 text-slate-300 cursor-pointer shrink-0"
-            >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={handleToggleSpeak}
+                title={isSpeaking ? "Stop speaking" : "Read aloud (TTS)"}
+                className={`p-1 rounded transition-all cursor-pointer shrink-0 ${
+                  isSpeaking
+                    ? 'text-[#00E5FF] bg-[#00E5FF]/25 shadow-[0_0_10px_rgba(0,229,255,0.4)] animate-pulse'
+                    : 'opacity-60 hover:opacity-100 hover:bg-white/10 text-slate-300'
+                }`}
+              >
+                {isSpeaking ? <VolumeX className="w-3.5 h-3.5 text-[#00E5FF]" /> : <Volume2 className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                onClick={handleCopy}
+                title="Copy message"
+                className="opacity-60 hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/10 text-slate-300 cursor-pointer shrink-0"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+            </div>
           </div>
 
           {/* Formatted Message Body */}
