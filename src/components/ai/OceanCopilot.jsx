@@ -211,13 +211,13 @@ export default function OceanCopilot({
       {/* 2. Slide-Over / Docked Intelligence Panel */}
       {isOpen && (
         <div
-          className={`fixed bottom-24 right-4 z-40 flex flex-col rounded-2xl border border-[#193544] bg-[#0A1720]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out select-none ${
+          className={`fixed bottom-24 right-4 z-40 flex flex-col rounded-2xl border border-[#00E5FF]/25 hover:border-[#00E5FF]/40 bg-[#07131B]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out select-none ${
             isExpanded
               ? 'w-[660px] max-w-[96vw] h-[740px] max-h-[88vh]'
               : 'w-[440px] max-w-[95vw] h-[600px] max-h-[82vh]'
           }`}
           style={{
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)'
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.65), 0 0 25px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(0, 229, 255, 0.15)'
           }}
         >
           {/* Header */}
@@ -247,7 +247,7 @@ export default function OceanCopilot({
           />
 
           {/* Bottom Chat Input Form with Shift+Enter Support */}
-          <div className="p-3 border-t border-[#193544] bg-[#0D202B]/95">
+          <div className="p-3 border-t border-[#00E5FF]/15 bg-[#091824]/95">
             <div className="flex items-end gap-2">
               <div className="relative flex-1">
                 <textarea
@@ -263,7 +263,7 @@ export default function OceanCopilot({
                   onKeyDown={handleKeyDown}
                   placeholder="Ask Nerida (e.g. 'Show SST at 100m in Arabian Sea')..."
                   disabled={isLoading}
-                  className="w-full bg-[#06141B] text-[#CCD0CF] placeholder-[#637C87] text-xs px-3.5 py-2.5 rounded-xl border border-[#193544] focus:outline-none focus:border-[#0C969C] focus:ring-1 focus:ring-[#0C969C]/50 transition-all font-sans resize-none max-h-20"
+                  className="w-full bg-[#051118] text-[#E0E6E8] placeholder-[#5A7582] text-xs px-3.5 py-2.5 rounded-xl border border-[#00E5FF]/25 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/50 focus:shadow-[0_0_12px_rgba(0,229,255,0.2)] transition-all font-sans resize-none max-h-20"
                   style={{ minHeight: '38px' }}
                 />
               </div>
@@ -272,15 +272,15 @@ export default function OceanCopilot({
                 type="button"
                 onClick={() => handleSendMessage()}
                 disabled={!inputText.trim() || isLoading}
-                className="p-2.5 rounded-xl bg-[#0C969C] hover:bg-[#168FA0] disabled:opacity-40 disabled:cursor-not-allowed text-[#06141B] font-bold shadow-sm transition-all cursor-pointer shrink-0 mb-0.5"
+                className="p-2.5 rounded-xl bg-gradient-to-r from-[#00E5FF] to-[#1687FF] hover:from-[#33EAFF] hover:to-[#2B95FF] hover:shadow-[0_0_14px_rgba(0,229,255,0.4)] disabled:opacity-35 disabled:cursor-not-allowed text-[#041017] font-bold shadow-md transition-all cursor-pointer shrink-0 mb-0.5"
               >
                 <Send className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex items-center justify-between mt-1.5 px-1 text-[9px] text-[#637C87] font-mono">
-              <span className="flex items-center gap-1">
-                <Sparkles className="w-2.5 h-2.5 text-[#0C969C]" />
+            <div className="flex items-center justify-between mt-1.5 px-1 text-[9px] text-[#5A7582] font-mono">
+              <span className="flex items-center gap-1 text-[#7FA1AA]">
+                <Sparkles className="w-2.5 h-2.5 text-[#00E5FF]" />
                 Zero-Hallucination Ocean Intelligence
               </span>
               <span>Enter ↵ · Shift+Enter ↵ for newline</span>

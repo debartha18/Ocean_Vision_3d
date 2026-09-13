@@ -149,12 +149,12 @@ export default function MermaidMascot({
               e.stopPropagation();
               onClick?.();
             }}
-            className="group max-w-[210px] p-2.5 rounded-2xl bg-gradient-to-br from-[#061838]/95 via-[#0a2754]/95 to-[#05132d]/95 border border-cyan-400/50 shadow-glow-cyan text-white cursor-pointer hover:border-cyan-300 hover:scale-105 transition-all backdrop-blur-xl"
+            className="group max-w-[210px] p-2.5 rounded-2xl bg-gradient-to-br from-[#07131B]/95 via-[#0A1D2B]/95 to-[#051118]/95 border border-[#00E5FF]/40 shadow-[0_0_20px_rgba(0,229,255,0.18)] text-white cursor-pointer hover:border-[#00E5FF] hover:scale-105 transition-all backdrop-blur-xl"
           >
             <div className="flex items-center justify-between gap-1 mb-1">
-              <span className="text-[11px] font-bold text-cyan-300 flex items-center gap-1">
+              <span className="text-[11px] font-bold bg-gradient-to-r from-[#00E5FF] to-[#38BDF8] bg-clip-text text-transparent flex items-center gap-1">
                 <span>🧜‍♀️ Nerida</span>
-                <span className="text-[9px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-400/30 font-mono">
+                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/30 font-mono font-bold shadow-[0_0_6px_rgba(0,229,255,0.2)]">
                   {t('mascot.aiCopilot', 'AI Copilot')}
                 </span>
               </span>
@@ -170,18 +170,18 @@ export default function MermaidMascot({
               </button>
             </div>
 
-            <p className="text-[11px] leading-tight text-slate-200 font-medium">
+            <p className="text-[11px] leading-tight text-[#D4DEE2] font-medium">
               {t('mascot.explorePrompt', 'Click me to explore {{region}} or ask anything! 🌊', { region: activeRegionName })}
             </p>
 
-            <div className="mt-1.5 flex items-center justify-between text-[9px] font-mono text-cyan-400/90 pt-1 border-t border-cyan-500/20">
+            <div className="mt-1.5 flex items-center justify-between text-[9px] font-mono text-[#00E5FF] pt-1 border-t border-[#00E5FF]/20">
               <span>SST: {activeSst}°C</span>
-              <span className="text-sky-300 underline font-bold group-hover:text-white">{t('mascot.askAi', 'Ask AI ↵')}</span>
+              <span className="text-[#38BDF8] underline font-bold group-hover:text-[#00E5FF]">{t('mascot.askAi', 'Ask AI ↵')}</span>
             </div>
           </div>
 
           {/* Speech bubble tail pointer */}
-          <div className={`absolute ${position.y < 160 ? '-top-1.5 border-l border-t' : '-bottom-1.5 border-r border-b'} ${position.x < 220 ? 'left-8' : 'right-8'} w-3 h-3 bg-[#0a2754] border-cyan-400/50 transform rotate-45`}></div>
+          <div className={`absolute ${position.y < 160 ? '-top-1.5 border-l border-t' : '-bottom-1.5 border-r border-b'} ${position.x < 220 ? 'left-8' : 'right-8'} w-3 h-3 bg-[#0A1D2B] border-[#00E5FF]/40 transform rotate-45`}></div>
         </div>
       )}
 
@@ -189,20 +189,20 @@ export default function MermaidMascot({
       <div 
         onPointerDown={handlePointerDown}
         className={`relative group touch-none select-none transition-transform duration-150 ${
-          isDragging ? 'cursor-grabbing scale-110 shadow-glow-cyan' : 'cursor-grab hover:scale-105'
+          isDragging ? 'cursor-grabbing scale-110 shadow-[0_0_25px_rgba(0,229,255,0.4)]' : 'cursor-grab hover:scale-105'
         }`}
         title={t('mascot.openCopilot', 'Open AI Ocean Copilot (Drag to reposition)')}
       >
         {/* Bioluminescent Ocean Ripple Glow Rings */}
-        <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-xl group-hover:bg-cyan-400/35 animate-pulse transition-all"></div>
-        <div className="absolute -inset-1 rounded-full border border-cyan-400/40 animate-ping opacity-30"></div>
+        <div className="absolute inset-0 rounded-full bg-[#00E5FF]/20 blur-xl group-hover:bg-[#00E5FF]/35 animate-pulse transition-all"></div>
+        <div className="absolute -inset-1 rounded-full border border-[#00E5FF]/40 animate-ping opacity-30"></div>
 
         {/* Floating Bubble particles */}
-        <span className="absolute -top-3 left-1 w-2 h-2 rounded-full bg-cyan-300/60 animate-bounce delay-100 pointer-events-none"></span>
-        <span className="absolute -top-5 right-2 w-1.5 h-1.5 rounded-full bg-sky-200/70 animate-bounce delay-300 pointer-events-none"></span>
+        <span className="absolute -top-3 left-1 w-2 h-2 rounded-full bg-[#00E5FF]/60 animate-bounce delay-100 pointer-events-none"></span>
+        <span className="absolute -top-5 right-2 w-1.5 h-1.5 rounded-full bg-[#38BDF8]/70 animate-bounce delay-300 pointer-events-none"></span>
 
         {/* Mascot Frame */}
-        <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full p-1 bg-gradient-to-tr from-cyan-500 via-sky-400 to-indigo-600 shadow-2xl border-2 border-cyan-300/80 group-hover:scale-110 group-hover:shadow-glow-cyan transition-all duration-300 flex items-center justify-center overflow-hidden">
+        <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full p-1 bg-gradient-to-tr from-[#00E5FF] via-[#1687FF] to-[#8B5CF6] shadow-2xl border-2 border-[#00E5FF]/80 group-hover:scale-110 shadow-[0_0_20px_rgba(0,229,255,0.3)] transition-all duration-300 flex items-center justify-center overflow-hidden">
           {/* Animated SVG Mermaid Character */}
           <svg 
             viewBox="0 0 100 100" 

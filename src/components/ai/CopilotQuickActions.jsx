@@ -43,8 +43,8 @@ export default function CopilotQuickActions({ onSelectPrompt, disabled = false }
 
   return (
     <div className="px-3 py-2 flex flex-col gap-1.5 select-none">
-      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#637C87] px-1">
-        <Sparkles className="w-3 h-3 text-[#0C969C]" />
+      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#7FA1AA] px-1">
+        <Sparkles className="w-3 h-3 text-[#00E5FF]" />
         <span>Quick Oceanographic Queries</span>
       </div>
 
@@ -56,9 +56,9 @@ export default function CopilotQuickActions({ onSelectPrompt, disabled = false }
               key={act.id}
               disabled={disabled}
               onClick={() => onSelectPrompt(act.prompt)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#0D202B] hover:bg-[#142D3A] border border-[#193544] hover:border-[#214555] text-[#8FA8B2] hover:text-[#CCD0CF] text-[10px] font-medium transition-all whitespace-nowrap cursor-pointer shrink-0 disabled:opacity-50"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#091A26] hover:bg-[#0E283A] border border-[#00E5FF]/20 hover:border-[#00E5FF]/50 text-[#8FA8B2] hover:text-[#D4DEE2] text-[10px] font-medium transition-all hover:shadow-[0_0_10px_rgba(0,229,255,0.18)] whitespace-nowrap cursor-pointer shrink-0 disabled:opacity-50 active:scale-95"
             >
-              <Icon className="w-3 h-3 text-[#0C969C] shrink-0" />
+              <Icon className="w-3 h-3 text-[#00E5FF] shrink-0" />
               <span>{act.label}</span>
             </button>
           );
