@@ -325,7 +325,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
   }
 
   // 2. Check for canonical ocean basin names and multi-lingual equivalents
-  if (clean.includes('arabian') || clean.includes('arab') || /(আরব|অ্যারাবিয়ান|अरब|अरेबियन|அரபி|அரேபி|అరేబి|ಅರಬ್ಬಿ|അറബി|અરબી|ଆରବ|ਅਰਬ|عرب)/u.test(clean)) {
+  if (clean.includes('arabian') || clean.includes('arab') || /(আরব|অ্যারাবিয়ান|अरब|अरेबियन|அரபி|அரேபி|అరేబి|ಅರಬ್ಬಿ|അറബി|અરબી|ଆରବ|ਅਰਬ|عرب|ᱟᱨᱚᱵᱽ|ᱟᱨᱚᱵ)/u.test(clean)) {
     return {
       basin: REGIONS.arabian_sea,
       matchedLocation: 'Arabian Sea',
@@ -340,7 +340,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
     clean.includes('bengali') || 
     clean.includes('bengoli') || 
     clean.includes('bangal') ||
-    /(বঙ্গ|বংগ|বেঙ্গ|বেংগ|বেগল|বেগলী|বেঙ্গল|বেঙ্গলি|বে অফ|বে অব|बंगाल|வங்காள|బంగాళ|ಬಂಗಾಳ|ബംഗാൾ|બંગાળ|ବଙ୍ଗ|بنگال)/u.test(clean)
+    /(বঙ্গ|বংগ|বেঙ্গ|বেংগ|বেগল|বেগলী|বেঙ্গল|বেঙ্গলি|বে অফ|বে অব|बंगाल|வங்காள|బంగాళ|ಬಂಗಾಳ|ബംഗാൾ|બંગાળ|ବଙ୍ଗ|بنگال|ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ|ᱵᱚᱝᱜᱳ|ᱵᱮᱝᱜᱚᱞ|ᱵᱟᱝᱜᱟᱞ)/u.test(clean)
   ) {
     return {
       basin: REGIONS.bay_of_bengal,
@@ -349,7 +349,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
       coords: { lat: REGIONS.bay_of_bengal.lat, lon: REGIONS.bay_of_bengal.lon }
     };
   }
-  if (clean.includes('south china') || clean.includes('china sea') || clean.includes('scs') || /(দক্ষিণ চীন|दक्षिण चीन|தென் சீன|దక్షిణ చైనా|ದಕ್ಷಿಣ ಚೀನಾ|തെക്കൻ ചൈന|દક્ષિણ ચીન|ଦକ୍ଷିଣ ଚୀନ|ਦੱਖਣੀ ਚੀਨ|جنوبی چین)/u.test(clean)) {
+  if (clean.includes('south china') || clean.includes('china sea') || clean.includes('scs') || /(দক্ষিণ চীন|दक्षिण चीन|தென் சீன|దక్షిణ చైనా|ದಕ್ಷಿಣ ಚೀನಾ|തെക്കൻ ചൈന|દક્ષિଣ ચીન|ଦକ୍ଷିଣ ଚୀନ|ਦੱਖਣੀ ਚੀਨ|جنوبی چین)/u.test(clean)) {
     return {
       basin: REGIONS.south_china_sea,
       matchedLocation: 'South China Sea',
@@ -357,7 +357,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
       coords: { lat: REGIONS.south_china_sea.lat, lon: REGIONS.south_china_sea.lon }
     };
   }
-  if (clean.includes('pacific') || clean.includes('el nino') || clean.includes('niño') || /(প্রশান্ত|प्रशांत|பசிபிக்|పసిఫిక్|ಪೆಸಿಫಿಕ್|പസഫിക്|પેસિફિક|ପ୍ରଶାନ୍ତ|ਪ੍ਰਸ਼ਾਂਤ|بحر الکاہل)/u.test(clean)) {
+  if (clean.includes('pacific') || clean.includes('el nino') || clean.includes('niño') || /(প্রশান্ত|प्रशांत|பசிபிக்|పసిఫిಕ್|ಪೆಸಿಫಿಕ್|പസഫിക്|પેસિફિક|ପ୍ରଶାନ୍ତ|ਪ੍ਰਸ਼ਾਂਤ|بحر الکاہل)/u.test(clean)) {
     return {
       basin: REGIONS.equatorial_pacific,
       matchedLocation: 'Equatorial Pacific',
@@ -373,7 +373,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
       coords: { lat: REGIONS.north_atlantic.lat, lon: REGIONS.north_atlantic.lon }
     };
   }
-  if (clean.includes('mexico') || clean.includes('gulf of mexico') || /(মেক্সিকো|मैक्सिको|மெக்சிகோ|మెక్సికో|ಮೆಕ್ಸಿಕೊ|മെക്സിക്കോ|મેક્સિકો|ମେକ୍ସିକୋ|ਮੈਕਸੀਕੋ|میکسیکو)/u.test(clean)) {
+  if (clean.includes('mexico') || clean.includes('gulf of mexico') || /(মেক্সিকো|मैक्सिको|மெக்சிகோ|మెక్సికో|ಮೆಕ್ಸಿಕೊ|മെക്സിക്കോ|મેક્સિકୋ|ମେକ୍ସିକୋ|ਮੈਕਸੀਕੋ|میکسیکو)/u.test(clean)) {
     return {
       basin: REGIONS.gulf_of_mexico,
       matchedLocation: 'Gulf of Mexico',
@@ -381,7 +381,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
       coords: { lat: REGIONS.gulf_of_mexico.lat, lon: REGIONS.gulf_of_mexico.lon }
     };
   }
-  if (clean.includes('indian ocean') || /(ভারত মহাসাগর|हिन्द महासागर|हिंद महासागर|இந்தியப் பெருங்கடல்|హిందూ మహాసముద్రం|ಹಿಂದೂ ಮಹಾಸಾಗರ|ഇന്ത്യൻ മഹാസമുദ്രം|હિંદ મહાસાગર|ଭାରତ ମହାସାଗର|ਹਿੰਦ ਮਹਾਸਾਗਰ|بحر ہند)/u.test(clean)) {
+  if (clean.includes('indian ocean') || /(ভারত মহাসাগর|हिन्द महासागर|हिंद महासागर|இந்தியப் பெருங்கடல்|హిందూ మహాసముద్రం|ಹಿಂದೂ ಮಹಾಸಾಗರ|ഇന്ത്യൻ മഹാസമുദ്രം|હિંદ મહાસાગର|ଭାରତ ମହାସାଗର|ਹਿੰਦ ਮਹਾਸಾಗର|بحر ہند|ᱥᱤᱧᱚᱛ ᱢᱟᱦᱟᱫᱚᱨᱭᱟ|ᱥᱤᱧᱚᱛ)/u.test(clean)) {
     return {
       basin: REGIONS.bay_of_bengal,
       matchedLocation: 'Bay of Bengal',

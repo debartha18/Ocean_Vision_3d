@@ -57,7 +57,11 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     detectedLang = (query.includes('অসমীয়া') || currentState.language === 'as') ? 'as' : 'bn';
   } else if (/[\u0900-\u097F]/.test(query)) {
     const devanagariLangs = ['hi', 'mr', 'sa', 'kok', 'mai', 'ne', 'brx', 'doi'];
-    detectedLang = devanagariLangs.includes(currentState.language) ? currentState.language : 'hi';
+    if (currentState.language === 'sat') {
+      detectedLang = 'sat';
+    } else {
+      detectedLang = devanagariLangs.includes(currentState.language) ? currentState.language : 'hi';
+    }
   } else if (/[\u0B80-\u0BFF]/.test(query) || query.includes('தமிழ்') || query.includes('tamil')) {
     detectedLang = 'ta';
   } else if (/[\u0C00-\u0C7F]/.test(query) || query.includes('తెలుగు') || query.includes('telugu')) {
@@ -75,16 +79,17 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   } else if (/[\u0600-\u06FF]/.test(query) || query.includes('اردو') || query.includes('urdu')) {
     const rtlLangs = ['ur', 'sd', 'ks'];
     detectedLang = rtlLangs.includes(currentState.language) ? currentState.language : 'ur';
-  } else if (/[\u1C50-\u1C7F]/.test(query)) {
+  } else if (/[\u1C50-\u1C7F]/.test(query) || query.includes('ᱥᱟᱱᱛᱟᱲᱤ') || query.includes('santali')) {
     detectedLang = 'sat';
   } else if (/[\uABC0-\uABFF]/.test(query)) {
     detectedLang = 'mni';
   }
 
-  // Convert Bengali and Devanagari numerals into ASCII digits
+  // Convert Bengali, Devanagari, and Ol Chiki numerals into ASCII digits
   const q = query.toLowerCase().trim()
     .replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d))
-    .replace(/[०-९]/g, d => '०१२३४५६७८९'.indexOf(d));
+    .replace(/[०-९]/g, d => '०१२३४५६७८९'.indexOf(d))
+    .replace(/[᱐-᱙]/g, d => '᱐᱑᱒᱓᱔᱕᱖᱗᱘᱙'.indexOf(d));
 
   // 2. Identify context from previous conversation (search newest to oldest)
   let contextParam = currentState.parameter || 'sst';
@@ -139,22 +144,22 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   // 3. Extract Parameter from current prompt
   let paramSpecified = false;
   let targetParam = contextParam;
-  if (/\b(sst|temp|temperature|thermal|warm|cold|heat)\b/i.test(q) || /(তাপমাত্রা|তাপ|तापमान|तापीय|வெப்பநிலை|உஷ்ணம்|ఉష్ణోగ్రత|ತಾಪಮಾನ|താപനില|તાપમાન|ତାପମାତ୍ରା|ਤਾਪਮਾਨ|درجہ حرارت)/u.test(q)) {
+  if (/\b(sst|temp|temperature|thermal|warm|cold|heat)\b/i.test(q) || /(তাপমাত্রা|তাপ|तापमान|तापीय|வெப்பநிலை|உஷ்ணம்|ఉష్ణోగ్రత|ತಾಪಮಾನ|താപനില|તાપમાન|ତାପମାତ୍ରା|ਤਾਪਮਾਨ|درجہ حرارت|ᱞᱚᱞᱚᱥᱚᱝ|ᱞᱚᱞᱚ)/u.test(q)) {
     targetParam = 'sst';
     paramSpecified = true;
-  } else if (/\b(sal|salin|salinity|salt|psu|halocline)\b/i.test(q) || /(লবণাক্ততা|লবণ|लवणता|உப்புத்தன்மை|ఉప్పుదனம்|ಉಪ್ಪಿನಂಶ|ലവണാംശം|ખારાશ|લવણતા|ଲବଣାକ୍ତତା|ਖਾਰਾਪਣ|نمکیات)/u.test(q)) {
+  } else if (/\b(sal|salin|salinity|salt|psu|halocline)\b/i.test(q) || /(লবণাক্ততা|লবণ|लवणता|உப்புத்தன்மை|ఉప్పుదனம்|ಉಪ್ಪಿನಂಶ|ലവണാംശം|ખારાશ|લવણતા|ଲବଣାକ୍ତତା|ਖਾਰਾਪਣ|نمکیات|ᱵᱩᱞᱩᱝ ᱜᱮᱭᱟᱱ|ᱵᱩᱞᱩᱝ)/u.test(q)) {
     targetParam = 'salinity';
     paramSpecified = true;
-  } else if (/\b(currents|velocity|flow|shear|vector|vectors)\b/i.test(q) || (/\bcurrent\b/i.test(q) && !/\bcurrent\s*(?:condition|conditions|situation|status|state|weather|overview)\b/i.test(q)) || /(স্রোত|ধারা|धारा|प्रवाह|நீரோட்டம்|ప్రవాహం|ಪ್ರವಾಹ|പ്രവാഹം|પ્રવાહ|ପ୍ରବାହ|ਲਹਿਰ|رو)/u.test(q)) {
+  } else if (/\b(currents|velocity|flow|shear|vector|vectors)\b/i.test(q) || (/\bcurrent\b/i.test(q) && !/\bcurrent\s*(?:condition|conditions|situation|status|state|weather|overview)\b/i.test(q)) || /(স্রোত|ধারা|धारा|प्रवाह|நீரோட்டம்|ప్రవాహం|ಪ್ರವಾಹ|പ്രവാഹം|પ્રવાહ|ପ୍ରବାହ|ਲਹਿਰ|رو|ᱫᱚᱨᱭᱟ ᱫᱟᱜ ᱞᱤᱸᱜᱤᱱ|ᱞᱤᱸᱜᱤᱱ)/u.test(q)) {
     targetParam = 'currents';
     paramSpecified = true;
-  } else if (/\b(wave|waves|swell|surge|breaker|sea state)\b/i.test(q) || /(ঢেউ|তরঙ্গ|लहर|तरंग|அலை|తరంగం|ಅಲೆ|തിരമാല|મોજું|ତରଙ୍ਗ|ਛੱਲਾਂ|موج)/u.test(q)) {
+  } else if (/\b(wave|waves|swell|surge|breaker|sea state)\b/i.test(q) || /(ঢেউ|তরঙ্গ|लहर|तरंग|அலை|తరంగం|ಅಲೆ|തിരമാല|મોજું|ତରଙ୍ଗ|ਛੱਲਾਂ|موج|ᱰᱷᱮᱣ ᱩᱥᱩᱞ|ᱰᱷᱮᱣ)/u.test(q)) {
     targetParam = 'wave';
     paramSpecified = true;
-  } else if (/\b(chlor|chlorophyll|chlorophyll-a|phytoplankton|bloom|algae|biomass)\b/i.test(q) || /(ক্লোরোফিল|क्लोरोफिल|குளோரோபில்|క్లోరోఫిల్|ಕ್ಲೋರೊಫಿಲ್|ക്ലോറോഫിൽ|ક્લોરોફિલ|କ୍ଲୋରୋଫିଲ୍|ਕਲੋਰੋਫਿਲ)/u.test(q)) {
+  } else if (/\b(chlor|chlorophyll|chlorophyll-a|phytoplankton|bloom|algae|biomass)\b/i.test(q) || /(ক্লোরোফিল|क्लोरोफिल|குளோரோபில்|క్లోరోఫిల్|ಕ್ಲೋರೊಫಿಲ್|ക്ലോറോഫിൽ|ક્લોરોફિલ|କ୍ଲୋରୋଫିଲ୍|ਕਲੋਰੋਫਿਲ|ᱠᱞᱳᱨᱳᱯᱷᱤᱞ-ᱮ|ᱠᱞᱳᱨᱳᱯᱷᱤᱞ)/u.test(q)) {
     targetParam = 'chlorophyll';
     paramSpecified = true;
-  } else if (/\b(oxygen|dissolved oxygen|hypoxia|omz|o2)\b/i.test(q) || /(অক্সিজেন|ऑक्सीजन|ஆக்ஸிஜன்|ఆక్సిజన్|ಆಮ್ಲಜನಕ|ഓക്സിജൻ|ઓક્સિજન|ଅମ୍ଳଜାନ|ਆਕਸੀਜਨ)/u.test(q)) {
+  } else if (/\b(oxygen|dissolved oxygen|hypoxia|omz|o2)\b/i.test(q) || /(অক্সিজেন|ऑक्सीजन|ஆக்ஸிஜன்|ఆక్సిజన్|ಆಮ್ಲಜನಕ|ഓക്സിജൻ|ઓક્સિજન|ଅମ୍ଳଜାନ|ਆਕਸੀਜన్|ᱦᱚᱭ ᱢᱮᱥᱟ ᱚᱠᱥᱤᱡᱮᱱ|ᱚᱠᱥᱤᱡᱮᱱ)/u.test(q)) {
     targetParam = 'oxygen';
     paramSpecified = true;
   }
@@ -164,8 +169,8 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   let targetDepth = contextDepth;
 
   // Check explicit numeric depth first (e.g. 500m, 500 meters, at 500)
-  const numDepthMatch = q.match(/\b(\d{1,5})\s*(?:m|meter|meters|metre|metres|মিটার|मीटर)\b/i) ||
-                        q.match(/(?:at|to|of|depth)\s*(\d{1,5})\b/i) ||
+  const numDepthMatch = q.match(/\b(\d{1,5})\s*(?:m|meter|meters|metre|metres|মিটার|मीटर|ᱢᱤᱴᱟᱨ)(?:\b|\s|$|[^\p{L}\p{N}])/iu) ||
+                        q.match(/(?:at|to|of|depth|গভীর|गहरा|ᱜᱟᱹᱦᱤᱨ)\s*(\d{1,5})\b/iu) ||
                         q.match(/\b(\d{1,5})\s*m\b/i);
 
   if (numDepthMatch && numDepthMatch[1]) {
@@ -174,10 +179,10 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       targetDepth = parsed;
       depthSpecified = true;
     }
-  } else if (/\b(surface|top|upper|0\s*m|0\s*meter|0\s*metre)\b/i.test(q) || /(পৃষ্ঠ|सतह|மேற்பரப்பு|ఉపరితలం|ಮೇಲ್ಮೈ|ഉപരിതലം|સપાટી|ପୃଷ୍ଠ|ਸਤ੍ਹਾ|سطح)/u.test(q)) {
+  } else if (/\b(surface|top|upper|0\s*m|0\s*meter|0\s*metre)\b/i.test(q) || /(পৃষ্ঠ|सतह|மேற்பரப்பு|ఉపరితలం|ಮೇಲ್ಮೈ|ഉപരിതലം|સપાટી|ପୃଷ୍ଠ|ਸਤ੍ਹਾ|سطح|ᱪᱮᱛᱟᱱ)/u.test(q)) {
     targetDepth = 0;
     depthSpecified = true;
-  } else if (/\b(deeper|deep water|further down)\b/i.test(q) || /(আরও গভীরে|और गहरा|ஆழமான|మరింత లోతుగా|ಇನ್ನಷ್ಟು ಆಳ|കൂടുതൽ ആഴത്തിൽ|વધુ ઊંડું|ଅଧିକ ଗଭୀର|ਹੋਰ ਡੂੰਘਾ|مزید گہرا)/u.test(q)) {
+  } else if (/\b(deeper|deep water|further down)\b/i.test(q) || /(আরও গভীরে|और गहरा|ஆழமான|మరింత లోతుగా|ಇನ್ನಷ್ಟು ಆಳ|കൂടുതൽ ആഴത്തിൽ|વધુ ઊંડું|ଅଧିକ ଗଭୀର|ਹੋਰ ਡੂੰਘਾ|مزید گہرا|ᱜᱟᱹᱦᱤᱨ|ᱟᱨᱦᱚᱸ ᱜᱟᱹᱦᱤᱨ)/u.test(q)) {
     targetDepth = Math.min(6000, (contextDepth === 0 ? 50 : contextDepth * 2));
     depthSpecified = true;
   } else if (/\b(shallower|higher up|less deep)\b/i.test(q)) {
@@ -201,7 +206,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     targetCoords = locMatch.coords;
   }
 
-  if (/(arabian|arabian sea|arab sea|আরব|অ্যারাবিয়ান|अरब|अरेबियन|அரபி|அரேபி|అరేబి|ಅರಬ್ಬಿ|അറബി|અરબી|ଆରବ|ਅਰਬ|عرب)/iu.test(q)) {
+  if (/(arabian|arabian sea|arab sea|আরব|অ্যারাবিয়ান|अरब|अरेबियन|அரபி|அரேபி|అరేబి|ಅರಬ್ಬಿ|അറബി|અરબી|ଆରବ|ਅਰਬ|عرب|ᱟᱨᱚᱵᱽ|ᱟᱨᱚᱵ)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'arabian_sea') {
       secondBasin = 'arabian_sea';
     } else {
@@ -209,7 +214,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(bengal|bay of bengal|bob|bengali|bengoli|bangal|বঙ্গ|বংগ|বেঙ্গ|বেংগ|বেগল|বেগলী|বেঙ্গল|বেঙ্গলি|বে অফ|বে অব|बंगाल|வங்காள|బంగాళ|ಬಂಗಾಳ|ബംഗാൾ|બંગાળ|ବଙ୍ଗ|بنگال)/iu.test(q)) {
+  if (/(bengal|bay of bengal|bob|bengali|bengoli|bangal|বঙ্গ|বংগ|বেঙ্গ|বেংগ|বেগল|বেগলী|বেঙ্গল|বেঙ্গলি|বে অফ|বে অব|बंगाल|வங்காள|బంగాళ|ಬಂಗಾಳ|ബംഗാൾ|બંગાળ|ବଙ୍ଗ|بنگال|ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ|ᱵᱚᱝᱜᱳ|ᱵᱮᱝᱜᱚᱞ|ᱵᱟᱝᱜᱟᱞ)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'bay_of_bengal') {
       secondBasin = 'bay_of_bengal';
     } else {
@@ -233,7 +238,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
-  if (/(atlantic|north atlantic|আটলান্টিক|अटलांटिक|அட்லாண்டிக்|అట్లాంటిక్|ಅಟ್ಲಾಂಟಿಕ್|അറ്റ്ലാന്റിക്|એટલાન્ટિક|ଆଟଲାଣ୍ଟିକ|ਅਟਲਾਂਟਿਕ|بحر اوقیانوس)/iu.test(q)) {
+  if (/(atlantic|north atlantic|আটলান্টিক|अटलांटिक|அட்லாಂಡிக்|అట్లాంటిక్|ಅಟ್ಲಾಂಟಿಕ್|അറ്റ്ലാന്റിക്|એટલાન્ટિક|ଆଟଲାଣ୍ଟିକ|ਅਟਲਾਂਟਿਕ|بحر اوقیانوس)/iu.test(q)) {
     if (basinSpecified && targetBasin !== 'north_atlantic') {
       secondBasin = 'north_atlantic';
     } else {
@@ -249,23 +254,31 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
       basinSpecified = true;
     }
   }
+  if (/(indian ocean|ভারত মহাসাগর|हिन्द महासागर|हिंद महासागर|இந்தியப் பெருங்கடல்|హిందూ మహాసముద్రം|ಹಿಂದೂ ಮಹಾಸಾಗರ|ഇന്ത്യൻ മഹാസമുദ്രം|હિંદ મહાસાગર|ଭାରତ ମହାସାଗର|ਹਿੰਦ ਮਹਾਸਾਗਰ|بحر ہند|ᱥᱤᱧᱚᱛ ᱢᱟᱦᱟᱫᱚᱨᱭᱟ|ᱥᱤᱧᱚᱛ)/iu.test(q)) {
+    if (basinSpecified && targetBasin !== 'bay_of_bengal') {
+      secondBasin = 'bay_of_bengal';
+    } else {
+      targetBasin = 'bay_of_bengal';
+      basinSpecified = true;
+    }
+  }
 
   // 6. Identify Semantic Flags
   const isStormOrWeather = (
     /\b(storm|storms|cyclone|cyclones|typhoon|hurricane|depression|squall|monsoon|rain|raining|rainfall|precipitation|weather|forecast|predict|prediction|predictions|surge|swell|gale|flood|wind speed|high seas|hava|mausam)\b/i.test(q) ||
-    /(বৃষ্টি|ঝড়|ঝড়|ঝড়বৃষ্টি|ঝড়বৃষ্টি|আবহাওয়া|পূর্বাভাস|तूफान|चक्रवात|बारिश|मौसम|पूर्वानुमान|हवा)/i.test(query)
+    /(বৃষ্টি|ঝড়|ঝড়|ঝড়বৃষ্টি|ঝড়বৃষ্টি|আবহাওয়া|পূর্বাভাস|तूफान|चक्रवात|बारिश|मौसम|पूर्वानुमान|हवा|ᱛᱩᱯᱷᱟᱱ|ᱪᱚᱠᱨᱚᱵᱟᱛ|ᱫᱟᱜ|ᱦᱚᱭ|ᱦᱚᱭ-ᱦᱤᱥᱤᱫ)/i.test(query)
   );
 
   const isGeneralConditions = (
     /\b(condition|conditions|current conditions|overview|situation|what is happening|weather here|status here|how is it here|what about here)\b/i.test(q) ||
-    /(পরিস্থিতি|অবস্থা|स्थिति|हालात)/i.test(query)
+    /(পরিস্থিতি|অবস্থা|स्थिति|हालात|ᱦᱟᱞᱚᱛ|ᱱᱤᱛᱚᱜᱟᱜ ᱦᱟᱞᱚᱛ)/i.test(query)
   );
 
-  const isMarineLife = /\b(marine life|life|animal|animals|species|organism|organisms|fish|fishes|whale|whales|shark|sharks|dolphin|dolphins|coral|corals|turtle|turtles|plankton|phytoplankton|zooplankton|crustacean|squid|biodiversity|ecology|ecosystem|biomass|what lives|who lives|মাছ|প্রাণী|জীববৈচিত্র্য|जीव|मछली|प्राणी)\b/i.test(q);
+  const isMarineLife = /\b(marine life|life|animal|animals|species|organism|organisms|fish|fishes|whale|whales|shark|sharks|dolphin|dolphins|coral|corals|turtle|turtles|plankton|phytoplankton|zooplankton|crustacean|squid|biodiversity|ecology|ecosystem|biomass|what lives|who lives|মাছ|প্রাণী|জীববৈচিত্র্য|जीव|मछली|प्राणी|ᱦᱟᱹᱠᱩ|ᱡᱤᱵᱽ|ᱫᱚᱨᱭᱟ ᱡᱤᱵᱽ)\b/i.test(q);
 
-  const isComparison = /(compare|versus|vs|difference|higher|lower|warmer|cooler|saltier|তুলনা|तुलना)/i.test(q);
-  const isProfile = /(profile|stratification|vertical|column|curve|gradient|thermocline profile|প্রোফাইল|प्रोफ़ाइल)/i.test(q) && !isMarineLife;
-  const isAnomaly = /(anomaly|anomalies|unusual|abnormal|deviat|heatwave|bloom|অস্বাভাবিক|विसंगति)/i.test(q);
+  const isComparison = /(compare|versus|vs|difference|higher|lower|warmer|cooler|saltier|তুলনা|तुलना|ᱛᱩᱞᱟᱹᱡᱚᱠᱷᱟ|ᱵᱷᱮᱜᱟᱨ)/i.test(q);
+  const isProfile = /(profile|stratification|vertical|column|curve|gradient|thermocline profile|প্রোফাইল|प्रोफ़ाइल|ᱯᱨᱳᱯᱷᱟᱭᱤᱞ)/i.test(q) && !isMarineLife;
+  const isAnomaly = /(anomaly|anomalies|unusual|abnormal|deviat|heatwave|bloom|অস্বাভাবিক|विसंगति|ᱚᱥᱚᱢᱟᱱ|ᱵᱤᱪᱟᱹᱨ)/i.test(q);
 
   const isGeneralScience = (
     /\b(why is|how does|what causes|what is|explain)\b/i.test(q) &&
@@ -280,42 +293,50 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
 
   const isGoodMorning = /\b(good morning|morning nerida|gm|morning)\b/i.test(q) ||
                         (/[\u0980-\u09FF]/.test(query) && /(শুভ সকাল)/i.test(query)) ||
-                        (/[\u0900-\u097F]/.test(query) && /(शुभ प्रभात|सुप्रभात)/i.test(query));
+                        (/[\u0900-\u097F]/.test(query) && /(शुभ प्रभात|सुप्रभात)/i.test(query)) ||
+                        (/(ᱥᱟᱹᱜᱩᱱ ᱥᱮᱛᱟᱜ)/i.test(query));
 
   const isGoodNight = /\b(good night|goodnight|gn|sleep well|sweet dreams|night nerida)\b/i.test(q) ||
                       (/[\u0980-\u09FF]/.test(query) && /(শুভ রাত্রি)/i.test(query)) ||
-                      (/[\u0900-\u097F]/.test(query) && /(शुभ रात्रि|शुभरात्रि)/i.test(query));
+                      (/[\u0900-\u097F]/.test(query) && /(शुभ रात्रि|शुभरात्रि)/i.test(query)) ||
+                      (/(ᱥᱟᱹᱜᱩᱱ ᱧᱤᱫᱟᱹ)/i.test(query));
 
   const isGoodDay = /\b(good afternoon|good evening|good day)\b/i.test(q) ||
                     (/[\u0980-\u09FF]/.test(query) && /(শুভ অপরাহ্ন|শুভ সন্ধ্যা)/i.test(query)) ||
-                    (/[\u0900-\u097F]/.test(query) && /(शुभ दोपहर|शुभ संध्या)/i.test(query));
+                    (/[\u0900-\u097F]/.test(query) && /(शुभ दोपहर|शुभ संध्या)/i.test(query)) ||
+                    (/(ᱥᱟᱹᱜᱩᱱ ᱢᱟᱦᱟᱸ|ᱥᱟᱹᱜᱩᱱ ᱛᱤᱠᱤᱱ|ᱥᱟᱹᱜᱩᱱ ᱟᱹᱭᱩᱵ)/i.test(query));
 
   const isHowAreYou = /\b(how are you|how r u|how are you doing|how do you do|how's it going|how are things|how are you feeling|what's up|wassup|sup nerida)\b/i.test(q) ||
                       (/[\u0980-\u09FF]/.test(query) && /(কেমন আছো|কেমন আছেন)/i.test(query)) ||
-                      (/[\u0900-\u097F]/.test(query) && /(आप कैसे हैं|कैसी हो|सब कैसा है)/i.test(query));
+                      (/[\u0900-\u097F]/.test(query) && /(आप कैसे हैं|कैसी हो|सब कैसा है)/i.test(query)) ||
+                      (/(ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱢᱟ|ᱪᱮᱛ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱢᱟ|ᱪᱮᱫ ᱠᱷᱚᱵᱚᱨ)/i.test(query));
 
   const isCompliment = /\b(awesome|amazing|great job|cool|nice work|well done|wonderful|good job|you are great|you're great|you are cool|you're cool|you are smart|love you)\b/i.test(q) ||
                        (/[\u0980-\u09FF]/.test(query) && /(দারুণ|চমৎকার|অসাধারণ)/i.test(query)) ||
-                       (/[\u0900-\u097F]/.test(query) && /(बहुत बढ़िया|शाबाश|कमाल)/i.test(query));
+                       (/[\u0900-\u097F]/.test(query) && /(बहुत बढ़िया|शाबाश|कमाल)/i.test(query)) ||
+                       (/(ᱟᱹᱰᱤ ᱱᱟᱯᱟᱭ|ᱵᱮᱥ|ᱥᱟᱵᱟᱥ)/i.test(query));
 
   const isGreeting = isGoodMorning || isGoodNight || isGoodDay || isHowAreYou || isCompliment ||
                      /\b(hello|hi|hey|greetings|howdy|hola|yo|namaste|vanakkam|namaskaram|sat sri akaal|aadab)\b/i.test(q) ||
                      (/[\u0980-\u09FF]/.test(query) && /(হ্যালো|নমস্কার|সালাম|কেমন আছো|শুভ সকাল|শুভ রাত্রি)/i.test(query)) ||
-                     (/[\u0900-\u097F]/.test(query) && /(नमस्ते|हैलो|प्रणाम|शुभ प्रभात|शुभ रात्रि)/i.test(query));
+                     (/[\u0900-\u097F]/.test(query) && /(नमस्ते|हैलो|प्रणाम|शुभ प्रभात|शुभ रात्रि)/i.test(query)) ||
+                     (/(ᱡᱚᱦᱟᱨ|ᱥᱟᱹᱜᱩᱱ ᱡᱚᱦᱟᱨ)/i.test(query));
 
   const isIdentityOrHelp = /\b(what can you do|who are you|what are you|who made you|help me|help|features|capabilities|what do you do|how to use|what is your role|tell me about yourself|what can i do for you|what can you do for me|what can u do for me|how can you help)\b/i.test(q) ||
                            /(তুমি কি করতে পারো|তুমি কে|কি করতে পারো|সাহায্য|তোমার কাজ কি)/i.test(query) ||
-                           /(आप क्या कर सकते हैं|तुम कौन हो|मदद|सहायता|तुम क्या कर सकते हो)/i.test(query);
+                           /(आप क्या कर सकते हैं|तुम कौन हो|मदद|सहायता|तुम क्या कर सकते हो)/i.test(query) ||
+                           /(ᱟᱢ ᱫᱚ ᱚᱠᱚᱭ|ᱟᱢ ᱪᱮᱫ ᱮᱢ ᱪᱤᱠᱟᱹ ᱫᱟᱲᱮᱭᱟᱜ-ᱟ|ᱜᱚᱲᱚ)/i.test(query);
 
   const isPoliteClosing = /\b(thanks|thank you|thx|bye|goodbye|see you|ok thanks|okay thanks|catch you later|take care)\b/i.test(q) ||
                           /(ধন্যবাদ|বিদায়)/i.test(query) ||
-                          /(धन्यवाद|शुक्रिया|अलविदा)/i.test(query);
+                          /(धन्यवाद|शुक्रिया|अलविदा)/i.test(query) ||
+                          /(ᱥᱟᱨᱦᱟᱣ|ᱡᱚᱦᱟᱨ)/i.test(query);
 
   const isLanguageSwitchOnly = /^(speak in|talk in|switch to|translate to)?\s*(বাংলায় বলো|বাংলায় কথা বলো|বাংলায়|hindi me bolo|speak in english|talk in bengali)\s*$/i.test(q);
 
   const hasOceanEntity = paramSpecified || basinSpecified || depthSpecified || isProfile || isAnomaly || isComparison || isStormOrWeather || isGeneralConditions;
   const hasViewWord = /\b(show|display|view|go to|switch to|navigate to|zoom to|vector|vectors|volume|isosurface|slice)\b/i.test(q);
-  const isQuestion = /\b(what|how|why|when|where|is there|does|কতো|কত|কী|কি|क्या|कितना)\b/i.test(q) || q.includes('?');
+  const isQuestion = /\b(what|how|why|when|where|is there|does|কতো|কত|কী|কি|क्या|कितना|ᱛᱤᱱᱟᱹᱜ|ᱪᱮᱫ|ᱪᱮᱞᱮᱠᱟ|ᱚᱠᱟᱨᱮ|ᱪᱮᱫᱟᱜ|ᱛᱤᱨᱮ)\b/i.test(q) || q.includes('?');
 
   // Follow-up relative query detection strictly for physical measurements
   const isFollowUpMeasurement = (

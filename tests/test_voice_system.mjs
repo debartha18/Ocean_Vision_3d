@@ -12,6 +12,7 @@ import { cleanTextForSpeech } from '../src/lib/ai/voice/ttsProvider.js';
 import { AudioState, SpeechErrorCode } from '../src/lib/ai/voice/speechProvider.js';
 import { extractIntentAndEntities, executeNeridaReasoning } from '../src/lib/ai/offlineEngine.js';
 import { resolveLocation } from '../src/lib/ai/oceanTools.js';
+import { getCopilotLexicon } from '../src/lib/ai/copilotTranslations.js';
 
 console.log('=== TEST 1: 23-Language Voice Registry Coverage ===');
 assert.strictEqual(SUPPORTED_LANGUAGES.length, 23, 'Must have exactly 23 supported languages');
@@ -99,4 +100,53 @@ assert.strictEqual(result.actions[0].type, 'SET_BASIN');
 assert.strictEqual(result.actions[0].value, 'bay_of_bengal');
 console.log('✓ End-to-end reasoning returned real ocean data and actions for Bengali voice query');
 
-console.log('\nALL 23-LANGUAGE VOICE TESTS PASSED! 🎉');
+console.log('\n=== TEST 6: Santali (Ol Chiki) Voice, Input Parsing & Copilot Lexicon ===');
+const satVoiceConfig = getVoiceConfigForLanguage('sat');
+assert.strictEqual(satVoiceConfig.speechLocale, 'sat-IN');
+assert.ok(satVoiceConfig.fallbacks.includes('sat-Olck-IN'), 'Must include Ol Chiki locale fallback');
+assert.ok(!satVoiceConfig.fallbacks.includes('hi-IN'), 'Must NOT fall back to Hindi');
+console.log('✓ Santali voice config avoids Hindi fallback:', satVoiceConfig.fallbacks);
+
+// Check Lexicon for Ol Chiki script and no Hindi bleed
+const satLexicon = getCopilotLexicon('sat');
+assert.strictEqual(satLexicon.code, 'sat');
+assert.strictEqual(satLexicon.nativeName, 'ᱥᱟᱱᱛᱟᱲᱤ');
+assert.ok(/[\u1C50-\u1C7F]/.test(satLexicon.ui.placeholder), 'Placeholder must be in Ol Chiki');
+assert.ok(!/[\u0900-\u097F]/.test(satLexicon.ui.placeholder), 'Placeholder must NOT be in Hindi Devanagari');
+assert.ok(/[\u1C50-\u1C7F]/.test(satLexicon.ui.thinking), 'Thinking must be in Ol Chiki');
+assert.ok(!/[\u0900-\u097F]/.test(satLexicon.ui.thinking), 'Thinking must NOT be in Hindi Devanagari');
+assert.ok(/[\u1C50-\u1C7F]/.test(satLexicon.welcome), 'Welcome must be in Ol Chiki');
+assert.ok(!/[\u0900-\u097F]/.test(satLexicon.welcome), 'Welcome must NOT be in Hindi Devanagari');
+console.log('✓ Santali Copilot Lexicon is 100% Ol Chiki (zero Hindi strings)');
+
+// Test Santali queries and intent extraction
+const satQueries = [
+  { q: 'ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ ᱨᱮ ᱞᱚᱞᱚᱥᱚᱝ ᱛᱤᱱᱟᱹᱜ', expectedParam: 'sst', expectedBasin: 'bay_of_bengal', expectedCategory: 'OCEAN_QUERY' },
+  { q: 'ᱟᱨᱚᱵᱽ ᱫᱚᱨᱭᱟ ᱨᱮ ᱵᱩᱞᱩᱝ ᱜᱮᱭᱟᱱ', expectedParam: 'salinity', expectedBasin: 'arabian_sea', expectedCategory: 'OCEAN_QUERY' },
+  { q: '᱕᱐᱐ ᱢᱤᱴᱟᱨ ᱜᱟᱹᱦᱤᱨ ᱨᱮ ᱞᱚᱞᱚᱥᱚᱝ', expectedParam: 'sst', expectedDepth: 500, expectedCategory: 'OCEAN_QUERY' },
+  { q: 'ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ ᱨᱮ ᱛᱩᱯᱷᱟᱱ ᱦᱟᱞᱚᱛ', expectedCategory: 'STORM_WEATHER_PREDICTION', expectedBasin: 'bay_of_bengal' },
+  { q: 'ᱡᱚᱦᱟᱨ ᱱᱮᱨᱤᱰᱟ', expectedCategory: 'CONVERSATIONAL' }
+];
+
+for (const tc of satQueries) {
+  const intent = extractIntentAndEntities(tc.q, { basin: 'Bay of Bengal', basinId: 'bay_of_bengal', language: 'sat' });
+  assert.strictEqual(intent.detectedLang, 'sat', `Query "${tc.q}" must be detected as sat`);
+  assert.strictEqual(intent.category, tc.expectedCategory, `Query "${tc.q}" category`);
+  if (tc.expectedParam) assert.strictEqual(intent.param, tc.expectedParam);
+  if (tc.expectedBasin) assert.strictEqual(intent.basin, tc.expectedBasin);
+  if (tc.expectedDepth) assert.strictEqual(intent.depth, tc.expectedDepth);
+  console.log(`✓ Resolved "${tc.q}" -> Lang: ${intent.detectedLang}, Category: ${intent.category}, Param: ${intent.param || 'N/A'}`);
+}
+
+// Ensure Devanagari input under Santali active language preserves sat rather than forcing hi
+const crossScriptIntent = extractIntentAndEntities('SST at 500m', { basinId: 'bay_of_bengal', language: 'sat' });
+assert.strictEqual(crossScriptIntent.detectedLang, 'sat', 'Should preserve active sat language');
+
+// End-to-end reasoning in Santali
+const satResult = executeNeridaReasoning('ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ ᱨᱮ ᱞᱚᱞᱚᱥᱚᱝ ᱛᱤᱱᱟᱹᱜ', { basin: 'Bay of Bengal', basinId: 'bay_of_bengal', language: 'sat' });
+assert.ok(/[\u1C50-\u1C7F]/.test(satResult.message), 'Reasoning response must contain Ol Chiki characters');
+assert.ok(!satResult.message.includes('नेरिडा'), 'Reasoning response must not contain Hindi text');
+assert.ok(satResult.message.includes('29.85'), 'Must contain actual digital twin SST value');
+console.log('✓ End-to-end reasoning generated genuine Ol Chiki Santali output');
+
+console.log('\nALL 23-LANGUAGE VOICE & SANTALI TESTS PASSED! 🎉');

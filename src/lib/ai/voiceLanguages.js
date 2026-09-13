@@ -54,6 +54,17 @@ export const OCEAN_SCIENTIFIC_PHRASE_HINTS = [
   'ବଙ୍ଗୋପସାଗର',
   'ਖਲੀਜ ਬੰਗਾਲ',
   'خلیج بنگال',
+  'ᱥᱟᱱᱛᱟᱲᱤ',
+  'ᱵᱚᱝᱜᱳᱯᱚᱥᱟᱜᱚᱨ',
+  'ᱟᱨᱚᱵᱽ ᱫᱚᱨᱭᱟ',
+  'ᱥᱤᱧᱚᱛ ᱢᱟᱦᱟᱫᱚᱨᱭᱟ',
+  'ᱞᱚᱞᱚᱥᱚᱝ',
+  'ᱵᱩᱞᱩᱝ ᱜᱮᱭᱟᱱ',
+  'ᱫᱚᱨᱭᱟ ᱫᱟᱜ ᱞᱤᱸᱜᱤᱱ',
+  'ᱰᱷᱮᱣ ᱩᱥᱩᱞ',
+  'ᱦᱚᱭ ᱢᱮᱥᱟ ᱚᱠᱥᱤᱡᱮᱱ',
+  'ᱠᱞᱳᱨᱳᱯᱷᱤᱞ-ᱮ',
+  'ᱛᱩᱯᱷᱟᱱ',
 
   // Parameters & Measurements
   'Sea Surface Temperature',
@@ -245,7 +256,7 @@ export const VOICE_LANGUAGE_CONFIGS = {
   },
   sat: {
     speechLocale: 'sat-IN',
-    fallbacks: ['hi-IN', 'bn-IN', 'en-IN'],
+    fallbacks: ['sat-Olck-IN', 'en-IN'],
     ttsLocale: 'sat-IN',
     displayName: 'ᱥᱟᱱᱛᱟᱲᱤ (Santali)',
     code: 'sat'
