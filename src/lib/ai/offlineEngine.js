@@ -18,6 +18,7 @@
 import { 
   normalizeParameter, 
   resolveBasin, 
+  resolveLocation,
   normalizeViewMode,
   tool_get_ocean_data, 
   tool_compare_basins, 
@@ -25,7 +26,8 @@ import {
   tool_find_ocean_anomalies, 
   tool_change_ocean_view, 
   tool_change_parameter, 
-  tool_get_current_ocean_state 
+  tool_get_current_ocean_state,
+  tool_predict_storm_and_weather
 } from './oceanTools.js';
 
 /**
@@ -152,10 +154,25 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   let basinSpecified = false;
   let targetBasin = contextBasin;
   let secondBasin = null;
+  let matchedLocation = null;
+  let targetCoords = null;
+
+  // Check for specific coastal cities, ports, beaches, islands, or basins via resolveLocation
+  const locMatch = resolveLocation(q, null);
+  if (locMatch && locMatch.matchedLocation) {
+    targetBasin = locMatch.basin.id;
+    basinSpecified = true;
+    matchedLocation = locMatch.matchedLocation;
+    targetCoords = locMatch.coords;
+  }
 
   if (/(arabian|arabian sea|আরব সাগর|अरब सागर)/i.test(q)) {
-    targetBasin = 'arabian_sea';
-    basinSpecified = true;
+    if (basinSpecified && targetBasin !== 'arabian_sea') {
+      secondBasin = 'arabian_sea';
+    } else {
+      targetBasin = 'arabian_sea';
+      basinSpecified = true;
+    }
   }
   if (/(bengal|bay of bengal|bob|বঙ্গোপসাগর|बंगाल की खाड़ी)/i.test(q)) {
     if (basinSpecified && targetBasin !== 'bay_of_bengal') {
@@ -199,6 +216,16 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   }
 
   // 6. Identify Semantic Flags
+  const isStormOrWeather = (
+    /\b(storm|storms|cyclone|cyclones|typhoon|hurricane|depression|squall|monsoon|rain|raining|rainfall|precipitation|weather|forecast|predict|prediction|predictions|surge|swell|gale|flood|wind speed|high seas|hava|mausam)\b/i.test(q) ||
+    /(বৃষ্টি|ঝড়|ঝড়|ঝড়বৃষ্টি|ঝড়বৃষ্টি|আবহাওয়া|পূর্বাভাস|तूफान|चक्रवात|बारिश|मौसम|पूर्वानुमान|हवा)/i.test(query)
+  );
+
+  const isGeneralConditions = (
+    /\b(condition|conditions|current conditions|overview|situation|what is happening|weather here|status here|how is it here|what about here)\b/i.test(q) ||
+    /(পরিস্থিতি|অবস্থা|स्थिति|हालात)/i.test(query)
+  );
+
   const isMarineLife = /\b(marine life|life|animal|animals|species|organism|organisms|fish|fishes|whale|whales|shark|sharks|dolphin|dolphins|coral|corals|turtle|turtles|plankton|phytoplankton|zooplankton|crustacean|squid|biodiversity|ecology|ecosystem|biomass|what lives|who lives|মাছ|প্রাণী|জীববৈচিত্র্য|जीव|मछली|प्राणी)\b/i.test(q);
 
   const isComparison = /(compare|versus|vs|difference|higher|lower|warmer|cooler|saltier|তুলনা|तुलना)/i.test(q);
@@ -251,7 +278,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
 
   const isLanguageSwitchOnly = /^(speak in|talk in|switch to|translate to)?\s*(বাংলায় বলো|বাংলায় কথা বলো|বাংলায়|hindi me bolo|speak in english|talk in bengali)\s*$/i.test(q);
 
-  const hasOceanEntity = paramSpecified || basinSpecified || depthSpecified || isProfile || isAnomaly || isComparison;
+  const hasOceanEntity = paramSpecified || basinSpecified || depthSpecified || isProfile || isAnomaly || isComparison || isStormOrWeather || isGeneralConditions;
   const hasViewWord = /\b(show|display|view|go to|switch to|navigate to|zoom to|vector|vectors|volume|isosurface|slice)\b/i.test(q);
   const isQuestion = /\b(what|how|why|when|where|is there|does|কতো|কত|কী|কি|क्या|कितना)\b/i.test(q) || q.includes('?');
 
@@ -278,6 +305,10 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
 
   if (isOutOfDomain) {
     category = 'OUT_OF_DOMAIN';
+  } else if (isStormOrWeather) {
+    category = 'STORM_WEATHER_PREDICTION';
+  } else if (isGeneralConditions && !paramSpecified) {
+    category = 'GENERAL_CONDITIONS';
   } else if ((isGreeting || isIdentityOrHelp || isPoliteClosing || isLanguageSwitchOnly) && !hasOceanEntity && !hasViewWord && !isMarineLife) {
     category = 'CONVERSATIONAL';
   } else if (isMarineLife) {
@@ -311,6 +342,11 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     basin: targetBasin,
     secondBasin,
     basinSpecified,
+    matchedLocation,
+    coords: targetCoords,
+    isImplicitLocation: !basinSpecified,
+    isStormOrWeather,
+    isGeneralConditions,
     isComparison,
     isProfile,
     isAnomaly,
@@ -365,10 +401,164 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
   // =============================================================
 
   // -------------------------------------------------------------
+  // ROUTE: STORM_WEATHER_PREDICTION (Storms, Cyclones, Weather, Rain Forecasts)
+  // -------------------------------------------------------------
+  if (intent.category === 'STORM_WEATHER_PREDICTION') {
+    const locName = intent.matchedLocation || (intent.basinSpecified ? intent.basin : null);
+
+    toolResults.push({
+      tool: 'predict_storm_and_weather',
+      status: 'success',
+      indicator: `Analyzing meteorological threats & rain forecast for ${intent.matchedLocation || intent.basin.replace('_', ' ')}`
+    });
+
+    const predictionData = tool_predict_storm_and_weather({
+      location: locName,
+      basin: intent.basin,
+      latitude: intent.coords?.lat,
+      longitude: intent.coords?.lon
+    }, currentState);
+
+    primaryData = predictionData;
+    provenance.push({ type: 'OBSERVED', label: 'IMD / JTWC / INCOIS Regional Weather Radar & Moored Buoys' });
+    provenance.push({ type: 'FORECAST', label: 'Numerical Coastal Wave & Precipitation Ensemble (3-Day)' });
+
+    dataPointsUsed.push(`Target Location: ${predictionData.location} (${predictionData.coordinates})`);
+    dataPointsUsed.push(`Active Basin: ${predictionData.basin}`);
+    dataPointsUsed.push(`Threat Severity: ${predictionData.threatLevel} (${predictionData.stormProbability}% storm risk)`);
+    dataPointsUsed.push(`Active System: ${predictionData.activeStorm.name} (${predictionData.activeStorm.category})`);
+    dataPointsUsed.push(`Wind Speed: ${predictionData.windSpeedKmH} | Pressure: ${predictionData.pressure}`);
+    dataPointsUsed.push(`Rain Probability: ${predictionData.rainProbability}% | Rate: ${predictionData.rainRate} mm/h`);
+    dataPointsUsed.push(`Wave Swell: ${predictionData.waveHeight} | Surge: ${predictionData.activeStorm.surge}`);
+
+    // If a different basin was explicitly requested or resolved from city, adjust 3D view
+    if (intent.basinSpecified && intent.basin !== intent.contextBasin) {
+      actions.push({ type: 'SET_BASIN', value: predictionData.basinId, label: predictionData.basin });
+    }
+
+    const storm = predictionData.activeStorm;
+    const outlook = predictionData.threeDayOutlook;
+    const beachList = predictionData.beachForecasts;
+
+    if (lang === 'bn') {
+      message = `📍 **আবহাওয়া ও ঝড় পূর্বাভাস:** **${predictionData.location}** (${predictionData.coordinates}) — **${predictionData.basin}**\n\n` +
+        `⚠️ **ঝড়ের ঝুঁকি মাত্রা:** **${predictionData.threatLevel}** (${predictionData.stormProbability}% ঝুঁকি)\n` +
+        `- **সক্রিয় আবহাওয়া ব্যবস্থা:** **${storm.name}** (*${storm.category}*)\n` +
+        `- **বাতাসের গতিবেগ:** ${predictionData.windSpeedKmH} | **বায়ুমণ্ডলীয় চাপ:** ${predictionData.pressure}\n` +
+        `- **বৃষ্টিপাতের সম্ভাবনা:** **${predictionData.rainProbability}%** (${storm.rainfallForecast})\n` +
+        `- **সমুদ্রের ঢেউ ও জলোচ্ছ্বাস:** ${predictionData.waveHeight} (স্বাভাবিকের চেয়ে ${storm.surge})\n` +
+        `- **পৃষ্ঠের তাপমাত্রা (SST):** ${predictionData.seaSurfaceTemperature} (${predictionData.cyclogenesisPotential})\n\n` +
+        `📅 **৩ দিনের সামুদ্রিক পূর্বাভাস:**\n` +
+        `- **আজ:** ${outlook[0].condition} | বৃষ্টি: ${outlook[0].rainProbability}% | বাতাস: ${outlook[0].windSpeedKmH} km/h | ঢেউ: ${outlook[0].waveHeight}\n` +
+        `- **আগামীকাল:** ${outlook[1].condition} | বৃষ্টি: ${outlook[1].rainProbability}% | বাতাস: ${outlook[1].windSpeedKmH} km/h\n` +
+        `- **পরশু:** ${outlook[2].condition} | বৃষ্টি: ${outlook[2].rainProbability}%\n\n` +
+        (beachList.length > 0 ? `🏖️ **নিকটবর্তী উপকূলীয় সৈকত সতর্কতা:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): ${b.safetyFlag} | বৃষ্টি: ${b.rainProbability}% | ঢেউ: ${b.surfWaveHeight}m`).join('\n') : '');
+    } else if (lang === 'hi') {
+      message = `📍 **मौसम व चक्रवात पूर्वानुमान:** **${predictionData.location}** (${predictionData.coordinates}) — **${predictionData.basin}**\n\n` +
+        `⚠️ **तूफान जोखिम स्तर:** **${predictionData.threatLevel}** (${predictionData.stormProbability}% संभावना)\n` +
+        `- **सक्रिय मौसम प्रणाली:** **${storm.name}** (*${storm.category}*)\n` +
+        `- **हवा की गति:** ${predictionData.windSpeedKmH} | **वायुदाब:** ${predictionData.pressure}\n` +
+        `- **बारिश की संभावना:** **${predictionData.rainProbability}%** (${storm.rainfallForecast})\n` +
+        `- **समुद्री लहरें व ज्वार उभार:** ${predictionData.waveHeight} (${storm.surge})\n` +
+        `- **समुद्र सतह तापमान (SST):** ${predictionData.seaSurfaceTemperature} (${predictionData.cyclogenesisPotential})\n\n` +
+        `📅 **3-दिवसीय समुद्री दृष्टिकोण:**\n` +
+        `- **आज:** ${outlook[0].condition} | वर्षा: ${outlook[0].rainProbability}% | हवा: ${outlook[0].windSpeedKmH} km/h | लहरें: ${outlook[0].waveHeight}\n` +
+        `- **कल:** ${outlook[1].condition} | वर्षा: ${outlook[1].rainProbability}% | हवा: ${outlook[1].windSpeedKmH} km/h\n` +
+        `- **तीसरा दिन:** ${outlook[2].condition} | वर्षा: ${outlook[2].rainProbability}%\n\n` +
+        (beachList.length > 0 ? `🏖️ **तटीय समुद्र तट सुरक्षा अलर्ट:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): ${b.safetyFlag} | वर्षा: ${b.rainProbability}% | सर्फ लहरें: ${b.surfWaveHeight}m`).join('\n') : '');
+    } else {
+      const locPrefix = predictionData.isImplicitLocation 
+        ? `📍 **Current Active Location Telemetry:** **${predictionData.location}** (\`${predictionData.coordinates}\`)`
+        : `📍 **Target Coastal Sector:** **${predictionData.location}** (\`${predictionData.coordinates}\`) in the **${predictionData.basin}**`;
+
+      message = `${locPrefix}\n\n` +
+        `⚠️ **Storm & Cyclone Threat Level: \`${predictionData.threatLevel}\`** (${predictionData.stormProbability}% Probability)\n` +
+        `- **Active Weather System:** **${storm.name}** (*${storm.category}*)\n` +
+        `- **Wind & Pressure:** \`${predictionData.windSpeedKmH}\` | Barometric Pressure: \`${predictionData.pressure}\`\n` +
+        `- **Precipitation Probability:** **\`${predictionData.rainProbability}%\`** (${storm.rainfallForecast})\n` +
+        `- **Marine Wave Swell:** \`${predictionData.waveHeight}\` (Surge: \`${storm.surge}\`)\n` +
+        `- **Thermal Energy (SST):** \`${predictionData.seaSurfaceTemperature}\` (*${predictionData.cyclogenesisPotential}*)\n\n` +
+        `📅 **3-Day Forward Marine Outlook:**\n` +
+        `- **Today:** ${outlook[0].condition} | Rain: \`${outlook[0].rainProbability}%\` | Wind: \`${outlook[0].windSpeedKmH} km/h\` | Swell: \`${outlook[0].waveHeight}\`\n` +
+        `- **Tomorrow:** ${outlook[1].condition} | Rain: \`${outlook[1].rainProbability}%\` | Wind: \`${outlook[1].windSpeedKmH} km/h\`\n` +
+        `- **Day 3:** ${outlook[2].condition} | Rain: \`${outlook[2].rainProbability}%\`\n\n` +
+        (beachList.length > 0 ? `🏖️ **Coastal Beach & Harbor Status:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): **${b.safetyFlag}** — Rain: \`${b.rainProbability}%\`, Breakers: \`${b.surfWaveHeight}m\``).join('\n') : '');
+    }
+
+    suggestions.push(`Show current vectors in ${predictionData.basin}`);
+    suggestions.push(`Check temperature profile`);
+    suggestions.push(`Compare Arabian Sea and Bay of Bengal`);
+    suggestions.push(`Inspect beach surf conditions`);
+  }
+
+  // -------------------------------------------------------------
+  // ROUTE: GENERAL_CONDITIONS (Holistic Physical Conditions & Ocean State)
+  // -------------------------------------------------------------
+  else if (intent.category === 'GENERAL_CONDITIONS') {
+    const locInfo = resolveLocation(intent.matchedLocation || intent.basin, currentState.rawRegion || REGIONS[currentState.basinId] || REGIONS.bay_of_bengal);
+    const region = locInfo.basin;
+    const locName = locInfo.matchedLocation || region.name;
+
+    toolResults.push({
+      tool: 'get_current_ocean_state',
+      status: 'success',
+      indicator: `Gathering real-time multi-parameter physical state for ${locName}`
+    });
+
+    provenance.push({ type: 'OBSERVED', label: `${region.name} Moored Buoy & Argo Profiling Float Array` });
+    provenance.push({ type: 'SIMULATED', label: 'TEOS-10 Hydrodynamic Model' });
+
+    dataPointsUsed.push(`Location: ${locName} (${region.coords})`);
+    dataPointsUsed.push(`Surface Temperature (SST): ${region.sst}°C`);
+    dataPointsUsed.push(`Salinity: ${region.salinity} PSU`);
+    dataPointsUsed.push(`Current Speed: ${region.currentSpeed} m/s`);
+    dataPointsUsed.push(`Wave Height: ${region.waveHeight}m`);
+    dataPointsUsed.push(`Dissolved Oxygen: ${region.oxygen} mg/L`);
+    dataPointsUsed.push(`Chlorophyll-a: ${region.chlorophyll} mg/m³`);
+
+    if (lang === 'bn') {
+      message = `📍 **${locName}** (${region.coords}) — **বর্তমান পরিস্থিতি:**\n\n` +
+        `- 🌡️ **পৃষ্ঠের তাপমাত্রা (SST):** **${region.sst}°C**\n` +
+        `- 🧂 **লবণাক্ততা:** **${region.salinity} PSU**\n` +
+        `- 🌊 **স্রোতের গতিবেগ:** **${region.currentSpeed} m/s**\n` +
+        `- 🏄 **ঢেউয়ের উচ্চতা:** **${region.waveHeight}m**\n` +
+        `- 💨 **বায়ুপ্রবাহ ও চাপ:** ${region.windSpeedKmH} km/h (${region.pressure} hPa)\n` +
+        `- 🧪 **দ্রবীভূত অক্সিজেন:** ${region.oxygen} mg/L\n` +
+        `- 🌿 **ক্লোরোফিল-এ:** ${region.chlorophyll} mg/m³\n` +
+        `- ⛈️ **আবহাওয়া অবস্থা:** ${region.activeStorm?.name || 'স্বাভাবিক প্রবাহ'} (${region.rainProbability}% বৃষ্টিপাতের সম্ভাবনা)`;
+    } else if (lang === 'hi') {
+      message = `📍 **${locName}** (${region.coords}) — **वर्तमान स्थिति:**\n\n` +
+        `- 🌡️ **समुद्र सतह तापमान (SST):** **${region.sst}°C**\n` +
+        `- 🧂 **लवणता:** **${region.salinity} PSU**\n` +
+        `- 🌊 **धाराओं का वेग:** **${region.currentSpeed} m/s**\n` +
+        `- 🏄 **तरंग ऊंचाई:** **${region.waveHeight}m**\n` +
+        `- 💨 **हवा की गति व दबाव:** ${region.windSpeedKmH} km/h (${region.pressure} hPa)\n` +
+        `- 🧪 **घुलित ऑक्सीजन:** ${region.oxygen} mg/L\n` +
+        `- 🌿 **क्लोरोफिल-ए:** ${region.chlorophyll} mg/m³\n` +
+        `- ⛈️ **मौसम प्रणाली:** ${region.activeStorm?.name || 'सामान्य समुद्री प्रवाह'} (${region.rainProbability}% वर्षा की संभावना)`;
+    } else {
+      message = `📍 **Current Physical Conditions:** **${locName}** (\`${region.coords}\`):\n\n` +
+        `- 🌡️ **Sea Surface Temperature (SST):** **\`${region.sst}°C\`**\n` +
+        `- 🧂 **Surface Salinity:** **\`${region.salinity} PSU\`**\n` +
+        `- 🌊 **Current Velocity:** **\`${region.currentSpeed} m/s\`**\n` +
+        `- 🏄 **Significant Wave Height:** **\`${region.waveHeight}m\`**\n` +
+        `- 💨 **Wind Speed & Pressure:** \`${region.windSpeedKmH} km/h\` (\`${region.pressure} hPa\`)\n` +
+        `- 🧪 **Dissolved Oxygen:** \`${region.oxygen} mg/L\`\n` +
+        `- 🌿 **Chlorophyll-a:** \`${region.chlorophyll} mg/m³\`\n` +
+        `- ⛈️ **Active Weather System:** **${region.activeStorm?.name || 'Nominal Flow'}** (\`${region.rainProbability}%\` rain probability)`;
+    }
+
+    suggestions.push(`Predict storms in ${locName}`);
+    suggestions.push('Show the temperature profile');
+    suggestions.push('Show current vectors in 3D');
+    suggestions.push('Compare Arabian Sea and Bay of Bengal');
+  }
+
+  // -------------------------------------------------------------
   // ROUTE 1: CONVERSATIONAL (Greetings, Capabilities, Identity)
   // STRICT RULE: ZERO tool calls, ZERO actions, ZERO 3D changes
   // -------------------------------------------------------------
-  if (intent.category === 'CONVERSATIONAL') {
+  else if (intent.category === 'CONVERSATIONAL') {
     provenance.push({ type: 'AI-DERIVED', label: 'Nerida Interactive Companion' });
 
     const basinObj = resolveBasin(intent.basin || intent.contextBasin, null);
@@ -902,12 +1092,16 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
           : 'Photic zone biological production.';
       }
 
+      const locDisplay = intent.matchedLocation
+        ? `${intent.matchedLocation} (${data.location})`
+        : (intent.isImplicitLocation ? `your active region (${data.location})` : data.location);
+
       if (lang === 'bn') {
-        message = `**${data.location}**-এ **${data.depth}m** গভীরতায় **${data.parameterName}** পরিমাপ:\n\n- **মান:** **${data.value} ${data.unit}**\n- **স্থানাঙ্ক:** ${data.coordinates}\n- **উৎস:** ${data.source}\n\n💡 *বৈজ্ঞানিক তাৎপর্য:* ${explanation}`;
+        message = `**${locDisplay}**-এ **${data.depth}m** গভীরতায় **${data.parameterName}** পরিমাপ:\n\n- **মান:** **${data.value} ${data.unit}**\n- **স্থানাঙ্ক:** ${data.coordinates}\n- **উৎস:** ${data.source}\n\n💡 *বৈজ্ঞানিক তাৎপর্য:* ${explanation}`;
       } else if (lang === 'hi') {
-        message = `**${data.location}** में **${data.depth}m** गहराई पर **${data.parameterName}** का माप:\n\n- **मान:** **${data.value} ${data.unit}**\n- **निर्देशांक:** ${data.coordinates}\n- **स्रोत:** ${data.source}\n\n💡 *वैज्ञानिक व्याख्या:* ${explanation}`;
+        message = `**${locDisplay}** में **${data.depth}m** गहराई पर **${data.parameterName}** का माप:\n\n- **मान:** **${data.value} ${data.unit}**\n- **निर्देशांक:** ${data.coordinates}\n- **स्रोत:** ${data.source}\n\n💡 *वैज्ञानिक व्याख्या:* ${explanation}`;
       } else {
-        message = `In **${data.location}** at **${data.depth}m** depth, the **${data.parameterName}** is **\`${data.value} ${data.unit}\`**:\n\n- **Observed Value:** \`${data.value} ${data.unit}\`\n- **Coordinates:** \`${data.coordinates}\`\n- **Telemetry Source:** ${data.source}\n\n💡 **Oceanographic Insight:**\n${explanation}`;
+        message = `In **${locDisplay}** at **${data.depth}m** depth, the **${data.parameterName}** is **\`${data.value} ${data.unit}\`**:\n\n- **Observed Value:** \`${data.value} ${data.unit}\`\n- **Coordinates:** \`${data.coordinates}\`\n- **Telemetry Source:** ${data.source}\n\n💡 **Oceanographic Insight:**\n${explanation}`;
       }
 
       suggestions.push(`What about ${data.depth === 500 ? '1000' : '500'}m?`);

@@ -91,6 +91,19 @@ const GEMINI_TOOLS = [
           type: "OBJECT",
           properties: {}
         }
+      },
+      {
+        name: "predict_storm_and_weather",
+        description: "Predict tropical storms, cyclones, monsoonal depressions, rainfall probabilities, wind speeds, wave surges, and 3-day coastal weather forecasts for an ocean basin or coastal city/beach (e.g. Mumbai, Kolkata, Chennai, Goa, Puri, Miami).",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            basin: { type: "STRING", description: "Ocean basin name or ID: 'bay_of_bengal', 'arabian_sea', 'south_china_sea', 'gulf_of_mexico', 'north_atlantic', 'equatorial_pacific'" },
+            location: { type: "STRING", description: "Coastal city, port, or beach name (e.g. 'Mumbai', 'Kolkata', 'Chennai', 'Goa', 'Puri', 'Digha', 'Miami')" },
+            latitude: { type: "NUMBER", description: "Latitude coordinate" },
+            longitude: { type: "NUMBER", description: "Longitude coordinate" }
+          }
+        }
       }
     ]
   }
@@ -108,7 +121,7 @@ STRICT INTENT & TOOL ROUTING RULES:
    - For "good morning": greet warmly, mention that the digital twin telemetry and buoys are online for the active basin, and ask what you can help them explore.
    - For "good night": wish them restful sleep, mention that global ocean telemetry buoys and Argo floats will keep monitoring the seas overnight, and invite them back anytime.
    - For "how are you": cheerily explain that telemetry and digital-twin models are running smoothly, and ask "what can I do for you today?".
-   - For "what can you do for me / help": outline capabilities (SST, salinity, currents, depth profiles, comparisons, 3D view) and invite them to explore.
+   - For "what can you do for me / help": outline capabilities (SST, salinity, currents, depth profiles, storm predictions, comparisons, 3D view) and invite them to explore.
    - Include 4 relevant prompt suggestions in the "suggestions" array.
 
 2. UNKNOWN / UNRELATED REQUESTS (Gibberish like "asdfghjkl", off-topic queries):
@@ -116,9 +129,12 @@ STRICT INTENT & TOOL ROUTING RULES:
    - Return empty "actions": [].
    - Cheerfully clarify that you're here to help with ocean exploration, provide examples of queries for the active basin, and ask what they'd like to dive into.
 
-3. OCEAN QUERIES, COMPARISONS, PROFILES, ANOMALIES, AND 3D VIEW COMMANDS:
+3. STORM PREDICTIONS, WEATHER FORECASTS, AND OCEAN TELEMETRY:
+   - For storm or weather queries (e.g. "predict any storms", "will it rain?", "cyclone alert", "forecast for Mumbai", "weather in Kolkata"):
+     * Call the "predict_storm_and_weather" tool!
+     * If the user mentions a coastal city (e.g., Mumbai, Kolkata, Chennai, Goa, Puri, Digha, Miami), resolve it to its coastal ocean basin automatically (e.g., Mumbai -> Arabian Sea, Kolkata -> Bay of Bengal).
+     * If the user does NOT mention any ocean or city (e.g., "predict storms", "will it rain here?"), AUTOMATICALLY DEFAULT to the current active application location/basin without failing or demanding that they name an ocean! Explicitly state: "Analyzing live telemetry for your current active location: [Basin Name]...".
    - Call the appropriate tool(s) ONLY when the user's explicit request requires ocean data, comparisons, profiles, anomalies, or view changes.
-   - The CURRENT DIGITAL TWIN APPLICATION STATE provided is PASSIVE BACKGROUND CONTEXT ONLY (used to resolve pronouns like "there" or "at this depth"). IT MUST NEVER BE TREATED AS AN INSTRUCTION TO QUERY OR MUTATE STATE FOR GREETINGS.
    - NEVER invent or fabricate ocean measurements. Ground all answers in tool results.
 
 4. In your final output, return a structured JSON response matching this schema:
