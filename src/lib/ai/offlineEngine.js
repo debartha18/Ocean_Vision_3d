@@ -18,7 +18,7 @@
 import { 
   normalizeParameter, 
   resolveBasin, 
-  resolveLocation,
+  resolveLocation, 
   normalizeViewMode,
   tool_get_ocean_data, 
   tool_compare_basins, 
@@ -30,20 +30,55 @@ import {
   tool_predict_storm_and_weather
 } from './oceanTools.js';
 
+import { REGIONS } from '../../data/oceanData.js';
+
+import {
+  formatStormPrediction,
+  formatGeneralConditions,
+  formatConversational,
+  formatMarineBiology,
+  formatOceanQuery,
+  formatProfile,
+  formatComparison,
+  formatAnalysis,
+  formatViewCommand,
+  formatOutOfDomain,
+  formatUnknown,
+  getLocalizedSuggestions
+} from './copilotTranslations.js';
+
 /**
  * Parses user natural language query and resolves context from current application state and conversation history.
  */
 export function extractIntentAndEntities(query, currentState = {}, conversationHistory = []) {
   // 1. Language Detection & Digit Normalization
   let detectedLang = currentState.language || 'en';
-  if (/[\u0980-\u09FF]/.test(query) || query.includes('বাংলা') || query.includes('bengali')) {
-    detectedLang = 'bn';
-  } else if (/[\u0900-\u097F]/.test(query) || query.includes('हिंदी') || query.includes('hindi')) {
-    detectedLang = 'hi';
+  if (/[\u0980-\u09FF]/.test(query) || query.includes('বাংলা') || query.includes('bengali') || query.includes('অসমীয়া')) {
+    detectedLang = (query.includes('অসমীয়া') || currentState.language === 'as') ? 'as' : 'bn';
+  } else if (/[\u0900-\u097F]/.test(query)) {
+    const devanagariLangs = ['hi', 'mr', 'sa', 'kok', 'mai', 'ne', 'brx', 'doi'];
+    detectedLang = devanagariLangs.includes(currentState.language) ? currentState.language : 'hi';
   } else if (/[\u0B80-\u0BFF]/.test(query) || query.includes('தமிழ்') || query.includes('tamil')) {
     detectedLang = 'ta';
   } else if (/[\u0C00-\u0C7F]/.test(query) || query.includes('తెలుగు') || query.includes('telugu')) {
     detectedLang = 'te';
+  } else if (/[\u0C80-\u0CFF]/.test(query) || query.includes('ಕನ್ನಡ') || query.includes('kannada')) {
+    detectedLang = 'kn';
+  } else if (/[\u0D00-\u0D7F]/.test(query) || query.includes('മലയാളം') || query.includes('malayalam')) {
+    detectedLang = 'ml';
+  } else if (/[\u0A80-\u0AFF]/.test(query) || query.includes('ગુજરાતી') || query.includes('gujarati')) {
+    detectedLang = 'gu';
+  } else if (/[\u0A00-\u0A7F]/.test(query) || query.includes('ਪੰਜਾਬੀ') || query.includes('punjabi')) {
+    detectedLang = 'pa';
+  } else if (/[\u0B00-\u0B7F]/.test(query) || query.includes('ଓଡ଼ିଆ') || query.includes('odia')) {
+    detectedLang = 'or';
+  } else if (/[\u0600-\u06FF]/.test(query) || query.includes('اردو') || query.includes('urdu')) {
+    const rtlLangs = ['ur', 'sd', 'ks'];
+    detectedLang = rtlLangs.includes(currentState.language) ? currentState.language : 'ur';
+  } else if (/[\u1C50-\u1C7F]/.test(query)) {
+    detectedLang = 'sat';
+  } else if (/[\uABC0-\uABFF]/.test(query)) {
+    detectedLang = 'mni';
   }
 
   // Convert Bengali and Devanagari numerals into ASCII digits
@@ -110,7 +145,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
   } else if (/\b(sal|salin|salinity|salt|psu|halocline|লবণাক্ততা|लवणता)\b/i.test(q)) {
     targetParam = 'salinity';
     paramSpecified = true;
-  } else if (/\b(current|currents|velocity|flow|shear|vector|vectors|স্রোত|ধারা)\b/i.test(q)) {
+  } else if (/\b(currents|velocity|flow|shear|vector|vectors|স্রোত|ধারা)\b/i.test(q) || (/\bcurrent\b/i.test(q) && !/\bcurrent\s*(?:condition|conditions|situation|status|state|weather|overview)\b/i.test(q))) {
     targetParam = 'currents';
     paramSpecified = true;
   } else if (/\b(wave|waves|swell|surge|breaker|sea state|ঢেউ|तरंग)\b/i.test(q)) {
@@ -383,7 +418,7 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
   const toolResults = [];
   let primaryData = null;
   let message = '';
-  const suggestions = [];
+  let suggestions = [];
   const provenance = [];
   const dataPointsUsed = [];
 
@@ -436,59 +471,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
       actions.push({ type: 'SET_BASIN', value: predictionData.basinId, label: predictionData.basin });
     }
 
-    const storm = predictionData.activeStorm;
-    const outlook = predictionData.threeDayOutlook;
-    const beachList = predictionData.beachForecasts;
-
-    if (lang === 'bn') {
-      message = `📍 **আবহাওয়া ও ঝড় পূর্বাভাস:** **${predictionData.location}** (${predictionData.coordinates}) — **${predictionData.basin}**\n\n` +
-        `⚠️ **ঝড়ের ঝুঁকি মাত্রা:** **${predictionData.threatLevel}** (${predictionData.stormProbability}% ঝুঁকি)\n` +
-        `- **সক্রিয় আবহাওয়া ব্যবস্থা:** **${storm.name}** (*${storm.category}*)\n` +
-        `- **বাতাসের গতিবেগ:** ${predictionData.windSpeedKmH} | **বায়ুমণ্ডলীয় চাপ:** ${predictionData.pressure}\n` +
-        `- **বৃষ্টিপাতের সম্ভাবনা:** **${predictionData.rainProbability}%** (${storm.rainfallForecast})\n` +
-        `- **সমুদ্রের ঢেউ ও জলোচ্ছ্বাস:** ${predictionData.waveHeight} (স্বাভাবিকের চেয়ে ${storm.surge})\n` +
-        `- **পৃষ্ঠের তাপমাত্রা (SST):** ${predictionData.seaSurfaceTemperature} (${predictionData.cyclogenesisPotential})\n\n` +
-        `📅 **৩ দিনের সামুদ্রিক পূর্বাভাস:**\n` +
-        `- **আজ:** ${outlook[0].condition} | বৃষ্টি: ${outlook[0].rainProbability}% | বাতাস: ${outlook[0].windSpeedKmH} km/h | ঢেউ: ${outlook[0].waveHeight}\n` +
-        `- **আগামীকাল:** ${outlook[1].condition} | বৃষ্টি: ${outlook[1].rainProbability}% | বাতাস: ${outlook[1].windSpeedKmH} km/h\n` +
-        `- **পরশু:** ${outlook[2].condition} | বৃষ্টি: ${outlook[2].rainProbability}%\n\n` +
-        (beachList.length > 0 ? `🏖️ **নিকটবর্তী উপকূলীয় সৈকত সতর্কতা:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): ${b.safetyFlag} | বৃষ্টি: ${b.rainProbability}% | ঢেউ: ${b.surfWaveHeight}m`).join('\n') : '');
-    } else if (lang === 'hi') {
-      message = `📍 **मौसम व चक्रवात पूर्वानुमान:** **${predictionData.location}** (${predictionData.coordinates}) — **${predictionData.basin}**\n\n` +
-        `⚠️ **तूफान जोखिम स्तर:** **${predictionData.threatLevel}** (${predictionData.stormProbability}% संभावना)\n` +
-        `- **सक्रिय मौसम प्रणाली:** **${storm.name}** (*${storm.category}*)\n` +
-        `- **हवा की गति:** ${predictionData.windSpeedKmH} | **वायुदाब:** ${predictionData.pressure}\n` +
-        `- **बारिश की संभावना:** **${predictionData.rainProbability}%** (${storm.rainfallForecast})\n` +
-        `- **समुद्री लहरें व ज्वार उभार:** ${predictionData.waveHeight} (${storm.surge})\n` +
-        `- **समुद्र सतह तापमान (SST):** ${predictionData.seaSurfaceTemperature} (${predictionData.cyclogenesisPotential})\n\n` +
-        `📅 **3-दिवसीय समुद्री दृष्टिकोण:**\n` +
-        `- **आज:** ${outlook[0].condition} | वर्षा: ${outlook[0].rainProbability}% | हवा: ${outlook[0].windSpeedKmH} km/h | लहरें: ${outlook[0].waveHeight}\n` +
-        `- **कल:** ${outlook[1].condition} | वर्षा: ${outlook[1].rainProbability}% | हवा: ${outlook[1].windSpeedKmH} km/h\n` +
-        `- **तीसरा दिन:** ${outlook[2].condition} | वर्षा: ${outlook[2].rainProbability}%\n\n` +
-        (beachList.length > 0 ? `🏖️ **तटीय समुद्र तट सुरक्षा अलर्ट:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): ${b.safetyFlag} | वर्षा: ${b.rainProbability}% | सर्फ लहरें: ${b.surfWaveHeight}m`).join('\n') : '');
-    } else {
-      const locPrefix = predictionData.isImplicitLocation 
-        ? `📍 **Current Active Location Telemetry:** **${predictionData.location}** (\`${predictionData.coordinates}\`)`
-        : `📍 **Target Coastal Sector:** **${predictionData.location}** (\`${predictionData.coordinates}\`) in the **${predictionData.basin}**`;
-
-      message = `${locPrefix}\n\n` +
-        `⚠️ **Storm & Cyclone Threat Level: \`${predictionData.threatLevel}\`** (${predictionData.stormProbability}% Probability)\n` +
-        `- **Active Weather System:** **${storm.name}** (*${storm.category}*)\n` +
-        `- **Wind & Pressure:** \`${predictionData.windSpeedKmH}\` | Barometric Pressure: \`${predictionData.pressure}\`\n` +
-        `- **Precipitation Probability:** **\`${predictionData.rainProbability}%\`** (${storm.rainfallForecast})\n` +
-        `- **Marine Wave Swell:** \`${predictionData.waveHeight}\` (Surge: \`${storm.surge}\`)\n` +
-        `- **Thermal Energy (SST):** \`${predictionData.seaSurfaceTemperature}\` (*${predictionData.cyclogenesisPotential}*)\n\n` +
-        `📅 **3-Day Forward Marine Outlook:**\n` +
-        `- **Today:** ${outlook[0].condition} | Rain: \`${outlook[0].rainProbability}%\` | Wind: \`${outlook[0].windSpeedKmH} km/h\` | Swell: \`${outlook[0].waveHeight}\`\n` +
-        `- **Tomorrow:** ${outlook[1].condition} | Rain: \`${outlook[1].rainProbability}%\` | Wind: \`${outlook[1].windSpeedKmH} km/h\`\n` +
-        `- **Day 3:** ${outlook[2].condition} | Rain: \`${outlook[2].rainProbability}%\`\n\n` +
-        (beachList.length > 0 ? `🏖️ **Coastal Beach & Harbor Status:**\n` + beachList.map(b => `- **${b.beachName}** (${b.location}): **${b.safetyFlag}** — Rain: \`${b.rainProbability}%\`, Breakers: \`${b.surfWaveHeight}m\``).join('\n') : '');
-    }
-
-    suggestions.push(`Show current vectors in ${predictionData.basin}`);
-    suggestions.push(`Check temperature profile`);
-    suggestions.push(`Compare Arabian Sea and Bay of Bengal`);
-    suggestions.push(`Inspect beach surf conditions`);
+    message = formatStormPrediction(predictionData, lang);
+    suggestions = getLocalizedSuggestions('storm', predictionData.basin, lang);
   }
 
   // -------------------------------------------------------------
@@ -516,42 +500,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
     dataPointsUsed.push(`Dissolved Oxygen: ${region.oxygen} mg/L`);
     dataPointsUsed.push(`Chlorophyll-a: ${region.chlorophyll} mg/m³`);
 
-    if (lang === 'bn') {
-      message = `📍 **${locName}** (${region.coords}) — **বর্তমান পরিস্থিতি:**\n\n` +
-        `- 🌡️ **পৃষ্ঠের তাপমাত্রা (SST):** **${region.sst}°C**\n` +
-        `- 🧂 **লবণাক্ততা:** **${region.salinity} PSU**\n` +
-        `- 🌊 **স্রোতের গতিবেগ:** **${region.currentSpeed} m/s**\n` +
-        `- 🏄 **ঢেউয়ের উচ্চতা:** **${region.waveHeight}m**\n` +
-        `- 💨 **বায়ুপ্রবাহ ও চাপ:** ${region.windSpeedKmH} km/h (${region.pressure} hPa)\n` +
-        `- 🧪 **দ্রবীভূত অক্সিজেন:** ${region.oxygen} mg/L\n` +
-        `- 🌿 **ক্লোরোফিল-এ:** ${region.chlorophyll} mg/m³\n` +
-        `- ⛈️ **আবহাওয়া অবস্থা:** ${region.activeStorm?.name || 'স্বাভাবিক প্রবাহ'} (${region.rainProbability}% বৃষ্টিপাতের সম্ভাবনা)`;
-    } else if (lang === 'hi') {
-      message = `📍 **${locName}** (${region.coords}) — **वर्तमान स्थिति:**\n\n` +
-        `- 🌡️ **समुद्र सतह तापमान (SST):** **${region.sst}°C**\n` +
-        `- 🧂 **लवणता:** **${region.salinity} PSU**\n` +
-        `- 🌊 **धाराओं का वेग:** **${region.currentSpeed} m/s**\n` +
-        `- 🏄 **तरंग ऊंचाई:** **${region.waveHeight}m**\n` +
-        `- 💨 **हवा की गति व दबाव:** ${region.windSpeedKmH} km/h (${region.pressure} hPa)\n` +
-        `- 🧪 **घुलित ऑक्सीजन:** ${region.oxygen} mg/L\n` +
-        `- 🌿 **क्लोरोफिल-ए:** ${region.chlorophyll} mg/m³\n` +
-        `- ⛈️ **मौसम प्रणाली:** ${region.activeStorm?.name || 'सामान्य समुद्री प्रवाह'} (${region.rainProbability}% वर्षा की संभावना)`;
-    } else {
-      message = `📍 **Current Physical Conditions:** **${locName}** (\`${region.coords}\`):\n\n` +
-        `- 🌡️ **Sea Surface Temperature (SST):** **\`${region.sst}°C\`**\n` +
-        `- 🧂 **Surface Salinity:** **\`${region.salinity} PSU\`**\n` +
-        `- 🌊 **Current Velocity:** **\`${region.currentSpeed} m/s\`**\n` +
-        `- 🏄 **Significant Wave Height:** **\`${region.waveHeight}m\`**\n` +
-        `- 💨 **Wind Speed & Pressure:** \`${region.windSpeedKmH} km/h\` (\`${region.pressure} hPa\`)\n` +
-        `- 🧪 **Dissolved Oxygen:** \`${region.oxygen} mg/L\`\n` +
-        `- 🌿 **Chlorophyll-a:** \`${region.chlorophyll} mg/m³\`\n` +
-        `- ⛈️ **Active Weather System:** **${region.activeStorm?.name || 'Nominal Flow'}** (\`${region.rainProbability}%\` rain probability)`;
-    }
-
-    suggestions.push(`Predict storms in ${locName}`);
-    suggestions.push('Show the temperature profile');
-    suggestions.push('Show current vectors in 3D');
-    suggestions.push('Compare Arabian Sea and Bay of Bengal');
+    message = formatGeneralConditions(region, locName, lang);
+    suggestions = getLocalizedSuggestions('conditions', locName, lang);
   }
 
   // -------------------------------------------------------------
@@ -564,109 +514,18 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
     const basinObj = resolveBasin(intent.basin || intent.contextBasin, null);
     const basinName = basinObj ? basinObj.name : (currentState.basin || 'Bay of Bengal');
 
-    if (intent.isGoodMorning) {
-      if (lang === 'bn') {
-        message = `শুভ সকাল! ☀️ আজ সমুদ্রের ডিজিটাল টুইন সম্পূর্ণরূপে সক্রিয় ও প্রস্তুত।\n\n**${basinName}**-এর আবহাওয়া ও উপগ্রহ ডেটা লাইভ পর্যবেক্ষণ করা হচ্ছে। আমি **Nerida**, আপনার এআই ওশান কোপাইলট — আজ আপনাকে কীভাবে সাহায্য করতে পারি? বর্তমান পৃষ্ঠতলের তাপমাত্রা, উল্লম্ব প্রোফাইল নাকি 3D জলস্তম্ভ দেখতে চান? 🌊`;
-      } else if (lang === 'hi') {
-        message = `शुभ प्रभात! ☀️ आज महासागर पूरी तरह जीवंत और गतिशील है।\n\n**${basinName}** के लिए सभी इन-सीटू सेंसर्स और उपग्रह डेटा तैयार हैं। मैं **नेरिडा (Nerida)** हूँ — बताइए, आज मैं आपके लिए क्या करूँ? क्या आप समुद्री सतह का तापमान, लवणता प्रोफाइल या 3D समुद्र का दृश्य देखना चाहेंगे? 🌊`;
-      } else {
-        message = `Good morning! ☀️ The ocean is awake and dynamic today.\n\nAll autonomous monitoring buoys, Argo floats, and 3D digital-twin telemetry are live and calibrated for **${basinName}**.\n\nI'm **Nerida**, your AI Ocean Copilot — what can I do for you today? Would you like to check current sea surface temperatures, inspect vertical salinity profiles, or explore the 3D subsurface view? 🌊`;
-      }
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push(`What marine life is found in ${basinName}?`);
-      suggestions.push('Show current vectors');
-    } else if (intent.isGoodNight) {
-      if (lang === 'bn') {
-        message = `শুভ রাত্রি! 🌙 শান্তিময় বিশ্রাম নিন।\n\nসারা রাত ধরে আমাদের গভীর সমুদ্রের সেন্সর, আর্গো ফ্লোট এবং মোর্ড বায়াগুলো নিরবচ্ছিন্নভাবে সমুদ্রের স্রোত, তাপমাত্রা ও জোয়ার-ভাটার গতিবিধি পর্যবেক্ষণ করবে।\n\nপরবর্তীতে ফিরে এলে আমি সর্বশেষ সমুদ্রের তথ্য নিয়ে প্রস্তুত থাকব। শুভকামনা ও মিষ্টি স্বপ্ন! 🌊✨`;
-      } else if (lang === 'hi') {
-        message = `शुभ रात्रि! 🌙 अच्छी और सुकून भरी नींद लें।\n\nरात भर हमारे वैश्विक फ्लोट नेटवर्क, गहरे समुद्र के बुआए और सेंसर्स महासागरीय धाराओं व तापमान पर नज़र रखेंगे।\n\nकल जब भी आप लौटेंगे, मैं आपके लिए ताज़ा महासागरीय विश्लेषण तैयार रखूँगी। शुभ रात्रि और मीठे सपने! 🌊✨`;
-      } else {
-        message = `Good night! 🌙 Rest well.\n\nOur global ocean observing fleet, autonomous Argo floats, and moored buoys will continue silently tracking ocean currents, tides, and thermocline shifts through the night.\n\nWhenever you return, I'll have the latest ocean intelligence and 3D simulations ready for you. Smooth sailing and sweet dreams! 🌊✨`;
-      }
-      suggestions.push(`Show SST in ${basinName}`);
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Assess storm & swell risk');
-      suggestions.push('Show current vectors');
-    } else if (intent.isHowAreYou) {
-      if (lang === 'bn') {
-        message = `আমি দারুণ আছি, জিজ্ঞাসা করার জন্য ধন্যবাদ! 🌊\n\nআমাদের সমস্ত ডিজিটাল টুইন মডেল, থার্মোডাইনামিক সমীকরণ ও ওশান বায়াগুলো খুব সুন্দরভাবে কাজ করছে।\n\nআমি সম্পূর্ণ প্রস্তুত — আজ আপনার জন্য কী করতে পারি? আপনি কি **${basinName}**-এর বর্তমান অবস্থা দেখতে চান, ঝড়ের ঝুঁকি যাচাই করতে চান, নাকি 3D জলস্তম্ভে ডুব দিতে চান?`;
-      } else if (lang === 'hi') {
-        message = `मैं बहुत बढ़िया हूँ, पूछने के लिए धन्यवाद! 🌊\n\nहमारे सभी डिजिटल ट्विन मॉडल्स, हाइड्रोडायनामिक इक्वेशंस और इन-सीटू सेंसर्स सुचारू रूप से कार्य कर रहे हैं।\n\nबताइए, आज मैं आपके लिए क्या करूँ? क्या आप **${basinName}** की स्थिति देखना चाहते हैं, चक्रवात का अलर्ट जाँचना चाहते हैं, या 3D समुद्र दृश्य का अन्वेषण करना चाहते हैं?`;
-      } else {
-        message = `I'm doing wonderful, thank you for asking! 🌊\n\nAll digital-twin hydrographic models, TEOS-10 equations, and in-situ sensor streams are running smoothly.\n\nI'm ready to dive in — what can I do for you today? Would you like to inspect conditions in **${basinName}**, check storm threat alerts, or fly through the 3D water column?`;
-      }
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push('Compare Arabian Sea and Bay of Bengal');
-      suggestions.push('Show 3D current vectors');
-    } else if (intent.isCompliment) {
-      if (lang === 'bn') {
-        message = `আপনাকে অনেক ধন্যবাদ! 😊 আপনার সাথে সমুদ্রবিজ্ঞান অন্বেষণ করতে পেরে আমি আনন্দিত। নতুন কোনো অঞ্চল বিশ্লেষণ করতে চাইলে বা 3D ভিউ দেখতে চাইলে যেকোনো সময় বলুন! 🌊`;
-      } else if (lang === 'hi') {
-        message = `बहुत-बहुत धन्यवाद! 😊 आपके साथ महासागर का अध्ययन और अन्वेषण करना बहुत सुखद है। जब भी आप किसी नए बेसिन या 3D दृश्य का विश्लेषण करना चाहें, बस मुझे बताएं! 🌊`;
-      } else {
-        message = `Thank you so much! 😊 It's an absolute pleasure exploring and analyzing our oceans with you. Let me know whenever you'd like to check out another basin, examine depth stratifications, or see the 3D current vectors in action! 🌊`;
-      }
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push(`What marine life is found in ${basinName}?`);
-    } else if (intent.isGoodDay) {
-      if (lang === 'bn') {
-        message = `শুভ দিন! 🌊 **${basinName}**-এর সমস্ত সমুদ্রবিজ্ঞান সেন্সর লাইভ ডেটা পাঠাচ্ছে। আমি **Nerida** — আপনি এখন কী অন্বেষণ বা বিশ্লেষণ করতে চান?`;
-      } else if (lang === 'hi') {
-        message = `शुभ दिन! 🌊 **${basinName}** के सभी समुद्री सेंसर्स लाइव डेटा भेज रहे हैं। मैं **नेरिडा** हूँ — बताइए, अभी आप क्या देखना या समझना चाहेंगे?`;
-      } else {
-        message = `Good day! 🌊 All oceanographic sensors and numerical models for **${basinName}** are reporting live telemetry. I'm **Nerida** — what would you like to explore or analyze right now?`;
-      }
-      suggestions.push(`Show SST in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push('Show current vectors');
-    } else if (intent.isLanguageSwitchOnly || query.includes('বাংলায় বলো')) {
-      if (lang === 'bn') {
-        message = `অবশ্যই! আমি এখন থেকে আপনার সাথে বাংলায় আলোচনা করব।\n\nআমি **Nerida**, Ocean Vision 3D-এর ডিজিটাল টুইন কোপাইলট। আপনি আমাকে সমুদ্রের তাপমাত্রা, লবণাক্ততা, স্রোতের গতিবেগ, উল্লম্ব গভীরতা প্রোফাইল বা বিভিন্ন বেসিনের তুলনামূলক তথ্য জিজ্ঞাসা করতে পারেন।`;
-      } else {
-        message = `Understood! I will communicate in your preferred language.\n\nI am **Nerida**, your Ocean Vision 3D digital-twin copilot. Ask me about sea surface temperature, salinity, currents, depth profiles, or basin comparisons.`;
-      }
-      suggestions.push(`Show SST in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push('Show current vectors');
-    } else if (intent.isIdentityOrHelp) {
-      if (lang === 'bn') {
-        message = `নমস্কার! আমি **Nerida**, Ocean Vision 3D-এর এআই ওশানোগ্রাফিক কোপাইলট। 🌊\n\nআমি আপনাকে কীভাবে সাহায্য করতে পারি এবং কী কী করতে পারি:\n- 🌊 **সমুদ্রের ভৌত চলক:** তাপমাত্রা (SST), লবণাক্ততা, সমুদ্রস্রোত, ঢেউ, ক্লোরোফিল এবং দ্রবীভূত অক্সিজেন পরিমাপ।\n- 📏 **গভীরতা প্রোফাইল:** পৃষ্ঠ থেকে ৬০০০ মিটার পর্যন্ত জলস্তম্ভের বিশ্লেষণ (থার্মোক্লাইন ও হ্যালোক্লাইন)।\n- ⚖️ **বেসিন তুলনা:** বঙ্গোপসাগর ও আরব সাগরের আবহাওয়া ও সমুদ্রগত পরিস্থিতির তুলনা।\n- 🔍 **অস্বাভাবিকতা নির্ণয়:** ৩০ বছরের জলবায়ু বেসলাইনের বিপরীতে থার্মাল অ্যানোমালি শনাক্তকরণ।\n- 🎮 **3D ডিজিটাল টুইন নিয়ন্ত্রণ:** নির্দিষ্ট বেসিন, গভীরতার স্লাইস বা 3D ভেক্টর ফিল্ড সক্রিয় করা।\n\nআজ আমি আপনার জন্য কী করতে পারি? নিচের যেকোনো অপশন বেছে নিতে পারেন!`;
-      } else if (lang === 'hi') {
-        message = `नमस्ते! मैं **नेरिडा (Nerida)** हूँ, Ocean Vision 3D के लिए आपकी एআই ओशनोग्राफिक कोपायलट। 🌊\n\nमैं इन कार्यों में आपकी पूरी सहायता कर सकती हूँ:\n- 🌊 **भौतिक पैरामीटर:** सतह तापमान (SST), लवणता, समुद्री धाराएं, तरंगें, क्लोरोफिल और घुलित ऑक्सीजन।\n- 📏 **गहराई प्रोफाइल:** सतह से 6000 मीटर तक का जल-स्तंभ विश्लेषण।\n- ⚖️ **बेसिन तुलना:** बंगाल की खाड़ी और अरब सागर के बीच तुलना।\n- 🔍 **विसंगति विश्लेषण:** 30-वर्षीय क्लाइमेटोलॉजिकल बेसलाइन के विरुद्ध मरीन हीटवेव की पहचान।\n- 🎮 **3D डिजिटल ट्विन नियंत्रण:** विभिन्न बेसिन, गहराई स्लाइस या 3D वेक्टर दृश्य प्रदर्शित करना।\n\nबताइए, आज मैं आपके लिए क्या कर सकती हूँ?`;
-      } else {
-        message = `Hello! I'm **Nerida**, your AI Ocean Copilot and interactive companion for **Ocean Vision 3D**. 🌊\n\nHere is how I can assist your exploration today:\n- 🌊 **Physical Telemetry:** Query real observations and TEOS-10 models for Temperature (SST), Salinity, Currents, Wave Swell, Chlorophyll-a, and Dissolved Oxygen.\n- 📏 **Vertical Column Profiles:** Analyze thermocline and halocline stratification from the surface down to 6,000m.\n- ⚖️ **Multi-Basin Comparisons:** Compare environmental dynamics between the Arabian Sea, Bay of Bengal, Equatorial Pacific, and other basins.\n- 🔍 **Anomaly Diagnostics:** Detect marine heatwaves and physical deviations against 30-year climatological baselines.\n- 🎮 **Digital Twin Teleoperation:** Directly navigate the 3D viewer, adjust depth slices, or activate 3D current vector fields.\n\nWhat can I do for you today? Try picking a suggestion below or asking me anything!`;
-      }
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push('Compare Arabian Sea and Bay of Bengal');
-      suggestions.push('Show current vectors');
-    } else if (intent.isPoliteClosing) {
-      if (lang === 'bn') {
-        message = `আপনাকেও অনেক ধন্যবাদ! সমুদ্রের ডিজিটাল টুইন সম্পর্কে আরও কোনো প্রশ্ন থাকলে নির্দ্বিধায় জিজ্ঞাসা করুন। শুভকামনা! 🌊`;
-      } else if (lang === 'hi') {
-        message = `आपका बहुत-बहुत धन्यवाद! डिजिटल ट्विन के बारे में कोई और प्रश्न हो तो अवश्य पूछें। शुभ यात्रा! 🌊`;
-      } else {
-        message = `You are very welcome! If you need further oceanographic analysis or 3D navigation, I'm right here. Smooth sailing! 🌊`;
-      }
-      suggestions.push(`Show SST in ${basinName}`);
-      suggestions.push('Assess storm & swell risk');
-    } else {
-      // Standard Greeting ("hello", "hi", "hey", etc.)
-      if (lang === 'bn') {
-        message = `নমস্কার! আমি **Nerida**, Ocean Vision 3D-এর এআই ওশান কোপাইলট। আমি বর্তমানে **${basinName}** পর্যবেক্ষণ করছি।\n\nআজ আপনাকে কীভাবে সাহায্য করতে পারি? আপনি কি সমুদ্রের তাপমাত্রা, লবণাক্ততা, স্রোত, উল্লম্ব গভীরতা প্রোফাইল দেখতে চান নাকি 3D ডিজিটাল টুইন অন্বেষণ করতে চান? 🌊`;
-      } else if (lang === 'hi') {
-        message = `नमस्ते! मैं **नेरिडा (Nerida)** हूँ, Ocean Vision 3D की एआई ओशन कोपायलट। मैं इस समय **${basinName}** पर नज़र रख रही हूँ।\n\nबताइए, आज मैं आपके लिए क्या कर सकती हूँ? क्या आप समुद्री स्थिति, तापमान, लवणता, गहराई प्रोफाइल या 3D दृश्य देखना चाहेंगे? 🌊`;
-      } else {
-        message = `Hello! I'm **Nerida**, your AI Ocean Copilot. I'm currently tracking ocean dynamics in the **${basinName}**.\n\nWhat can I do for you today? We can explore sea surface temperature, salinity, currents, vertical depth profiles, or take a flythrough of the 3D ocean view! 🌊`;
-      }
-      suggestions.push(`Explain current conditions in ${basinName}`);
-      suggestions.push('Show the temperature profile');
-      suggestions.push(`What marine life is found in ${basinName}?`);
-      suggestions.push('Show current vectors');
-    }
+    let subType = 'welcome';
+    if (intent.isGoodMorning) subType = 'goodMorning';
+    else if (intent.isGoodNight) subType = 'goodNight';
+    else if (intent.isHowAreYou) subType = 'howAreYou';
+    else if (intent.isCompliment) subType = 'compliment';
+    else if (intent.isGoodDay) subType = 'goodDay';
+    else if (intent.isLanguageSwitchOnly || query.includes('বাংলায় বলো')) subType = 'langSwitch';
+    else if (intent.isIdentityOrHelp) subType = 'identity';
+    else if (intent.isPoliteClosing) subType = 'closing';
+
+    message = formatConversational(subType, basinName, lang);
+    suggestions = getLocalizedSuggestions('conversational', basinName, lang);
   }
 
   // -------------------------------------------------------------
@@ -714,34 +573,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
       basinFauna = 'Pelagic apex predators, migratory cetaceans, cephalopods, and diverse zooplankton communities.';
     }
 
-    if (lang === 'bn') {
-      message = `**${basinName}**-এর **${depthMeters}m** গভীরতায় সামুদ্রিক জীববৈচিত্র্য ও বাস্তুসংস্থান:\n\n` +
-        `🌊 **গভীরতা অঞ্চল:** ${depthZone}\n` +
-        `- *পরিবেশগত অবস্থা:* ${depthDescription}\n` +
-        `- *প্রতিনিধিত্বশীল গভীর জলচর প্রাণী:* ${zoneOrganisms}\n\n` +
-        `🐟 **বেসিন-নির্দিষ্ট সামুদ্রিক প্রাণী:**\n${basinFauna}\n\n` +
-        `💡 *বিশেষ দ্রষ্টব্য:* এই বিবরণটি অঞ্চলটির বৈজ্ঞানিক সামুদ্রিক বাস্তুসংস্থানের সাধারণ কাঠামোর ওপর ভিত্তি করে প্রস্তুত। Ocean Vision 3D ভৌত সেন্সর ডেটা (তাপমাত্রা, লবণাক্ততা, স্রোত) পর্যবেক্ষণ করে, তবে এই নির্দিষ্ট স্থানাঙ্কে লাইভ প্রজাতি সেন্সর নেই।`;
-    } else if (lang === 'hi') {
-      message = `**${basinName}** में **${depthMeters}m** गहराई पर समुद्री जीवन और पारिस्थितिकी तंत्र:\n\n` +
-        `🌊 **गहराई क्षेत्र:** ${depthZone}\n` +
-        `- *पर्यावरणीय स्थिति:* ${depthDescription}\n` +
-        `- *प्रमुख समुद्री जीव:* ${zoneOrganisms}\n\n` +
-        `🐟 **क्षेत्रीय समुद्री जीव:**\n${basinFauna}\n\n` +
-        `💡 *वैज्ञानिक टिप्पणी:* यह जानकारी क्षेत्रीय समुद्री जीवविज्ञान अनुसंधान पर आधारित है। Ocean Vision 3D भौतिक डेटा प्रदान करता है, लेकिन इस सटीक बिंदु पर रीयल-टाइम प्रजाति-स्तरीय सेंसर मौजूद नहीं है।`;
-    } else {
-      message = `Marine life and ecological communities in the **${basinName}** around **${depthMeters}m** depth:\n\n` +
-        `🌊 **Ecological Zone: ${depthZone}**\n` +
-        `- *Environmental Habitat:* ${depthDescription}\n` +
-        `- *Characteristic Organisms:* ${zoneOrganisms}\n\n` +
-        `🐟 **Regional Ecosystem Fauna:**\n${basinFauna}\n\n` +
-        `> [!NOTE]\n` +
-        `> **Scientific Scope Caveat:** This ecological overview reflects established marine science research for the **${basinName}** at **${depthMeters}m**. Ocean Vision 3D provides physical sensor telemetry (SST, salinity, currents, wave swell, chlorophyll, oxygen) but does not maintain a live species-level tracking sensor at these exact coordinates.`;
-    }
-
-    suggestions.push(`What is the temperature at ${depthMeters}m?`);
-    suggestions.push(`What is the salinity there?`);
-    suggestions.push(`Show the temperature profile`);
-    suggestions.push(`Compare with ${basinName.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`);
+    message = formatMarineBiology(basinName, depthMeters, depthZone, depthDescription, zoneOrganisms, basinFauna, lang);
+    suggestions = getLocalizedSuggestions('marineLife', basinName, lang);
   }
 
   // -------------------------------------------------------------
@@ -785,10 +618,7 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
     }
 
     message = conceptExplanation;
-    suggestions.push('Show the temperature profile');
-    suggestions.push(`What is the salinity in ${basinName}?`);
-    suggestions.push('Compare Arabian Sea and Bay of Bengal');
-    suggestions.push('Show current vectors');
+    suggestions = getLocalizedSuggestions('general', basinName, lang);
   }
 
   // -------------------------------------------------------------
@@ -798,18 +628,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
   else if (intent.category === 'OUT_OF_DOMAIN') {
     provenance.push({ type: 'AI-DERIVED', label: 'Nerida Scope Enforcer' });
 
-    if (lang === 'bn') {
-      message = `এটি আমার সমুদ্রবিজ্ঞান ও সামুদ্রিক ডেটা সম্পর্কিত পরিধির বাইরে।\n\nআমি আপনাকে সমুদ্রের অবস্থা, তাপমাত্রা (SST), লবণাক্ততা, স্রোত, উল্লম্ব প্রোফাইল, সামুদ্রিক বাস্তুসংস্থান বা 3D ডিজিটাল টুইন নিয়ন্ত্রণে সহায়তা করতে পারি।`;
-    } else if (lang === 'hi') {
-      message = `यह मेरे समुद्र विज्ञान विषय के दायरे से बाहर है।\n\nमैं आपको समुद्री स्थिति, तापमान (SST), लवणता, समुद्री धाराएं, वर्टिकल प्रोफाइल, समुद्री पारिस्थितिकी तंत्र या 3D डिजिटल ट्विन विज़ुअलाइज़ेशन में सहायता कर सकती हूँ।`;
-    } else {
-      message = `That's outside my oceanographic domain. I can help with ocean conditions, marine science, marine ecosystems, oceanographic telemetry, and 3D digital-twin visualization.`;
-    }
-
-    suggestions.push('Explain Current Conditions');
-    suggestions.push('What marine life is found in this basin?');
-    suggestions.push('Show the temperature profile');
-    suggestions.push('Compare BoB vs Arabian Sea');
+    message = formatOutOfDomain(lang);
+    suggestions = getLocalizedSuggestions('outOfDomain', currentState.basin || 'Bay of Bengal', lang);
   }
 
   // -------------------------------------------------------------
@@ -821,18 +641,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
     const basinObj = resolveBasin(intent.basin || intent.contextBasin, null);
     const bName = basinObj ? basinObj.name : (currentState.basin || 'Bay of Bengal');
 
-    if (lang === 'bn') {
-      message = `আমি ঠিক বুঝতে পারিনি, তবে আমি আপনাকে সাহায্য করতে প্রস্তুত! 🌊\n\nআপনি আমাকে নিচের বিষয়গুলো জিজ্ঞাসা করতে পারেন:\n- *"${bName}-এর বর্তমান পরিস্থিতি ব্যাখ্যা করো"*\n- *"${bName}-এ ৫০০ মিটারে তাপমাত্রা কত?"*\n- *"${bName}-এ কী কী সামুদ্রিক প্রাণী বাস করে?"*\n- *"তাপমাত্রার উল্লম্ব প্রোফাইল দেখাও"*\n- *"3D-তে সমুদ্রস্রোত প্রদর্শন করো"*\n\nআজ আপনি কী অন্বেষণ করতে চান?`;
-    } else if (lang === 'hi') {
-      message = `मैं इसे पूरी तरह समझ नहीं पाई, लेकिन मैं आपकी सहायता के लिए तैयार हूँ! 🌊\n\nआप मुझसे इस तरह के प्रश्न पूछ सकते हैं:\n- *"${bName} की वर्तमान स्थिति समझाएं"*\n- *"${bName} में 500m पर तापमान कितना है?"*\n- *"${bName} में कौन से समुद्री जीव पाए जाते हैं?"*\n- *"तापमान का वर्टिकल प्रोफाइल दिखाएं"*\n- *"3D में महासागरीय धाराएं प्रदर्शित करें"*\n\nबताइए, आज आप क्या देखना चाहेंगे?`;
-    } else {
-      message = `I didn't quite catch that, but I'm right here and ready to help! 🌊\n\nYou can ask me things like:\n- *"Explain current conditions in ${bName}"*\n- *"What is the temperature at 500m in ${bName}?"*\n- *"What marine life is found in ${bName}?"*\n- *"Show the temperature profile"*\n- *"Compare Arabian Sea and Bay of Bengal"*\n- Or *"Show current vectors in 3D"*!\n\nWhat can I do for you today?`;
-    }
-
-    suggestions.push(`Explain current conditions in ${bName}`);
-    suggestions.push(`What is the temperature at 500m?`);
-    suggestions.push('Show the temperature profile');
-    suggestions.push('Show current vectors');
+    message = formatUnknown(bName, lang);
+    suggestions = getLocalizedSuggestions('unknown', bName, lang);
   }
 
   // -------------------------------------------------------------
@@ -876,18 +686,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
       });
     }
 
-    if (lang === 'bn') {
-      message = `**${compData.basin1.name}** এবং **${compData.basin2.name}** এর মধ্যে **${intent.depth}m** গভীরতায় **${compData.parameterName}** তুলনা:\n\n- **${compData.basin1.name}:** ${compData.basin1.value} ${compData.unit}\n- **${compData.basin2.name}:** ${compData.basin2.value} ${compData.unit}\n- **পার্থক্য:** ${compData.difference} ${compData.unit} (**${compData.higherBasin}**-এ মান বেশি)।\n\n💡 *বৈজ্ঞানিক ব্যাখ্যা:* ${compData.scientificRationale}`;
-    } else if (lang === 'hi') {
-      message = `**${compData.basin1.name}** और **${compData.basin2.name}** के बीच **${intent.depth}m** गहराई पर **${compData.parameterName}** की तुलना:\n\n- **${compData.basin1.name}:** ${compData.basin1.value} ${compData.unit}\n- **${compData.basin2.name}:** ${compData.basin2.value} ${compData.unit}\n- **अंतर:** ${compData.difference} ${compData.unit} (**${compData.higherBasin}** में अधिक है)।\n\n💡 *वैज्ञानिक कारण:* ${compData.scientificRationale}`;
-    } else {
-      message = `Comparing **${compData.parameterName}** at **${intent.depth}m** depth between **${compData.basin1.name}** and **${compData.basin2.name}**:\n\n- **${compData.basin1.name}:** \`${compData.basin1.value} ${compData.unit}\`\n- **${compData.basin2.name}:** \`${compData.basin2.value} ${compData.unit}\`\n- **Net Difference:** \`${compData.difference} ${compData.unit}\` (**${compData.higherBasin}** is higher).\n\n💡 **Scientific Oceanographic Mechanism:**\n${compData.scientificRationale}`;
-    }
-
-    suggestions.push(`What about ${intent.depth === 500 ? '1000' : '500'}m?`);
-    suggestions.push(`Show ${compData.basin1.name} profile`);
-    suggestions.push(`Show ${compData.basin2.name} profile`);
-    suggestions.push(`Show current vectors`);
+    message = formatComparison(compData, intent.depth, lang);
+    suggestions = getLocalizedSuggestions('compare', compData.basin1.name, lang);
   }
 
   // -------------------------------------------------------------
@@ -918,17 +718,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
 
     actions.push({ type: 'SHOW_ANOMALY' });
 
-    if (lang === 'bn') {
-      message = `**${anomalyData.location}**-এ **${anomalyData.depth}m** গভীরতায় **${anomalyData.parameterName}** অ্যানোমালি ডায়াগনস্টিক:\n\n- **পর্যবেক্ষিত মান:** ${anomalyData.currentValue} ${anomalyData.unit}\n- **৩০ বছরের গড় বেসলাইন:** ${anomalyData.baseline} ${anomalyData.unit}\n- **বিচ্যুতি:** **${anomalyData.anomaly} ${anomalyData.unit}** (তীব্রতা: **${anomalyData.severity}**)\n- **মডেল কনফিডেন্স:** ${anomalyData.confidence}\n\n💡 *ডায়াগনস্টিক সারসংক্ষেপ:* ${anomalyData.diagnosticSummary}`;
-    } else if (lang === 'hi') {
-      message = `**${anomalyData.location}** में **${anomalyData.depth}m** गहराई पर **${anomalyData.parameterName}** विसंगति विश्लेषण:\n\n- **अवलोकित मान:** ${anomalyData.currentValue} ${anomalyData.unit}\n- **30-वर्षीय बेसलाइन:** ${anomalyData.baseline} ${anomalyData.unit}\n- **विसंगति:** **${anomalyData.anomaly} ${anomalyData.unit}** (गंभीरता: **${anomalyData.severity}**)\n- **मॉडल विश्वास:** ${anomalyData.confidence}\n\n💡 *डायग्नोस्टिक सारांश:* ${anomalyData.diagnosticSummary}`;
-    } else {
-      message = `Physical anomaly analysis for **${anomalyData.parameterName}** in **${anomalyData.location}** at **${anomalyData.depth}m** depth:\n\n- **Observed In-Situ:** \`${anomalyData.currentValue} ${anomalyData.unit}\`\n- **30-Year Climatological Baseline:** \`${anomalyData.baseline} ${anomalyData.unit}\`\n- **Anomaly Deviation:** **\`${anomalyData.anomaly} ${anomalyData.unit}\`** (Severity: **${anomalyData.severity}**)\n- **Ensemble Confidence:** \`${anomalyData.confidence}\`\n\n💡 **Diagnostic Overview:**\n${anomalyData.diagnosticSummary}`;
-    }
-
-    suggestions.push(`Compare with ${intent.basin.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`);
-    suggestions.push(`Show vertical profile`);
-    suggestions.push(`What about 500m?`);
+    message = formatAnalysis(anomalyData, lang);
+    suggestions = getLocalizedSuggestions('analysis', anomalyData.location, lang);
   }
 
   // -------------------------------------------------------------
@@ -977,17 +768,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
     provenance.push({ type: 'SIMULATED', label: '3D WebGL Digital Twin Telemetry' });
     dataPointsUsed.push(`Active View: ${changes.join(' | ')}`);
 
-    if (lang === 'bn') {
-      message = `3D ডিজিটাল টুইন সফলভাবে আপডেট করা হয়েছে: ${changes.join(', ')}।`;
-    } else if (lang === 'hi') {
-      message = `3D डिजिटल ट्विन दृश्य सफलतापूर्वक अपडेट किया गया: ${changes.join(', ')}।`;
-    } else {
-      message = `The 3D digital twin has updated: ${changes.join(', ')}.`;
-    }
-
-    suggestions.push(`What is the ${intent.param} there?`);
-    suggestions.push(`What marine life is found there?`);
-    suggestions.push(`Show the temperature profile`);
+    message = formatViewCommand(changes, lang);
+    suggestions = getLocalizedSuggestions('view', currentState.basin || 'Bay of Bengal', lang);
   }
 
   // -------------------------------------------------------------
@@ -1022,17 +804,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
       if (intent.basinSpecified) actions.push({ type: 'SET_BASIN', value: intent.basin });
       if (intent.paramSpecified) actions.push({ type: 'SET_PARAMETER', value: intent.param });
 
-      if (lang === 'bn') {
-        message = `**${profileData.location}**-এর **${profileData.parameterName}** উল্লম্ব জলস্তম্ভ প্রোফাইল (০m থেকে ২০০০m):\n\n- **পৃষ্ঠ স্তর (0m):** ${profileData.values[0]} ${profileData.unit}\n- **মধ্যম গভীরতা (500m):** ${profileData.values[profileData.depths.indexOf(500)] || profileData.values[3]} ${profileData.unit}\n- **গভীর স্তর (2000m):** ${profileData.values[profileData.values.length - 1]} ${profileData.unit}\n- **থার্মোক্লাইন সীমানা:** ${profileData.thermoclineDepth}\n- **হ্যালোক্লাইন সীমানা:** ${profileData.haloclineDepth}`;
-      } else if (lang === 'hi') {
-        message = `**${profileData.location}** का **${profileData.parameterName}** वर्टिकल प्रोफाइल (0m से 2000m):\n\n- **सतह (0m):** ${profileData.values[0]} ${profileData.unit}\n- **मध्यम गहराई (500m):** ${profileData.values[profileData.depths.indexOf(500)] || profileData.values[3]} ${profileData.unit}\n- **गहरी परत (2000m):** ${profileData.values[profileData.values.length - 1]} ${profileData.unit}\n- **थर्मोक्लाइन सीमा:** ${profileData.thermoclineDepth}\n- **हैलोक्लाइन सीमा:** ${profileData.haloclineDepth}`;
-      } else {
-        message = `Vertical hydrographic column profile for **${profileData.parameterName}** in **${profileData.location}** (Surface to 2000m):\n\n- **Surface (0m):** \`${profileData.values[0]} ${profileData.unit}\`\n- **Intermediate (500m):** \`${profileData.values[profileData.depths.indexOf(500)] || profileData.values[3]} ${profileData.unit}\`\n- **Deep Layer (2000m):** \`${profileData.values[profileData.values.length - 1]} ${profileData.unit}\`\n\n💡 **Pycnocline Boundaries:**\n- **Main Thermocline:** ${profileData.thermoclineDepth}\n- **Barrier Layer Transition:** ${profileData.haloclineDepth}`;
-      }
-
-      suggestions.push(`Compare with ${intent.basin.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`);
-      suggestions.push(`What is the salinity there?`);
-      suggestions.push(`What marine life is found there?`);
+      message = formatProfile(profileData, lang);
+      suggestions = getLocalizedSuggestions('profile', profileData.location, lang);
     }
 
     // Sub-case B: Specific Point / Layer Ocean Measurement
@@ -1096,18 +869,8 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
         ? `${intent.matchedLocation} (${data.location})`
         : (intent.isImplicitLocation ? `your active region (${data.location})` : data.location);
 
-      if (lang === 'bn') {
-        message = `**${locDisplay}**-এ **${data.depth}m** গভীরতায় **${data.parameterName}** পরিমাপ:\n\n- **মান:** **${data.value} ${data.unit}**\n- **স্থানাঙ্ক:** ${data.coordinates}\n- **উৎস:** ${data.source}\n\n💡 *বৈজ্ঞানিক তাৎপর্য:* ${explanation}`;
-      } else if (lang === 'hi') {
-        message = `**${locDisplay}** में **${data.depth}m** गहराई पर **${data.parameterName}** का माप:\n\n- **मान:** **${data.value} ${data.unit}**\n- **निर्देशांक:** ${data.coordinates}\n- **स्रोत:** ${data.source}\n\n💡 *वैज्ञानिक व्याख्या:* ${explanation}`;
-      } else {
-        message = `In **${locDisplay}** at **${data.depth}m** depth, the **${data.parameterName}** is **\`${data.value} ${data.unit}\`**:\n\n- **Observed Value:** \`${data.value} ${data.unit}\`\n- **Coordinates:** \`${data.coordinates}\`\n- **Telemetry Source:** ${data.source}\n\n💡 **Oceanographic Insight:**\n${explanation}`;
-      }
-
-      suggestions.push(`What about ${data.depth === 500 ? '1000' : '500'}m?`);
-      suggestions.push(`What marine life is found there?`);
-      suggestions.push(`Show ${data.parameterName} profile`);
-      suggestions.push(`Compare with ${data.location.includes('Arabian') ? 'Bay of Bengal' : 'Arabian Sea'}`);
+      message = formatOceanQuery(data, explanation, locDisplay, lang);
+      suggestions = getLocalizedSuggestions('query', data.location, lang);
     }
   }
 

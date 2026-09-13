@@ -27,6 +27,7 @@ export async function sendCopilotMessage({
     viewMode: oceanContext.activeLayer?.viewMode,
     timestamp: oceanContext.simulationTime
   } : {});
+  state.language = language || state.language || 'en';
 
   try {
     const controller = new AbortController();

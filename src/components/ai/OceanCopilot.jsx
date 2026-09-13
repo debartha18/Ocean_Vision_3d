@@ -9,6 +9,7 @@ import MermaidMascot from './MermaidMascot';
 import { buildOceanContext } from '../../lib/ai/oceanContext';
 import { executeCopilotActions, executeToolCalls } from '../../lib/ai/toolRegistry';
 import { sendCopilotMessage } from '../../lib/ai/copilotClient';
+import { getCopilotLexicon } from '../../lib/ai/copilotTranslations';
 
 export default function OceanCopilot({
   activeRegion,
@@ -85,6 +86,8 @@ export default function OceanCopilot({
   });
 
   const currentLang = i18n?.language || 'en';
+  const L = getCopilotLexicon(currentLang);
+  const isRtl = ['ur', 'sd', 'ks'].includes(currentLang);
 
   const handleSendMessage = useCallback(async (textToSend) => {
     const query = typeof textToSend === 'string' ? textToSend : inputText;
@@ -120,7 +123,8 @@ export default function OceanCopilot({
           viewMode: viewMode,
           latitude: activeRegion?.latitude,
           longitude: activeRegion?.longitude,
-          rawRegion: activeRegion
+          rawRegion: activeRegion,
+          language: currentLang
         },
         language: currentLang,
         requestId
@@ -211,6 +215,7 @@ export default function OceanCopilot({
       {/* 2. Slide-Over / Docked Intelligence Panel */}
       {isOpen && (
         <div
+          dir={isRtl ? 'rtl' : 'ltr'}
           className={`fixed bottom-24 right-4 z-40 flex flex-col rounded-2xl border border-[#00E5FF]/25 hover:border-[#00E5FF]/40 bg-[#07131B]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out select-none ${
             isExpanded
               ? 'w-[660px] max-w-[96vw] h-[740px] max-h-[88vh]'
@@ -261,7 +266,7 @@ export default function OceanCopilot({
                     e.target.style.height = `${Math.min(e.target.scrollHeight, 80)}px`;
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask Nerida (e.g. 'Show SST at 100m in Arabian Sea')..."
+                  placeholder={L.ui?.placeholder || "Ask Nerida (e.g. 'Show SST at 100m in Arabian Sea')..."}
                   disabled={isLoading}
                   className="w-full bg-[#051118] text-[#E0E6E8] placeholder-[#5A7582] text-xs px-3.5 py-2.5 rounded-xl border border-[#00E5FF]/25 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/50 focus:shadow-[0_0_12px_rgba(0,229,255,0.2)] transition-all font-sans resize-none max-h-20"
                   style={{ minHeight: '38px' }}

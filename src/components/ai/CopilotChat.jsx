@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Bot, 
   User, 
@@ -15,6 +16,7 @@ import {
   Activity,
   Layers
 } from 'lucide-react';
+import { getCopilotLexicon } from '../../lib/ai/copilotTranslations.js';
 
 export default function CopilotChat({
   messages = [],
@@ -22,6 +24,10 @@ export default function CopilotChat({
   onSuggestionClick
 }) {
   const scrollRef = useRef(null);
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n?.language || 'en';
+  const L = getCopilotLexicon(currentLang);
+  const isRtl = ['ur', 'sd', 'ks'].includes(currentLang);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -30,7 +36,7 @@ export default function CopilotChat({
   }, [messages, isLoading]);
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3.5 text-[#CCD0CF] text-xs">
+    <div ref={scrollRef} dir={isRtl ? 'rtl' : 'ltr'} className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3.5 text-[#CCD0CF] text-xs">
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center my-auto py-8 text-center px-4">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00E5FF]/20 via-[#1687FF]/25 to-[#8B5CF6]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-[0_0_16px_rgba(0,229,255,0.25)] mb-3 relative group">
@@ -40,7 +46,7 @@ export default function CopilotChat({
             Nerida · AI Ocean Copilot
           </h4>
           <p className="text-[#8FA8B2] text-[11px] max-w-xs leading-relaxed mb-4">
-            Interactive digital-twin intelligence agent. Ask arbitrary questions, compare basins, inspect vertical profiles, or discover hydrographic anomalies.
+            {t('copilot.description', 'Interactive digital-twin intelligence agent. Ask arbitrary questions, compare basins, inspect vertical profiles, or discover hydrographic anomalies.')}
           </p>
           <div className="text-[10px] text-[#00E5FF] font-mono bg-[#05141D] px-3 py-1.5 rounded-xl border border-[#00E5FF]/25 shadow-[0_0_10px_rgba(0,229,255,0.08)]">
             OBSERVE → REASON → TOOL EXECUTION → DIGITAL TWIN MUTATION
@@ -61,7 +67,7 @@ export default function CopilotChat({
             <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] shadow-[0_0_6px_#00E5FF] animate-pulse"></span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#1687FF] shadow-[0_0_6px_#1687FF] animate-pulse delay-100"></span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6] shadow-[0_0_6px_#8B5CF6] animate-pulse delay-200"></span>
-            <span className="text-[10px] text-[#00E5FF]/90 font-mono ml-1">Nerida is thinking...</span>
+            <span className="text-[10px] text-[#00E5FF]/90 font-mono ml-1">{L.ui?.thinking || 'Nerida is thinking...'}</span>
           </div>
         </div>
       )}

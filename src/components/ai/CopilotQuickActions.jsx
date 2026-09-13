@@ -1,56 +1,33 @@
 import React from 'react';
-import { Compass, ShieldAlert, Brain, Scale, Globe, FileText, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Compass, ShieldAlert, Layers, Scale, Activity, Fish, Sparkles } from 'lucide-react';
+import { getLocalizedQuickActions, getCopilotLexicon } from '../../lib/ai/copilotTranslations.js';
 
 export default function CopilotQuickActions({ onSelectPrompt, disabled = false }) {
-  const actions = [
-    {
-      id: 'conditions',
-      icon: Compass,
-      label: 'Explain Current Conditions',
-      prompt: 'Explain current oceanographic and meteorological conditions for this basin in detail.'
-    },
-    {
-      id: 'storm_risk',
-      icon: ShieldAlert,
-      label: 'Assess Storm & Swell Risk',
-      prompt: 'Assess maritime storm threat, wave surge, and vessel navigation safety.'
-    },
-    {
-      id: 'anomaly',
-      icon: Brain,
-      label: 'Analyze Subsurface Anomaly',
-      prompt: 'Analyze subsurface thermal stratification, MLD, and oxygen minimum zones.'
-    },
-    {
-      id: 'compare',
-      icon: Scale,
-      label: 'Compare BoB vs Arabian Sea',
-      prompt: 'Compare Bay of Bengal versus Arabian Sea in salinity, stratification, and cyclogenesis.'
-    },
-    {
-      id: 'enso',
-      icon: Globe,
-      label: 'ENSO Teleconnections',
-      prompt: 'Explain the active ENSO phase and its teleconnection impacts on regional monsoons.'
-    },
-    {
-      id: 'brief',
-      icon: FileText,
-      label: 'Generate Ocean Brief',
-      prompt: 'Generate an executive oceanographic briefing and launch the technical dossier.'
-    }
-  ];
+  const { i18n } = useTranslation();
+  const currentLang = i18n?.language || 'en';
+  const L = getCopilotLexicon(currentLang);
+  const localizedActions = getLocalizedQuickActions(currentLang);
+
+  const iconMap = {
+    conditions: Compass,
+    storm_risk: ShieldAlert,
+    profile: Layers,
+    compare: Scale,
+    vectors: Activity,
+    marineLife: Fish
+  };
 
   return (
     <div className="px-3 py-2 flex flex-col gap-1.5 select-none">
       <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#7FA1AA] px-1">
         <Sparkles className="w-3 h-3 text-[#00E5FF]" />
-        <span>Quick Oceanographic Queries</span>
+        <span>{L.ui?.quickQueries || 'Quick Oceanographic Queries'}</span>
       </div>
 
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-        {actions.map((act) => {
-          const Icon = act.icon;
+        {localizedActions.map((act) => {
+          const Icon = iconMap[act.id] || Compass;
           return (
             <button
               key={act.id}
