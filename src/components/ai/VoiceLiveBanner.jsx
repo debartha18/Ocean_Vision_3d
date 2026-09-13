@@ -22,6 +22,16 @@ export default function VoiceLiveBanner({
   const voiceConfig = getVoiceConfigForLanguage(language);
   const langDisplay = voiceConfig.displayName || language.toUpperCase();
 
+  // Automatically dismiss error banner after 4 seconds
+  React.useEffect(() => {
+    if (isError && onCancel) {
+      const timer = setTimeout(() => {
+        onCancel();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isError, onCancel]);
+
   if (audioState === AudioState.IDLE) {
     return null;
   }

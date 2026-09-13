@@ -130,6 +130,23 @@ export class WebSpeechProvider extends SpeechToTextProvider {
       this.recognition.onerror = (event) => {
         const errorType = event.error;
 
+        // If recognizer was aborted or stopping, or if errorType is 'aborted', ignore completely!
+        if (this.isAborted || this.isStopping || errorType === 'aborted') {
+          if (this.options?.onStateChange) {
+            this.options.onStateChange(AudioState.IDLE);
+          }
+          return;
+        }
+
+        // If we already captured valid speech, do NOT allow any trailing error to invalidate it
+        if (this.finalTranscript && this.finalTranscript.trim()) {
+          console.warn(`WebSpeechProvider: Ignoring trailing error '${errorType}' because valid speech was already captured.`);
+          if (this.options?.onStateChange) {
+            this.options.onStateChange(AudioState.READY_TO_SEND);
+          }
+          return;
+        }
+
         // Try next fallback locale if language not supported or network error on current
         if ((errorType === 'language-not-supported' || errorType === 'network') && this.activeLocaleIndex < this.localesToTry.length - 1) {
           this.activeLocaleIndex += 1;
@@ -152,11 +169,13 @@ export class WebSpeechProvider extends SpeechToTextProvider {
           mappedCode = SpeechErrorCode.ABORTED;
         }
 
-        if (this.options.onStateChange) {
-          this.options.onStateChange(mappedCode === SpeechErrorCode.NO_SPEECH ? AudioState.IDLE : AudioState.ERROR);
+        const isFatalError = mappedCode !== SpeechErrorCode.NO_SPEECH && mappedCode !== SpeechErrorCode.ABORTED;
+
+        if (this.options?.onStateChange) {
+          this.options.onStateChange(isFatalError ? AudioState.ERROR : AudioState.IDLE);
         }
 
-        if (this.options.onError && mappedCode !== SpeechErrorCode.ABORTED && mappedCode !== SpeechErrorCode.NO_SPEECH) {
+        if (this.options?.onError && isFatalError) {
           this.options.onError({
             code: mappedCode,
             message: event.message || `Speech recognition error: ${errorType}`,
@@ -175,14 +194,18 @@ export class WebSpeechProvider extends SpeechToTextProvider {
           return;
         }
 
-        // If stopped gracefully or user finished speaking
-        if (this.options?.onStateChange) {
-          this.options.onStateChange(AudioState.READY_TO_SEND);
-        }
-
         const resultText = this.finalTranscript.trim();
-        if (this.options?.onFinal) {
-          this.options.onFinal(resultText, 0.95);
+        if (resultText) {
+          if (this.options?.onStateChange) {
+            this.options.onStateChange(AudioState.READY_TO_SEND);
+          }
+          if (this.options?.onFinal) {
+            this.options.onFinal(resultText, 0.95);
+          }
+        } else {
+          if (this.options?.onStateChange) {
+            this.options.onStateChange(AudioState.IDLE);
+          }
         }
       };
 
@@ -291,7 +314,7 @@ export class WebSpeechProvider extends SpeechToTextProvider {
   stop() {
     this.isStopping = true;
     if (this.options?.onStateChange) {
-      this.options.onStateChange(AudioState.TRANSCRIBING);
+      this.options.onStateChange(this.finalTranscript?.trim() ? AudioState.READY_TO_SEND : AudioState.TRANSCRIBING);
     }
     if (this.recognition) {
       try {
@@ -306,12 +329,21 @@ export class WebSpeechProvider extends SpeechToTextProvider {
     this._cleanupAudioAnalysis();
     if (this.recognition) {
       try {
+        this.recognition.onstart = null;
+        this.recognition.onaudiostart = null;
+        this.recognition.onspeechstart = null;
+        this.recognition.onspeechend = null;
+        this.recognition.onaudioend = null;
+        this.recognition.onresult = null;
+        this.recognition.onerror = null;
         this.recognition.onend = null;
         this.recognition.abort();
       } catch (_) {}
+      this.recognition = null;
     }
     if (this.options?.onStateChange) {
       this.options.onStateChange(AudioState.IDLE);
     }
+    this.options = null;
   }
 }

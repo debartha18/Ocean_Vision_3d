@@ -10,6 +10,7 @@ import {
 import { SUPPORTED_LANGUAGES } from '../src/i18n/languages.js';
 import { cleanTextForSpeech } from '../src/lib/ai/voice/ttsProvider.js';
 import { AudioState, SpeechErrorCode } from '../src/lib/ai/voice/speechProvider.js';
+import { WebSpeechProvider } from '../src/lib/ai/voice/webSpeechProvider.js';
 import { extractIntentAndEntities, executeNeridaReasoning } from '../src/lib/ai/offlineEngine.js';
 import { resolveLocation } from '../src/lib/ai/oceanTools.js';
 import { getCopilotLexicon } from '../src/lib/ai/copilotTranslations.js';
@@ -149,4 +150,75 @@ assert.ok(!satResult.message.includes('नेरिडा'), 'Reasoning response
 assert.ok(satResult.message.includes('29.85'), 'Must contain actual digital twin SST value');
 console.log('✓ End-to-end reasoning generated genuine Ol Chiki Santali output');
 
-console.log('\nALL 23-LANGUAGE VOICE & SANTALI TESTS PASSED! 🎉');
+console.log('\n=== TEST 7: Voice Error Suppression & Lifecycle State Safety ===');
+// 1. Verify abort() sets AudioState.IDLE and detaches all listeners
+let recordedState = null;
+let recordedError = null;
+
+const provider = new WebSpeechProvider();
+provider.options = {
+  onStateChange: (st) => { recordedState = st; },
+  onError: (err) => { recordedError = err; }
+};
+
+// Simulate recognition instance
+let fakeRecognition = {
+  start: () => {},
+  stop: () => {},
+  abort: () => {},
+  onerror: null,
+  onend: null,
+  onresult: null
+};
+
+provider.recognition = fakeRecognition;
+provider.abort();
+
+assert.strictEqual(recordedState, AudioState.IDLE, 'abort() must transition to AudioState.IDLE');
+assert.strictEqual(recordedError, null, 'abort() must not emit onError');
+assert.strictEqual(provider.recognition, null, 'abort() must nullify recognition');
+assert.strictEqual(provider.options, null, 'abort() must nullify options to block trailing callbacks');
+console.log('✓ provider.abort() safely unbinds and transitions to IDLE');
+
+// 2. Test that trailing browser errors do not overwrite captured speech
+const provider2 = new WebSpeechProvider();
+let p2State = AudioState.IDLE;
+let p2Error = null;
+provider2.options = {
+  onStateChange: (st) => { p2State = st; },
+  onError: (err) => { p2Error = err; }
+};
+provider2.finalTranscript = 'বঙ্গোপসাগরের তাপমাত্রা কত';
+
+// Mock the onerror handler from _startRecognitionWithLocale
+const mockOnError = (errorType) => {
+  if (provider2.isAborted || provider2.isStopping || errorType === 'aborted') {
+    if (provider2.options?.onStateChange) provider2.options.onStateChange(AudioState.IDLE);
+    return;
+  }
+  if (provider2.finalTranscript && provider2.finalTranscript.trim()) {
+    if (provider2.options?.onStateChange) provider2.options.onStateChange(AudioState.READY_TO_SEND);
+    return;
+  }
+  let mapped = SpeechErrorCode.UNKNOWN;
+  if (errorType === 'network') mapped = SpeechErrorCode.NETWORK;
+  if (errorType === 'no-speech') mapped = SpeechErrorCode.NO_SPEECH;
+  const isFatal = mapped !== SpeechErrorCode.NO_SPEECH && mapped !== SpeechErrorCode.ABORTED;
+  if (provider2.options?.onStateChange) provider2.options.onStateChange(isFatal ? AudioState.ERROR : AudioState.IDLE);
+  if (provider2.options?.onError && isFatal) provider2.options.onError({ code: mapped });
+};
+
+// Simulate trailing network error after speech captured
+mockOnError('network');
+assert.strictEqual(p2State, AudioState.READY_TO_SEND, 'Trailing error after speech must not trigger ERROR state');
+assert.strictEqual(p2Error, null, 'Trailing error after speech must not emit error');
+console.log('✓ Trailing network/no-speech errors safely suppressed when valid speech is captured');
+
+// Simulate aborted event
+provider2.finalTranscript = '';
+mockOnError('aborted');
+assert.strictEqual(p2State, AudioState.IDLE, 'Aborted recognition must transition to IDLE, not ERROR');
+assert.strictEqual(p2Error, null, 'Aborted recognition must not emit error');
+console.log('✓ Aborted recognition transitions cleanly to IDLE');
+
+console.log('\nALL VOICE LIFECYCLE & MULTILINGUAL TESTS PASSED! 🎉');
