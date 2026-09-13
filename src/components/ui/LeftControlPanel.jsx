@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   Thermometer, 
@@ -43,15 +43,15 @@ export default function LeftControlPanel({
   onAskCopilot
 }) {
   const { t } = useTranslation();
-  const [prevRegionId, setPrevRegionId] = useState(activeRegion?.id);
-  const [inputLat, setInputLat] = useState(activeRegion?.lat?.toString() || '15.297');
-  const [inputLon, setInputLon] = useState(activeRegion?.lon?.toString() || '87.860');
+  const [inputLat, setInputLat] = useState(activeRegion?.lat != null ? activeRegion.lat.toString() : '15.297');
+  const [inputLon, setInputLon] = useState(activeRegion?.lon != null ? activeRegion.lon.toString() : '87.860');
 
-  if (activeRegion && activeRegion.id !== prevRegionId) {
-    setPrevRegionId(activeRegion.id);
-    setInputLat(activeRegion.lat?.toString() || '');
-    setInputLon(activeRegion.lon?.toString() || '');
-  }
+  useEffect(() => {
+    if (activeRegion) {
+      if (activeRegion.lat != null) setInputLat(activeRegion.lat.toString());
+      if (activeRegion.lon != null) setInputLon(activeRegion.lon.toString());
+    }
+  }, [activeRegion?.id, activeRegion?.lat, activeRegion?.lon]);
 
   const handleApplyCoords = (e) => {
     e.preventDefault();

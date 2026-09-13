@@ -724,6 +724,7 @@ export const IN_SITU_SUMMARY = {
 export const BUOY_MARKERS = REGIONS.bay_of_bengal.buoys;
 
 export function getDynamicValidationTimeSeries(baseDate = new Date(), baseSst = 29.5) {
+  const numericSst = typeof baseSst === 'number' && !isNaN(baseSst) ? baseSst : (parseFloat(baseSst) || 29.5);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const series = [];
   for (let i = 5; i >= 0; i--) {
@@ -731,7 +732,7 @@ export function getDynamicValidationTimeSeries(baseDate = new Date(), baseSst = 
     d.setDate(d.getDate() - i);
     const dateLabel = `${d.getDate()} ${months[d.getMonth()]}`;
     const dayVar = Math.sin((d.getDate() + i) * 1.2) * 0.45;
-    const model = parseFloat((baseSst + dayVar).toFixed(1));
+    const model = parseFloat((numericSst + dayVar).toFixed(1));
     const observed = parseFloat((model + (Math.sin(i * 2.1) * 0.22 - 0.08)).toFixed(1));
     series.push({ time: dateLabel, model, observed });
   }
@@ -752,7 +753,9 @@ export function calculateParameterAtDepth(paramId, depthMeters, region) {
   const getSurfaceVal = (key, fallback) => {
     if (typeof region === 'number') return region;
     if (typeof region === 'object' && region !== null) {
-      return region[key] ?? fallback;
+      const val = region[key];
+      const num = typeof val === 'number' ? val : parseFloat(val);
+      return !isNaN(num) ? num : fallback;
     }
     return fallback;
   };
@@ -904,7 +907,7 @@ export function createLocationData(lat, lon, customName = null, dateStr = null) 
     lon,
     cameraPosition: [0, 3.4, 4.8],
     cameraLookAt: [0, -0.35, 0.1],
-    earthRotation: [Math.PI * 0.58, 0, (lon / 180) * Math.PI],
+    earthRotation: [Math.PI * 0.58, 0, -((lon - 70) / 180) * Math.PI],
     sst: parseFloat(baseSst.toFixed(2)),
     salinity: parseFloat(salinity.toFixed(2)),
     currentSpeed: parseFloat(currentSpeed.toFixed(2)),
@@ -945,10 +948,14 @@ export function createLocationData(lat, lon, customName = null, dateStr = null) 
         mooringDepth: Math.round(2500 + Math.abs(Math.sin(lat)) * 2000),
         lastTransmission: '3 mins ago',
         depthProfile: [
-          { depth: 0, temp: parseFloat(baseSst.toFixed(2)), salinity: parseFloat(salinity.toFixed(2)) },
-          { depth: 50, temp: parseFloat((baseSst - 0.9).toFixed(2)), salinity: parseFloat((salinity + 0.3).toFixed(2)) },
-          { depth: 100, temp: parseFloat((baseSst - 4.5).toFixed(2)), salinity: parseFloat((salinity + 0.6).toFixed(2)) },
-          { depth: 500, temp: parseFloat((baseSst - 17.0).toFixed(2)), salinity: parseFloat((salinity + 0.4).toFixed(2)) }
+          { depth: 0, temp: parseFloat(baseSst.toFixed(2)), salinity: parseFloat(salinity.toFixed(2)), oxygen, chlorophyll, velocity: parseFloat(currentSpeed.toFixed(2)), timestamp: '12:00 UTC' },
+          { depth: 10, temp: parseFloat((baseSst - 0.15).toFixed(2)), salinity: parseFloat((salinity + 0.1).toFixed(2)), oxygen: parseFloat((oxygen + 0.05).toFixed(2)), chlorophyll: parseFloat((chlorophyll * 1.2).toFixed(2)), velocity: parseFloat((currentSpeed * 0.95).toFixed(2)), timestamp: '12:00 UTC' },
+          { depth: 50, temp: parseFloat((baseSst - 0.9).toFixed(2)), salinity: parseFloat((salinity + 0.3).toFixed(2)), oxygen: parseFloat((oxygen - 0.4).toFixed(2)), chlorophyll: parseFloat((chlorophyll * 1.5).toFixed(2)), velocity: parseFloat((currentSpeed * 0.8).toFixed(2)), timestamp: '12:00 UTC' },
+          { depth: 100, temp: parseFloat((baseSst - 4.5).toFixed(2)), salinity: parseFloat((salinity + 0.6).toFixed(2)), oxygen: 3.2, chlorophyll: 0.6, velocity: parseFloat((currentSpeed * 0.5).toFixed(2)), timestamp: '12:00 UTC' },
+          { depth: 200, temp: parseFloat((baseSst - 11.0).toFixed(2)), salinity: parseFloat((salinity + 0.8).toFixed(2)), oxygen: 1.6, chlorophyll: 0.08, velocity: parseFloat((currentSpeed * 0.3).toFixed(2)), timestamp: '12:00 UTC' },
+          { depth: 500, temp: parseFloat((baseSst - 17.0).toFixed(2)), salinity: parseFloat((salinity + 0.4).toFixed(2)), oxygen: 2.1, chlorophyll: 0.01, velocity: 0.14, timestamp: '12:00 UTC' },
+          { depth: 1000, temp: 6.8, salinity: 34.95, oxygen: 3.4, chlorophyll: 0.01, velocity: 0.08, timestamp: '12:00 UTC' },
+          { depth: 2000, temp: 3.2, salinity: 34.80, oxygen: 4.1, chlorophyll: 0.00, velocity: 0.04, timestamp: '12:00 UTC' }
         ]
       }
     ]

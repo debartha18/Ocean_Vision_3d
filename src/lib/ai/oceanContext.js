@@ -42,18 +42,43 @@ export function buildOceanContext({
   // Compute hydrostatic pressure at depth
   const hydrostaticPressure = calculateHydrostaticPressure
     ? calculateHydrostaticPressure(depth, lat, sst, salinity)
-    : (depth * 0.101).toFixed(1);
+    : { bar: (Number(depth) * 0.101).toFixed(2) };
+
+  const safeLat = typeof lat === 'number' && !isNaN(lat) ? lat : 15.297;
+  const safeLon = typeof lon === 'number' && !isNaN(lon) ? lon : 87.860;
+  const safeSst = typeof sst === 'number' && !isNaN(sst) ? sst : 29.85;
+  const safeSal = typeof salinity === 'number' && !isNaN(salinity) ? salinity : 33.42;
+  const safeO2 = typeof oxygen === 'number' && !isNaN(oxygen) ? oxygen : 6.85;
+  const safeChl = typeof chlorophyll === 'number' && !isNaN(chlorophyll) ? chlorophyll : 1.25;
 
   return {
     timestamp: new Date().toISOString(),
     simulationTime: `${Math.floor(timeHour).toString().padStart(2, '0')}:${Math.floor((timeHour % 1) * 60).toString().padStart(2, '0')} UTC`,
     date: selectedDate || new Date().toISOString().split('T')[0],
+    rawRegion: activeRegion,
+    activeRegion: activeRegion,
     activeBasin: {
       id: activeRegion?.id || 'custom',
       name: activeRegion?.name || 'Custom Coordinates',
-      coordinates: activeRegion?.coords || `${lat.toFixed(3)}° N, ${lon.toFixed(3)}° E`,
-      latitude: lat,
-      longitude: lon,
+      coords: activeRegion?.coords || `${safeLat.toFixed(3)}° N, ${safeLon.toFixed(3)}° E`,
+      coordinates: activeRegion?.coords || `${safeLat.toFixed(3)}° N, ${safeLon.toFixed(3)}° E`,
+      lat: safeLat,
+      lon: safeLon,
+      latitude: safeLat,
+      longitude: safeLon,
+      sst: safeSst,
+      salinity: safeSal,
+      currentSpeed: activeRegion?.currentSpeed ?? currentSpeed,
+      waveHeight: activeRegion?.waveHeight ?? waveHeight,
+      chlorophyll: safeChl,
+      oxygen: safeO2,
+      pressure: activeRegion?.pressure ?? pressure,
+      windSpeedKmH: activeRegion?.windSpeedKmH ?? windSpeed,
+      stormProbability: activeRegion?.stormProbability ?? 30,
+      rainProbability: activeRegion?.rainProbability ?? 35,
+      rainRate: activeRegion?.rainRate ?? 2.0,
+      activeStorm: activeRegion?.activeStorm,
+      buoys: activeRegion?.buoys,
       isLiveSatelliteSync: activeRegion?.isLive ?? false
     },
     activeLayer: {
@@ -63,7 +88,7 @@ export function buildOceanContext({
       surfaceValue: getParamSurfaceValue(selectedParam, activeRegion),
       valueAtActiveDepth: paramAtDepth,
       depthMeters: depth,
-      hydrostaticPressureBar: hydrostaticPressure?.bar || (depth * 0.101).toFixed(2),
+      hydrostaticPressureBar: hydrostaticPressure?.bar || (Number(depth) * 0.101).toFixed(2),
       viewMode
     },
     meteorologyAndHazards: {
@@ -88,10 +113,10 @@ export function buildOceanContext({
         : 'ENSO Neutral: Standard Walker circulation'
     },
     oceanographicProfile: {
-      surfaceSST: `${sst.toFixed(2)} °C`,
-      surfaceSalinity: `${salinity.toFixed(2)} PSU`,
-      dissolvedOxygen: `${oxygen.toFixed(2)} mg/L`,
-      chlorophyllA: `${chlorophyll.toFixed(2)} mg/m³`,
+      surfaceSST: `${safeSst.toFixed(2)} °C`,
+      surfaceSalinity: `${safeSal.toFixed(2)} PSU`,
+      dissolvedOxygen: `${safeO2.toFixed(2)} mg/L`,
+      chlorophyllA: `${safeChl.toFixed(2)} mg/m³`,
       buoyCount: activeRegion?.buoys?.length || 0,
       activeBuoyNames: (activeRegion?.buoys || []).slice(0, 3).map(b => b.name)
     },

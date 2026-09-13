@@ -343,7 +343,7 @@ export function extractIntentAndEntities(query, currentState = {}, conversationH
     secondBasin,
     basinSpecified,
     matchedLocation,
-    coords: targetCoords,
+    coords: targetCoords || (currentState.coords ? currentState.coords : (currentState.lat != null ? { lat: currentState.lat, lon: currentState.lon } : (currentState.latitude != null ? { lat: currentState.latitude, lon: currentState.longitude } : null))),
     isImplicitLocation: !basinSpecified,
     isStormOrWeather,
     isGeneralConditions,
@@ -1133,12 +1133,21 @@ export function executeNeridaReasoning(query, currentState = {}, conversationHis
  * Backward-compatible helper for legacy callers (e.g. AnalyticReportModal).
  */
 export function processOfflineCopilotQuery(query, context = {}) {
+  const activeReg = context.rawRegion || context.activeRegion || context.activeBasin;
+  const lat = typeof activeReg?.lat === 'number' ? activeReg.lat : (typeof activeReg?.latitude === 'number' ? activeReg.latitude : 15.297);
+  const lon = typeof activeReg?.lon === 'number' ? activeReg.lon : (typeof activeReg?.longitude === 'number' ? activeReg.longitude : 87.860);
+
   const currentState = {
-    basin: context.activeBasin?.name || context.activeRegion?.name,
-    basinId: context.activeBasin?.id || context.activeRegion?.id,
-    depth: context.activeLayer?.depthMeters || context.depth || 0,
+    basin: context.activeBasin?.name || activeReg?.name || 'Bay of Bengal',
+    basinId: context.activeBasin?.id || activeReg?.id || 'bay_of_bengal',
+    lat,
+    lon,
+    latitude: lat,
+    longitude: lon,
+    coords: { lat, lon },
+    depth: context.activeLayer?.depthMeters ?? context.depth ?? 0,
     parameter: context.activeLayer?.parameter || context.selectedParam || 'sst',
-    rawRegion: context.activeRegion || context.activeBasin
+    rawRegion: activeReg ? { ...activeReg, lat, lon } : null
   };
 
   const result = executeNeridaReasoning(query, currentState, []);

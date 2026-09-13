@@ -125,7 +125,7 @@ export default function RightAnalyticsPanel({
           <div className="bg-[#0A1720] p-1.5 rounded-lg border border-[#193544]">
             <div className="text-[9px] text-[#637C87] uppercase">{t('stormModal.rainRate', 'Rain Rate')}</div>
             <div className="text-xs font-semibold text-[#CCD0CF] mt-0.5">
-              {rainRate.toFixed(1)} <span className="text-[8px] text-[#637C87]">mm/h</span>
+              {(Number(rainRate) || 0).toFixed(1)} <span className="text-[8px] text-[#637C87]">mm/h</span>
             </div>
             <div className="text-[8px] text-[#6BA3BE] mt-0.5 font-sans">
               {rainCat.text}

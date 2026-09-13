@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Compass, Navigation, Globe, Check, Search, ArrowRight } from 'lucide-react';
-import { REGIONS } from '../../data/oceanData';
+import { REGIONS, createLocationData } from '../../data/oceanData';
 
 export default function LocationModal({ isOpen, onClose, activeRegion, onSelectRegion, onCustomCoords }) {
   const { t } = useTranslation();
@@ -21,56 +21,8 @@ export default function LocationModal({ isOpen, onClose, activeRegion, onSelectR
     const lat = parseFloat(customLat);
     const lon = parseFloat(customLon);
     if (!isNaN(lat) && !isNaN(lon)) {
-      onCustomCoords({
-        id: 'custom',
-        name: `Custom (${lat.toFixed(3)}°, ${lon.toFixed(3)}°)`,
-        coords: `${Math.abs(lat).toFixed(3)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(3)}° ${lon >= 0 ? 'E' : 'W'}`,
-        lat,
-        lon,
-        cameraPosition: [0, 3.4, 4.8],
-        cameraLookAt: [0, -0.35, 0.1],
-        earthRotation: [Math.PI * 0.58, 0, (lon / 180) * Math.PI],
-        sst: 28.5 + Math.sin(lat * 0.1) * 3,
-        salinity: 34.5,
-        currentSpeed: 1.0,
-        waveHeight: 2.0,
-        stormProbability: Math.min(95, Math.max(10, Math.floor(Math.abs(lat) * 4))),
-        rainRate: 25.0,
-        activeStorm: {
-          name: 'Tropical Disturbance',
-          category: 'Low Pressure Alert',
-          windSpeed: '65 km/h',
-          pressure: '998 hPa',
-          surge: '1.2m',
-          movement: 'Westward',
-          rainfallForecast: 'Moderate showers across coordinates'
-        },
-        buoys: [
-          {
-            id: 'CUSTOM-BUOY-01',
-            type: 'mooredBuoy',
-            name: `Ocean Observation Station (${lat.toFixed(2)}°, ${lon.toFixed(2)}°)`,
-            lat,
-            lon,
-            x: 0,
-            z: 0,
-            sst: 28.8,
-            salinity: 34.8,
-            currentSpeed: 0.9,
-            waveHeight: 1.8,
-            battery: '99%',
-            qcStatus: 'Target Locked',
-            mooringDepth: 3500,
-            lastTransmission: 'Just now',
-            depthProfile: [
-              { depth: 0, temp: 28.8, salinity: 34.8 },
-              { depth: 50, temp: 27.5, salinity: 35.1 },
-              { depth: 100, temp: 22.1, salinity: 35.4 },
-              { depth: 500, temp: 10.5, salinity: 35.2 }
-            ]
-          }
-        ]
-      });
+      const regionData = createLocationData(lat, lon);
+      onCustomCoords(regionData);
       onClose();
     }
   };

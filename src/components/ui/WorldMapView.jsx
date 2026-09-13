@@ -16,7 +16,7 @@ import {
   Plus,
   Minus
 } from 'lucide-react';
-import { REGIONS } from '../../data/oceanData';
+import { REGIONS, createLocationData } from '../../data/oceanData';
 import { COASTAL_BEACHES, calculateBeachRainForecast } from '../../data/beachData';
 import { calculateHydrostaticPressure } from '../../utils/pressureCalculator';
 
@@ -415,56 +415,8 @@ export default function WorldMapView({
 
   const handleTargetPinned = () => {
     if (pinnedLocation) {
-      onCustomCoords({
-        id: 'custom_pin',
-        name: pinnedLocation.name || `Point (${pinnedLocation.lat}°, ${pinnedLocation.lon}°)`,
-        coords: `${Math.abs(pinnedLocation.lat).toFixed(3)}° ${pinnedLocation.lat >= 0 ? 'N' : 'S'}, ${Math.abs(pinnedLocation.lon).toFixed(3)}° ${pinnedLocation.lon >= 0 ? 'E' : 'W'}`,
-        lat: pinnedLocation.lat,
-        lon: pinnedLocation.lon,
-        cameraPosition: [0, 3.4, 4.8],
-        cameraLookAt: [0, -0.35, 0.1],
-        earthRotation: [Math.PI * 0.58, 0, (pinnedLocation.lon / 180) * Math.PI],
-        sst: 28.2,
-        salinity: 34.8,
-        currentSpeed: 0.9,
-        waveHeight: 1.8,
-        stormProbability: 45,
-        rainRate: 18.0,
-        activeStorm: {
-          name: 'Regional Maritime System',
-          category: 'Active Sea State',
-          windSpeed: '45 km/h',
-          pressure: '1008 hPa',
-          surge: '0.8m',
-          movement: 'Eastward',
-          rainfallForecast: 'Standard coastal sea state with localized convective showers'
-        },
-        buoys: [
-          {
-            id: 'PINNED-BUOY',
-            type: 'mooredBuoy',
-            name: `Ocean Observation Station (${pinnedLocation.lat}°, ${pinnedLocation.lon}°)`,
-            lat: pinnedLocation.lat,
-            lon: pinnedLocation.lon,
-            x: 0,
-            z: 0,
-            sst: 28.2,
-            salinity: 34.8,
-            currentSpeed: 0.9,
-            waveHeight: 1.8,
-            battery: '100%',
-            qcStatus: 'Target Locked',
-            mooringDepth: pinnedLocation.depth || 3200,
-            lastTransmission: 'Live Target',
-            depthProfile: [
-              { depth: 0, temp: 28.2, salinity: 34.8 },
-              { depth: 50, temp: 26.8, salinity: 35.1 },
-              { depth: 100, temp: 21.4, salinity: 35.5 },
-              { depth: 500, temp: 9.8, salinity: 35.0 }
-            ]
-          }
-        ]
-      });
+      const regionData = createLocationData(pinnedLocation.lat, pinnedLocation.lon, pinnedLocation.name);
+      onCustomCoords(regionData);
       onBackTo3D();
     }
   };

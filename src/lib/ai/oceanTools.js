@@ -284,13 +284,20 @@ export const COASTAL_LOCATIONS = [
  * a canonical region object, exact matched place name, coordinates, and metadata.
  */
 export function resolveLocation(queryOrLocation, fallbackRegion) {
+  const getLatLon = (reg) => {
+    if (!reg) return { lat: 15.297, lon: 87.860 };
+    const lat = typeof reg.lat === 'number' && !isNaN(reg.lat) ? reg.lat : (typeof reg.latitude === 'number' && !isNaN(reg.latitude) ? reg.latitude : 15.297);
+    const lon = typeof reg.lon === 'number' && !isNaN(reg.lon) ? reg.lon : (typeof reg.longitude === 'number' && !isNaN(reg.longitude) ? reg.longitude : 87.860);
+    return { lat, lon };
+  };
+
   if (!queryOrLocation) {
     const defaultBasin = fallbackRegion || REGIONS.bay_of_bengal;
     return {
       basin: defaultBasin,
       matchedLocation: null,
       isCity: false,
-      coords: { lat: defaultBasin.lat, lon: defaultBasin.lon }
+      coords: getLatLon(defaultBasin)
     };
   }
 
@@ -373,7 +380,7 @@ export function resolveLocation(queryOrLocation, fallbackRegion) {
     basin: fallback,
     matchedLocation: null,
     isCity: false,
-    coords: { lat: fallback.lat, lon: fallback.lon }
+    coords: getLatLon(fallback)
   };
 }
 
@@ -641,12 +648,29 @@ export function tool_get_current_ocean_state(currentState = {}) {
 // -------------------------------------------------------------
 export function tool_predict_storm_and_weather(args = {}, currentState = {}) {
   const queryLoc = args.location || args.basin;
-  const locInfo = resolveLocation(queryLoc, currentState.rawRegion || REGIONS[currentState.basinId] || REGIONS.bay_of_bengal);
-  const region = locInfo.basin;
-  const targetLocationName = locInfo.matchedLocation || region.name;
+  const fallbackBasin = currentState.rawRegion || REGIONS[currentState.basinId] || REGIONS.bay_of_bengal;
+  const locInfo = resolveLocation(queryLoc, fallbackBasin);
+  const region = locInfo.basin || fallbackBasin;
+  const targetLocationName = locInfo.matchedLocation || region.name || 'Target Station';
 
-  const lat = locInfo.coords ? locInfo.coords.lat : (typeof args.latitude === 'number' ? args.latitude : region.lat);
-  const lon = locInfo.coords ? locInfo.coords.lon : (typeof args.longitude === 'number' ? args.longitude : region.lon);
+  const rawLat = (typeof locInfo.coords?.lat === 'number' && !isNaN(locInfo.coords.lat))
+    ? locInfo.coords.lat
+    : (typeof args.latitude === 'number' && !isNaN(args.latitude)
+      ? args.latitude
+      : (typeof region.lat === 'number' && !isNaN(region.lat)
+        ? region.lat
+        : (typeof region.latitude === 'number' && !isNaN(region.latitude) ? region.latitude : 15.297)));
+
+  const rawLon = (typeof locInfo.coords?.lon === 'number' && !isNaN(locInfo.coords.lon))
+    ? locInfo.coords.lon
+    : (typeof args.longitude === 'number' && !isNaN(args.longitude)
+      ? args.longitude
+      : (typeof region.lon === 'number' && !isNaN(region.lon)
+        ? region.lon
+        : (typeof region.longitude === 'number' && !isNaN(region.longitude) ? region.longitude : 87.860)));
+
+  const lat = typeof rawLat === 'number' && !isNaN(rawLat) ? rawLat : 15.297;
+  const lon = typeof rawLon === 'number' && !isNaN(rawLon) ? rawLon : 87.860;
 
   const activeStorm = region.activeStorm || {
     name: 'Seasonal Marine Convective Cluster',
@@ -663,8 +687,8 @@ export function tool_predict_storm_and_weather(args = {}, currentState = {}) {
   const rainRate = region.rainRate ?? 2.0;
   const pressure = region.pressure ?? 1010;
   const windSpeedKmH = region.windSpeedKmH ?? 24;
-  const waveHeight = region.waveHeight ?? 1.6;
-  const sst = region.sst ?? 29.0;
+  const waveHeight = typeof region.waveHeight === 'number' ? region.waveHeight : (parseFloat(region.waveHeight) || 1.6);
+  const sst = typeof region.sst === 'number' ? region.sst : (parseFloat(region.sst) || 29.0);
 
   // Retrieve nearest beaches and calculate deterministic coastal forecasts
   const nearestBeaches = getNearestBeaches(lat, lon, 4);
@@ -711,12 +735,14 @@ export function tool_predict_storm_and_weather(args = {}, currentState = {}) {
     }
   ];
 
+  const formattedCoordinates = `${Math.abs(lat).toFixed(3)}° ${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(3)}° ${lon >= 0 ? 'E' : 'W'}`;
+
   return {
     success: true,
     location: targetLocationName,
-    basin: region.name,
-    basinId: region.id,
-    coordinates: `${lat.toFixed(3)}° N, ${lon.toFixed(3)}° E`,
+    basin: region.name || 'Ocean Sector',
+    basinId: region.id || 'custom',
+    coordinates: formattedCoordinates,
     isImplicitLocation: !args.location && !args.basin,
     threatLevel,
     threatColor,
@@ -731,7 +757,7 @@ export function tool_predict_storm_and_weather(args = {}, currentState = {}) {
     cyclogenesisPotential: sst >= 28.0 ? 'Favorable (>28°C Thermal Fuel)' : 'Unfavorable (<28°C)',
     threeDayOutlook,
     beachForecasts: beachForecasts.slice(0, 3),
-    summary: `${targetLocationName} (${region.name}): Storm risk is ${threatLevel} with ${stormProbability}% probability. System: ${activeStorm.name} (${activeStorm.category}). Wind: ${windSpeedKmH} km/h, Wave Swell: ${waveHeight}m, Rain Probability: ${rainProbability}%.`
+    summary: `${targetLocationName} (${region.name || 'Ocean Sector'}): Storm risk is ${threatLevel} with ${stormProbability}% probability. System: ${activeStorm.name} (${activeStorm.category}). Wind: ${windSpeedKmH} km/h, Wave Swell: ${waveHeight}m, Rain Probability: ${rainProbability}%.`
   };
 }
 
